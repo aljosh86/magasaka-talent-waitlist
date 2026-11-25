@@ -2694,7 +2694,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
 <div class="mf" id="manifesto" hidden role="dialog" aria-modal="true" aria-label="Magasaka Manifesto">
   <div class="mf__backdrop" data-mf-close></div>
   <div class="mf__stage">
-    <!-- desktop: a filmed unfold (Higgsfield, FLUX 3 Video) plays first; the real letter fades in as it lands -->
+    <!-- desktop: a filmed unfold (Higgsfield, Seedance 2.5) plays first; the real letter fades in as it lands -->
     <video class="mf__film" src="video/manifesto-unfold.mp4" poster="video/manifesto-unfold-poster.jpg" muted playsinline preload="metadata" hidden aria-hidden="true"></video>
     <div class="mf__sheet" id="mfSheet">
       <div class="mf__scroll" tabindex="-1">
@@ -2749,7 +2749,8 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     const stage = box.querySelector('.mf__stage'), sheet = document.getElementById('mfSheet');
     const scroller = sheet.querySelector('.mf__scroll'), photo = sheet.querySelector('.mf__photo'), hint = sheet.querySelector('.mf__hint');
     const film = box.querySelector('.mf__film');
-    const LANDS = 4.3;   // seconds into the film when the paper is all but flat: the real letter takes over from here
+    const LANDS = 3.55;  // seconds into the film when the last flap is coming down: the real letter takes over from here
+    const PACE = 1.15;   // play a touch faster than filmed
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     let fold = null, busy = false, lastFocus = null;
     const ease = 'cubic-bezier(.22,1,.36,1)';
@@ -2848,7 +2849,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       if (film && matchMedia('(min-width:641px)').matches){
         busy = true;
         film.hidden = false;
-        try { film.currentTime = 0; await film.play(); }
+        try { film.currentTime = 0; film.playbackRate = PACE; await film.play(); }
         catch(e){ film.hidden = true; busy = false; }
         if (!film.hidden){
           await new Promise(done => {
@@ -2857,7 +2858,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
           });
           if (box.hidden) return;
           sheet.style.visibility = '';
-          const fade = sheet.animate([{opacity:0},{opacity:1}], {duration:700, easing:'ease-out', fill:'both'});
+          const fade = sheet.animate([{opacity:0},{opacity:1}], {duration:420, easing:'ease-out', fill:'both'});
           await fade.finished; fade.cancel();
           film.pause(); film.hidden = true; busy = false;
           scroller.focus({preventScroll:true}); showHint();
