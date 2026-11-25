@@ -903,6 +903,7 @@ html.mf-open,html.mf-open body{overflow:hidden}
   scrollbar-width:thin;scrollbar-color:rgba(39,48,73,.18) transparent;
   -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 40px,#000 calc(100% - 56px),transparent 100%);
           mask-image:linear-gradient(180deg,transparent 0,#000 40px,#000 calc(100% - 56px),transparent 100%)}
+.mf__scroll:focus{outline:none}   /* focus lands on the letter so arrow keys scroll it; no ring needed */
 .mf__scroll::-webkit-scrollbar{width:6px}
 .mf__scroll::-webkit-scrollbar-track{background:transparent}
 .mf__scroll::-webkit-scrollbar-thumb{background:rgba(39,48,73,.16);border-radius:6px}
@@ -2598,7 +2599,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
   <div class="mf__stage">
     <div class="mf__sheet" id="mfSheet">
       <button class="mf__close" type="button" aria-label="Close the manifesto" data-mf-close><svg width="16" height="16" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M16.5 5.5L5.50074 16.4993M16.4993 16.5L5.5 5.50078" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
-      <div class="mf__scroll">
+      <div class="mf__scroll" tabindex="-1">
         <h2 class="mf__title" id="mfTitle">Magasaka Manifesto</h2>
         <div class="mf__letter">
           <p class="mf__open">My parents are farmers.</p>
@@ -2655,7 +2656,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       requestAnimationFrame(() => box.classList.add('is-open'));
       if (reduce){
         sheet.animate([{opacity:0},{opacity:1}], {duration:250});
-        box.querySelector('.mf__close').focus({preventScroll:true});
+        box.querySelector('.mf__scroll').focus({preventScroll:true});
         return;
       }
       busy = true;
@@ -2682,7 +2683,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       anims.push(bot.shade.animate([{opacity:.22},{opacity:0}], {duration:820, delay:980, fill:'both'}));
       Promise.all(anims.map(a => a.finished)).then(() => {
         sheet.style.visibility = ''; fold.remove(); fold = null; busy = false;
-        box.querySelector('.mf__close').focus({preventScroll:true});
+        box.querySelector('.mf__scroll').focus({preventScroll:true});
       });
     }
 
