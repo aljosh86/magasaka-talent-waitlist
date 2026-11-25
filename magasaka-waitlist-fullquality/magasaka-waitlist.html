@@ -950,7 +950,7 @@ html.flow-open, html.flow-open body{overflow:hidden}
               <svg class="ico" width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden="true"><path d="M15.594 3.25098L15.3274 3.02383C13.9865 1.88105 12.0142 1.88105 10.6732 3.02383L10.4067 3.25098C9.71261 3.84244 8.84967 4.19989 7.94068 4.27243L7.59158 4.30028C5.8353 4.44043 4.44067 5.83506 4.30052 7.59134L4.27267 7.94044C4.20013 8.84942 3.84268 9.71236 3.25123 10.4064L3.02407 10.673C1.8813 12.0139 1.8813 13.9862 3.02407 15.3272L3.25123 15.5938C3.84268 16.2878 4.20013 17.1508 4.27267 18.0597L4.30052 18.4088C4.44067 20.1651 5.8353 21.5597 7.59158 21.6999L7.94068 21.7277C8.84967 21.8003 9.71261 22.1577 10.4067 22.7492L10.6732 22.9764C12.0142 24.1191 13.9865 24.1191 15.3274 22.9764L15.594 22.7492C16.288 22.1577 17.151 21.8003 18.0599 21.7277L18.4091 21.6999C20.1654 21.5597 21.56 20.1651 21.7001 18.4088L21.728 18.0597C21.8006 17.1508 22.158 16.2878 22.7495 15.5938L22.9766 15.3272C24.1193 13.9862 24.1193 12.0139 22.9766 10.673L22.7495 10.4064C22.158 9.71236 21.8006 8.84942 21.728 7.94044L21.7001 7.59134C21.56 5.83506 20.1654 4.44043 18.4091 4.30028L18.0599 4.27243C17.151 4.19989 16.288 3.84244 15.594 3.25098Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.75 15.1667C9.75 16.4049 11.1042 17.3334 13 17.3334C14.8958 17.3334 16.25 16.6914 16.25 15.0865C16.25 13.4815 15.1667 12.8396 13 12.8396C10.8333 12.8396 10.0208 12.1546 10.0208 10.9137C10.0208 9.67272 11.3546 8.66675 13 8.66675C14.3593 8.66675 15.506 9.35332 15.8636 10.2917" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 7.04175V8.66675M13 18.9584V17.3334" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
               <div style="display:flex;flex-direction:column;gap:20px">
                 <h3>Funded before you start.</h3>
-                <p>For fixed-price milestones and recurring pay periods.</p>
+                <p>For milestones and pay periods.</p>
               </div>
             </div>
           </article>
@@ -1926,6 +1926,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
   (() => {
     const block = document.querySelector('.filmblock');
     const copy = block && block.querySelector('.filmblock__text');
+    const video = block && block.querySelector('video');
     if (!block || !copy) return;
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     let stage = null, queued = false;
@@ -1962,6 +1963,12 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       block.style.borderRadius = s > 1 ? (radius / s).toFixed(2) + 'px' : '';
       const anchor = innerWidth <= 640 ? 'translate(-50%, 0)' : 'translate(-50%, 50%)';
       copy.style.transform = `${anchor} scale(${(1 / s).toFixed(4)})`;
+      // colour follows the frame: muted while it scrolls in, full once it settles, muted again as it scrolls away
+      if (video){
+        const away = Math.min(1, Math.max(0, (rest - r.top - 1) / (innerHeight * .45)));
+        const life = eased * (1 - away * away * (3 - 2 * away));
+        video.style.filter = `saturate(${(.45 + .7 * life).toFixed(3)}) contrast(1.04)`;
+      }
     };
     const onScroll = () => { if (!queued){ queued = true; requestAnimationFrame(draw); } };
     build(); layout(); draw();
