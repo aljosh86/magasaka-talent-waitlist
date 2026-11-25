@@ -789,10 +789,14 @@ html.flow-open, html.flow-open body{overflow:hidden}
   .flow__meta{font-size:14px}
 
   /* the card follows the share block here */
-  .flow__final{flex-direction:column;align-items:stretch;gap:40px;width:100%}
+  /* phone: the card leads, sized like a card you could hold, then the share block */
+  .flow__final{flex-direction:column;align-items:stretch;gap:36px;width:100%}
   .flow__share{min-width:0}
-  .flow__share{order:1;max-width:none;gap:30px}
-  .wcard{order:2;width:100%;height:auto;aspect-ratio:452/550;border-radius:18px}
+  .flow__share{order:2;max-width:none;gap:30px}
+  .wcard{order:1;align-self:center;width:min(100%,330px);height:auto;aspect-ratio:452/550;border-radius:18px;
+    touch-action:pan-y;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+  .wcard.is-press{transform:perspective(1100px) rotateX(var(--rx)) rotateY(var(--ry)) scale(1.04)}
+  .wcard img{pointer-events:none;-webkit-user-drag:none}
   .wcard__top{left:20px;top:20px;width:calc(100% - 40px);font-size:16px}
   .wcard__foot{left:20px;bottom:20px;top:auto;width:calc(100% - 40px);gap:34px}
   .wcard__who{gap:18px}
@@ -2366,6 +2370,45 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
         card.classList.remove('is-tilt');
         tx = ty = 0; if (!raf) raf = requestAnimationFrame(apply);
       });
+    })();
+
+    // touch screens: the card drifts on its own with a slow sheen, and tilts under your finger when you drag it.
+    // touch-action:pan-y keeps vertical swipes scrolling the page; sideways drags (and presses) move the card.
+    (() => {
+      const card = flow.querySelector('.wcard');
+      if (!card || matchMedia('(hover:hover) and (pointer:fine)').matches) return;
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      card.classList.add('is-tilt');                 // sheen on, tilt transition on
+      let tx = 0, ty = 0, touching = false, visible = false, raf = 0, t0 = performance.now();
+      const set = () => {
+        card.style.setProperty('--rx', (ty * -12).toFixed(2) + 'deg');
+        card.style.setProperty('--ry', (tx * 14).toFixed(2) + 'deg');
+        card.style.setProperty('--mx', ((tx + .5) * 100).toFixed(1) + '%');
+        card.style.setProperty('--my', ((ty + .5) * 100).toFixed(1) + '%');
+      };
+      const loop = now => {
+        raf = 0;
+        if (!touching){                              // idle drift: a slow figure-of-eight
+          const t = (now - t0) / 1000;
+          const ix = Math.sin(t * .8) * .32, iy = Math.sin(t * 1.1) * .22;
+          tx += (ix - tx) * .06; ty += (iy - ty) * .06;
+        }
+        set();
+        if (visible) raf = requestAnimationFrame(loop);
+      };
+      const start = () => { if (!raf) raf = requestAnimationFrame(loop); };
+      const aim = e => {
+        const r = card.getBoundingClientRect();
+        tx = Math.max(-.5, Math.min(.5, (e.clientX - r.left) / r.width - .5));
+        ty = Math.max(-.5, Math.min(.5, (e.clientY - r.top) / r.height - .5));
+      };
+      card.addEventListener('pointerdown', e => { touching = true; card.classList.add('is-press'); aim(e); start(); });
+      card.addEventListener('pointermove', e => { if (touching) aim(e); });
+      const release = () => { touching = false; card.classList.remove('is-press'); t0 = performance.now() - 1500; };
+      card.addEventListener('pointerup', release);
+      card.addEventListener('pointercancel', release);   // the page took over (a vertical scroll)
+      // run only while the card is on screen
+      new IntersectionObserver(es => es.forEach(en => { visible = en.isIntersecting; if (visible) start(); }), {threshold:.05}).observe(card);
     })();
 
     // --- entry points: both waitlist forms hand off to the flow
