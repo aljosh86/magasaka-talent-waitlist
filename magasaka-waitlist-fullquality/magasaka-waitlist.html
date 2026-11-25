@@ -1598,6 +1598,12 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
 
   // ---- intro loader: use the supplied logo construction and counter-portal animation
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  // remember where the reader was, so a refresh can bring them back there after the intro
+  addEventListener('pagehide', () => {
+    if (!document.documentElement.classList.contains('is-loading')){
+      try { sessionStorage.setItem('mg-scroll', JSON.stringify({path: location.pathname, y: Math.round(scrollY)})); } catch(e){}
+    }
+  });
   scrollTo(0, 0);
   // hold the page at the top during the intro without hiding the scrollbar (see html.is-loading)
   const LOCK_KEYS = new Set([' ', 'PageDown', 'PageUp', 'ArrowDown', 'ArrowUp', 'Home', 'End']);
@@ -1661,8 +1667,13 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     document.documentElement.classList.remove('is-loading');
     document.documentElement.classList.add('is-ready');
     onScroll();
-    // arriving with a hash (e.g. manifesto.html -> #waitlist): the intro pinned us to the top, so go there now
-    if (location.hash.length > 1 && location.hash !== '#manifesto'){ const t = document.getElementById(location.hash.slice(1)); if (t) t.scrollIntoView(); }
+    // the intro holds the page at the top; now put the reader where they should be:
+    // on a refresh, back where they were (saved when the page was left); otherwise at a #section in the link
+    const navType = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0] || {}).type;
+    let saved = null;
+    try { saved = JSON.parse(sessionStorage.getItem('mg-scroll') || 'null'); } catch(e){}
+    if (navType === 'reload' && saved && saved.path === location.pathname) scrollTo(0, saved.y);
+    else if (location.hash.length > 1 && location.hash !== '#manifesto'){ const t = document.getElementById(location.hash.slice(1)); if (t) t.scrollIntoView(); }
   }
   // A missing or stalled image must never leave the page locked behind the intro.
   const introFallback = setTimeout(finishIntro, 12000);
