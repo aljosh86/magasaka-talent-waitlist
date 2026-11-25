@@ -702,7 +702,7 @@ html.flow-open, html.flow-open body{overflow:hidden}
 
 /* step 4: card */
 .flow__final{display:flex;align-items:center;gap:50px;flex-wrap:wrap;justify-content:center}
-.wcard{position:relative;width:452px;height:550px;border-radius:24px;overflow:hidden;background:#1a1b18;flex:none;
+.wcard{position:relative;width:384px;height:550px;border-radius:24px;overflow:hidden;background:#1a1b18;flex:none;
   --rx:0deg;--ry:0deg;--mx:50%;--my:50%;
   transform:perspective(1100px) rotateX(var(--rx)) rotateY(var(--ry)) scale(1);
   transform-style:preserve-3d;will-change:transform;
@@ -716,12 +716,19 @@ html.flow-open, html.flow-open body{overflow:hidden}
   background:radial-gradient(42% 42% at var(--mx) var(--my),rgba(255,255,255,.17),rgba(255,255,255,0) 70%)}
 .wcard.is-tilt .wcard__gloss{opacity:1}
 @media (prefers-reduced-motion: reduce){.wcard,.wcard.is-tilt{transform:none;transition:none}}
+/* live 3D (set up in JS): one rAF loop eases toward the pointer, so the CSS transition is off. The photo slides
+   back, the text slides forward and the shadow swings opposite the tilt, which gives the card its depth */
+.wcard.is-live{transition:none;transform:perspective(1000px) rotateX(var(--rx)) rotateY(var(--ry)) scale(var(--s,1));
+  box-shadow:calc(var(--px,0) * -46px) calc(34px + var(--py,0) * -28px) 70px -30px rgba(20,20,20,.55)}
+.wcard.is-live .wcard__gloss{opacity:1}
+.wcard.is-live img{transform:translate3d(calc(var(--px,0) * -18px),calc(var(--py,0) * -18px),0) scale(1.08)}
+.wcard.is-live .wcard__top,.wcard.is-live .wcard__foot{transform:translate3d(calc(var(--px,0) * 10px),calc(var(--py,0) * 10px),0)}
 .wcard img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .wcard__veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(26,27,24,0) 0%,#1a1b18 100%)}
-.wcard__top{position:absolute;left:25px;top:25px;width:402px;display:flex;align-items:center;justify-content:space-between;
+.wcard__top{position:absolute;left:25px;top:25px;width:calc(100% - 50px);display:flex;align-items:center;justify-content:space-between;
   font-size:20px;letter-spacing:-.01em;color:#fff}
 .wcard__top span{text-box:trim-both cap alphabetic}
-.wcard__foot{position:absolute;left:25px;bottom:25px;width:402px;display:flex;flex-direction:column;gap:50px}
+.wcard__foot{position:absolute;left:25px;bottom:25px;width:calc(100% - 50px);display:flex;flex-direction:column;gap:50px}
 .wcard__who{display:flex;flex-direction:column;gap:24px}
 .wcard__name{margin:0;font-weight:500;font-size:40px;letter-spacing:-.01em;color:#fff;text-box:trim-both cap alphabetic}
 .wcard__picks{display:flex;align-items:center;gap:15px;flex-wrap:wrap;font-size:20px;line-height:1;letter-spacing:-.01em;color:rgba(255,255,255,.8)}
@@ -793,17 +800,16 @@ html.flow-open, html.flow-open body{overflow:hidden}
   .flow__final{flex-direction:column;align-items:stretch;gap:36px;width:100%}
   .flow__share{min-width:0}
   .flow__share{order:2;max-width:none;gap:30px}
-  .wcard{order:1;align-self:center;width:min(100%,330px);height:auto;aspect-ratio:452/550;border-radius:18px;
+  .wcard{order:1;align-self:center;width:min(76vw,290px);height:auto;aspect-ratio:384/550;border-radius:18px;
     touch-action:pan-y;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
-  .wcard.is-press{transform:perspective(1100px) rotateX(var(--rx)) rotateY(var(--ry)) scale(1.04)}
   .wcard img{pointer-events:none;-webkit-user-drag:none}
-  .wcard__top{left:20px;top:20px;width:calc(100% - 40px);font-size:16px}
-  .wcard__foot{left:20px;bottom:20px;top:auto;width:calc(100% - 40px);gap:34px}
-  .wcard__who{gap:18px}
-  .wcard__name{font-size:31px}
-  .wcard__picks{font-size:16px;gap:11px}
-  .wcard__sig .wcard__mark{width:84px;height:11px}
-  .wcard__sig em{font-size:14px}
+  .wcard__top{left:18px;top:18px;width:calc(100% - 36px);font-size:14px}
+  .wcard__foot{left:18px;bottom:18px;top:auto;width:calc(100% - 36px);gap:26px}
+  .wcard__who{gap:14px}
+  .wcard__name{font-size:28px}
+  .wcard__picks{font-size:14px;gap:9px}
+  .wcard__sig .wcard__mark{width:76px;height:10px}
+  .wcard__sig em{font-size:12px}
   .flow__sharein{gap:25px}
   .flow__sharehead{gap:16px}
   .flow__sharehead p:first-child{font-size:18px}
@@ -2276,20 +2282,21 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
 
     // "Save" renders the card to a PNG for IG and FB stories
     $('#flowSave').addEventListener('click', async () => {
-      const S = 2, W = 452 * S, H = 550 * S, r = 24 * S;
+      const S = 2, W = 384 * S, H = 550 * S, r = 24 * S;
       const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
       const g = cv.getContext('2d');
       g.beginPath();
       g.moveTo(r,0); g.arcTo(W,0,W,H,r); g.arcTo(W,H,0,H,r); g.arcTo(0,H,0,0,r); g.arcTo(0,0,W,0,r); g.closePath(); g.clip();
       g.fillStyle = '#1a1b18'; g.fillRect(0,0,W,H);
-      try { g.drawImage($('#cardPhoto'), 0, 0, W, H); } catch(e){}
+      try { const ph = $('#cardPhoto'), k = Math.max(W / ph.naturalWidth, H / ph.naturalHeight), pw = ph.naturalWidth * k, phh = ph.naturalHeight * k;
+        g.drawImage(ph, (W - pw) / 2, (H - phh) / 2, pw, phh); } catch(e){}   // cover, not stretch
       const grd = g.createLinearGradient(0,0,0,H);
       grd.addColorStop(0,'rgba(26,27,24,0)'); grd.addColorStop(1,'#1a1b18');
       g.fillStyle = grd; g.fillRect(0,0,W,H);
       try { await document.fonts.ready; } catch(e){}
 
       const F = (w,sz) => w + ' ' + (sz*S) + 'px "Inter Display", Inter, sans-serif';
-      const L = 25*S, R = (25+402)*S;
+      const L = 25*S, R = (25+334)*S;
       g.textBaseline = 'alphabetic';
 
       g.fillStyle = '#fff'; g.font = F(400,20);
@@ -2300,7 +2307,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       g.fillText(state.name, L, (393 + 28)*S);
 
       // the picks wrap onto a second line rather than running off the card
-      const maxW = 402*S, gap = 15*S, dot = 5*S;
+      const maxW = 334*S, gap = 15*S, dot = 5*S;
       let size = 20;
       const widths = () => { g.font = F(400,size); return state.picks.map(p => g.measureText(p).width); };
       let w = widths();
@@ -2346,68 +2353,53 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       if (ref && !state.referredBy){ state.referredBy = ref; save(); }
     } catch(e){}
 
-    // the card tilts toward the pointer, with a sheen that follows it
+    // the card in 3D: a mouse tilts it on hover; on touch it drifts on its own and tilts under a finger.
+    // One rAF loop eases the current pose toward the target (time-based), so nothing snaps or jitters.
+    // touch-action:pan-y (phone CSS) keeps vertical swipes scrolling the page.
     (() => {
       const card = flow.querySelector('.wcard');
-      if (!card || !matchMedia('(hover:hover) and (pointer:fine)').matches) return;
-      if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      let raf = 0, tx = 0, ty = 0;
-      const apply = () => {
+      if (!card || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const fine = matchMedia('(hover:hover) and (pointer:fine)').matches;
+      card.classList.add('is-live');
+      let tx = 0, ty = 0, ts = 1, cx = 0, cy = 0, cs = 1, active = false, visible = false, raf = 0;
+      let last = performance.now(), t0 = last;
+      const frame = now => {
         raf = 0;
-        card.style.setProperty('--rx', (ty * -9).toFixed(2) + 'deg');
-        card.style.setProperty('--ry', (tx * 11).toFixed(2) + 'deg');
-        card.style.setProperty('--mx', ((tx + .5) * 100).toFixed(1) + '%');
-        card.style.setProperty('--my', ((ty + .5) * 100).toFixed(1) + '%');
-      };
-      card.addEventListener('pointermove', e => {
-        const r = card.getBoundingClientRect();
-        tx = (e.clientX - r.left) / r.width - .5;
-        ty = (e.clientY - r.top) / r.height - .5;
-        if (!raf) raf = requestAnimationFrame(apply);
-      });
-      card.addEventListener('pointerenter', () => card.classList.add('is-tilt'));
-      card.addEventListener('pointerleave', () => {
-        card.classList.remove('is-tilt');
-        tx = ty = 0; if (!raf) raf = requestAnimationFrame(apply);
-      });
-    })();
-
-    // touch screens: the card drifts on its own with a slow sheen, and tilts under your finger when you drag it.
-    // touch-action:pan-y keeps vertical swipes scrolling the page; sideways drags (and presses) move the card.
-    (() => {
-      const card = flow.querySelector('.wcard');
-      if (!card || matchMedia('(hover:hover) and (pointer:fine)').matches) return;
-      if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      card.classList.add('is-tilt');                 // sheen on, tilt transition on
-      let tx = 0, ty = 0, touching = false, visible = false, raf = 0, t0 = performance.now();
-      const set = () => {
-        card.style.setProperty('--rx', (ty * -12).toFixed(2) + 'deg');
-        card.style.setProperty('--ry', (tx * 14).toFixed(2) + 'deg');
-        card.style.setProperty('--mx', ((tx + .5) * 100).toFixed(1) + '%');
-        card.style.setProperty('--my', ((ty + .5) * 100).toFixed(1) + '%');
-      };
-      const loop = now => {
-        raf = 0;
-        if (!touching){                              // idle drift: a slow figure-of-eight
+        const dt = Math.min(.05, (now - last) / 1000); last = now;
+        if (!active){                                   // idle: a slow figure-of-eight drift
           const t = (now - t0) / 1000;
-          const ix = Math.sin(t * .8) * .32, iy = Math.sin(t * 1.1) * .22;
-          tx += (ix - tx) * .06; ty += (iy - ty) * .06;
+          tx = Math.sin(t * .7) * (fine ? .16 : .28); ty = Math.sin(t * 1.0) * (fine ? .1 : .18); ts = 1;
         }
-        set();
-        if (visible) raf = requestAnimationFrame(loop);
+        const k = 1 - Math.exp(-dt * (active ? 9 : 3.5));
+        cx += (tx - cx) * k; cy += (ty - cy) * k; cs += (ts - cs) * k;
+        const st = card.style;
+        st.setProperty('--rx', (cy * -16).toFixed(2) + 'deg');
+        st.setProperty('--ry', (cx * 20).toFixed(2) + 'deg');
+        st.setProperty('--mx', ((cx + .5) * 100).toFixed(1) + '%');
+        st.setProperty('--my', ((cy + .5) * 100).toFixed(1) + '%');
+        st.setProperty('--px', cx.toFixed(3)); st.setProperty('--py', cy.toFixed(3));
+        st.setProperty('--s', cs.toFixed(4));
+        if (visible) raf = requestAnimationFrame(frame);
       };
-      const start = () => { if (!raf) raf = requestAnimationFrame(loop); };
+      const start = () => { if (!raf){ last = performance.now(); raf = requestAnimationFrame(frame); } };
       const aim = e => {
         const r = card.getBoundingClientRect();
         tx = Math.max(-.5, Math.min(.5, (e.clientX - r.left) / r.width - .5));
         ty = Math.max(-.5, Math.min(.5, (e.clientY - r.top) / r.height - .5));
       };
-      card.addEventListener('pointerdown', e => { touching = true; card.classList.add('is-press'); aim(e); start(); });
-      card.addEventListener('pointermove', e => { if (touching) aim(e); });
-      const release = () => { touching = false; card.classList.remove('is-press'); t0 = performance.now() - 1500; };
-      card.addEventListener('pointerup', release);
-      card.addEventListener('pointercancel', release);   // the page took over (a vertical scroll)
-      // run only while the card is on screen
+      const engage = (e, scale) => { active = true; ts = scale; aim(e); start(); };
+      const release = () => { active = false; t0 = performance.now(); };
+      if (fine){
+        card.addEventListener('pointerenter', e => engage(e, 1.03));
+        card.addEventListener('pointermove', aim);
+        card.addEventListener('pointerleave', release);
+      } else {
+        card.addEventListener('pointerdown', e => engage(e, 1.05));
+        card.addEventListener('pointermove', e => { if (active) aim(e); });
+        card.addEventListener('pointerup', release);
+        card.addEventListener('pointercancel', release);   // the page took over for a vertical scroll
+      }
+      // only animate while the card is on screen
       new IntersectionObserver(es => es.forEach(en => { visible = en.isIntersecting; if (visible) start(); }), {threshold:.05}).observe(card);
     })();
 
