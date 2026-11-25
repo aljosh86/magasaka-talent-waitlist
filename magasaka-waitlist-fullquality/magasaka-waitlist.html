@@ -683,9 +683,10 @@ html.flow-open, html.flow-open body{overflow:hidden}
 
 /* step 3: skills */
 .flow__chips{display:flex;flex-wrap:wrap;gap:10px}
-.flow__chip{display:inline-flex;align-items:center;gap:10px;padding:10px 18px;border-radius:100px;
-  background:var(--ink);border:1.5px solid var(--ink);color:#fff;font-size:18px;letter-spacing:-.03em}
-.flow__chip button{display:grid;place-items:center;width:22px;height:22px;padding:0;border:0;background:none;color:inherit;cursor:pointer}
+.flow__chip{display:inline-flex;align-items:center;gap:6px;padding:7px 10px 7px 14px;border-radius:100px;
+  background:var(--ink);border:1.5px solid var(--ink);color:#fff;font-size:14px;letter-spacing:-.01em}
+.flow__chip button{display:grid;place-items:center;width:16px;height:16px;padding:0;border:0;background:none;color:inherit;cursor:pointer}
+.flow__chip svg{width:14px;height:14px}
 /* title dropdown: opens with a short drop-and-fade, options cascade in; closing plays it back quickly */
 .flow__select{position:relative}
 .flow__selbtn{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;height:58px;padding:0 20px;border:0;border-radius:100px;
@@ -700,6 +701,7 @@ html.flow-open, html.flow-open body{overflow:hidden}
   font:400 15px/1.2 var(--font);letter-spacing:-.01em;color:#1a1b18;animation:dd-row .4s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(var(--i,0) * 18ms)}
 .flow__options button:hover,.flow__options button[aria-selected="true"]{background:rgba(81,124,53,.1)}
 .flow__results:not([hidden]){animation:dd-in .34s cubic-bezier(.22,1,.36,1)}
+.flow__results.is-closing{animation:dd-out .18s ease forwards}
 .flow__results.is-list .flow__row{animation:dd-row .4s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(var(--i,0) * 22ms)}
 @keyframes dd-in{from{opacity:0;transform:translateY(-8px) scaleY(.96)}to{opacity:1;transform:none}}
 @keyframes dd-out{to{opacity:0;transform:translateY(-6px) scaleY(.97)}}
@@ -713,7 +715,7 @@ html.flow-open, html.flow-open body{overflow:hidden}
 .flow__row em{flex:none;padding-left:31px;font-style:normal;font-weight:400;font-size:14px;letter-spacing:-.01em;color:#818181}
 .flow__row:hover,.flow__row.is-active{background:rgba(81,124,53,.1)}
 .flow__row--add{font-weight:400;font-size:14px;color:#818181;cursor:pointer}
-.flow__row--empty{cursor:default;font-weight:400;font-size:14px;color:#818181}
+.flow__row--empty{cursor:default;padding:11px 16px;font-weight:400;font-size:13px;color:#818181}
 .flow__meta{display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;
   font-size:14.5px;letter-spacing:-.01em}
 .flow__meta button{padding:0;border:0;background:none;color:#2d6b45;text-decoration:underline;cursor:pointer;font:inherit}
@@ -756,7 +758,7 @@ html.flow-open, html.flow-open body{overflow:hidden}
 .wcard.is-live img{transform:translate3d(calc(var(--px,0) * -9px),calc(var(--py,0) * -9px),0) scale(1.05)}
 .wcard img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 /* the photo (rice terraces) fades into deep field green at the bottom, so the name and title sit on a calm field */
-.wcard__veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,38,24,0) 0%,rgba(20,38,24,0) 34%,rgba(20,38,24,.72) 62%,rgba(20,38,24,.95) 82%,#142618 100%)}
+.wcard__veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,38,24,.4) 0%,rgba(20,38,24,0) 16%,rgba(20,38,24,0) 34%,rgba(20,38,24,.72) 62%,rgba(20,38,24,.95) 82%,#142618 100%)}
 .wcard__top{position:absolute;left:25px;top:25px;width:calc(100% - 50px);display:flex;align-items:center;justify-content:space-between;
   font-size:20px;letter-spacing:-.01em;color:#fff}
 .wcard__top span{text-box:trim-both cap alphabetic}
@@ -764,7 +766,8 @@ html.flow-open, html.flow-open body{overflow:hidden}
 .wcard__who{display:flex;flex-direction:column;gap:18px}
 .wcard__nameline{display:flex;align-items:baseline;justify-content:space-between;gap:14px}
 .wcard__nameline .wcard__name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.wcard__no{flex:none;font-size:16px;letter-spacing:.02em;color:rgba(255,255,255,.72);font-variant-numeric:tabular-nums}
+/* the member number, alone in the top-right corner */
+.wcard__no{position:absolute;top:25px;right:25px;font-size:16px;line-height:1;letter-spacing:.02em;color:rgba(255,255,255,.85);font-variant-numeric:tabular-nums;text-box:trim-both cap alphabetic}
 .wcard__title{margin:0;font-size:20px;line-height:1.25;letter-spacing:-.01em;color:rgba(255,255,255,.88)}
 .wcard__name{margin:0;font-weight:500;font-size:40px;letter-spacing:-.01em;color:#fff;text-box:trim-both cap alphabetic}
 .wcard__picks{display:flex;align-items:center;gap:15px;flex-wrap:wrap;font-size:20px;line-height:1;letter-spacing:-.01em;color:rgba(255,255,255,.8)}
@@ -780,7 +783,8 @@ html.flow-open, html.flow-open body{overflow:hidden}
 .flow__sharein{display:flex;flex-direction:column;gap:35px}
 .flow__sharehead{display:flex;flex-direction:column;gap:26px}
 .flow__sharehead p:first-child{margin:0;font-weight:500;font-size:26px;letter-spacing:-.01em;color:var(--ink);text-box:trim-both cap alphabetic}
-.flow__sharehead p:last-child{margin:0;font-size:22px;line-height:1.35;letter-spacing:-.01em;color:#818181;width:420px;max-width:100%}
+/* sits just under the link field, tighter than the block gap */
+.flow__invite{margin:-21px 0 0;padding-left:19px;font-size:15px;line-height:1.35;letter-spacing:-.01em;color:#818181}
 .flow__link{display:flex;align-items:center;gap:4px;height:50px;padding:3px;border-radius:100px;background:#fff;backdrop-filter:blur(2px)}
 .flow__link input{flex:1 1 auto;min-width:0;border:0;outline:0;background:none;padding:0 19px;
   font:400 15px/1 var(--font);letter-spacing:-.01em;color:#4a4b46}
@@ -824,9 +828,9 @@ html.flow-open, html.flow-open body{overflow:hidden}
   .flow__pill input{height:42px;font-size:16px}
   .flow__pill svg{width:20px;height:20px}
   .flow__btn{height:50px;font-size:15px}
-  .flow__chip{padding:7px 11px;font-size:14px}
-  .flow__chip button{width:15px;height:15px}
-  .flow__chip svg{width:15px;height:15px}
+  .flow__chip{padding:6px 9px 6px 12px;font-size:13px}
+  .flow__chip button{width:14px;height:14px}
+  .flow__chip svg{width:13px;height:13px}
   .flow__row{padding:18px;font-size:14px}
   .flow__row em{padding-left:16px;font-size:13px}
   .flow__row--add,.flow__row--empty{font-size:13px}
@@ -843,14 +847,14 @@ html.flow-open, html.flow-open body{overflow:hidden}
   .wcard__foot{left:18px;bottom:18px;top:auto;width:calc(100% - 36px);gap:26px}
   .wcard__who{gap:14px}
   .wcard__name{font-size:28px}
-  .wcard__no{font-size:13px}
+  .wcard__no{top:18px;right:18px;font-size:13px}
   .wcard__title{font-size:16px}
   .wcard__sig .wcard__mark{width:76px;height:10px}
   .wcard__sig em{font-size:12px}
   .flow__sharein{gap:25px}
   .flow__sharehead{gap:16px}
   .flow__sharehead p:first-child{font-size:18px}
-  .flow__sharehead p:last-child{font-size:15px;width:auto}
+  .flow__invite{margin-top:-14px;padding-left:16px;font-size:13px}
   .flow__link{height:50px}
   .flow__link input{font-size:14px}
   .flow__copy{width:110px;height:44px;font-size:14px}
@@ -1293,9 +1297,10 @@ html.flow-open, html.flow-open body{overflow:hidden}
         <img id="cardPhoto" src="images/card-photo.jpg" alt="" aria-hidden="true">
         <span class="wcard__veil" aria-hidden="true"></span>
         <span class="wcard__gloss" aria-hidden="true"></span>
+        <span class="wcard__no" id="cardNo">#1,248</span>
                 <div class="wcard__foot">
           <div class="wcard__who">
-            <div class="wcard__nameline"><p class="wcard__name" id="cardName">Marc</p><span class="wcard__no" id="cardNo">No. 1,248</span></div>
+            <p class="wcard__name" id="cardName">Marc</p>
             <p class="wcard__title" id="cardTitle">Virtual Assistant</p>
           </div>
           <div class="wcard__sig">
@@ -1331,12 +1336,12 @@ Marc!</h2>
         <div class="flow__sharein">
           <div class="flow__sharehead">
             <p>Sa pag-join mo, tumulong ka nang iangat ang bawat ordinaryong Pilipino.</p>
-            <p>Invites go out in batches. Share your link and jump the line.</p>
           </div>
           <div class="flow__link">
             <input id="flowLink" readonly aria-label="Your share link">
             <button class="flow__copy" id="flowCopy" type="button"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M5.625 10.875C5.625 8.40015 5.625 7.16269 6.39385 6.39385C7.16269 5.625 8.40015 5.625 10.875 5.625C13.3498 5.625 14.5873 5.625 15.3562 6.39385C16.125 7.16269 16.125 8.40015 16.125 10.875C16.125 13.3498 16.125 14.5873 15.3562 15.3562C14.5873 16.125 13.3498 16.125 10.875 16.125C8.40015 16.125 7.16269 16.125 6.39385 15.3562C5.625 14.5873 5.625 13.3498 5.625 10.875Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.625 12.375C4.57766 12.375 4.054 12.375 3.63301 12.2277C2.87899 11.9639 2.28615 11.371 2.02231 10.617C1.875 10.196 1.875 9.6723 1.875 8.625V7.125C1.875 4.65013 1.875 3.41269 2.64385 2.64385C3.41269 1.875 4.65013 1.875 7.125 1.875H8.625C9.6723 1.875 10.196 1.875 10.617 2.02231C11.371 2.28615 11.9639 2.87899 12.2277 3.63301C12.375 4.054 12.375 4.57766 12.375 5.625" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Copy</span></button>
           </div>
+          <p class="flow__invite">Invites go out in batches. Share your link and jump the line.</p>
           <div class="flow__socials">
             <a id="shFacebook" href="#" target="_blank" rel="noopener" aria-label="Share on Facebook" title="Facebook"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M13.5 21v-7.6h2.6l.4-3h-3V8.5c0-.9.3-1.5 1.5-1.5h1.6V4.3c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 4v2.2H7.8v3h2.6V21z"/></svg></a>
             <a id="shMessenger" href="#" target="_blank" rel="noopener" aria-label="Share on Messenger" title="Messenger"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2.5c-5.3 0-9.5 3.9-9.5 9.1 0 2.7 1.1 5.1 3 6.8v3.1l2.9-1.6c1.1.3 2.3.5 3.6.5 5.3 0 9.5-3.9 9.5-9.1S17.3 2.5 12 2.5zm1 12.2-2.4-2.6-4.7 2.6 5.2-5.5 2.5 2.6 4.6-2.6z"/></svg></a>
@@ -2211,7 +2216,12 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     }
     flow.querySelector('.flow__logo').addEventListener('click', e => { e.preventDefault(); close(); });
     $('#flowClose').addEventListener('click', close);
-    addEventListener('keydown', e => { if (e.key === 'Escape' && !flow.hidden) close(); });
+    addEventListener('keydown', e => {
+      if (e.key !== 'Escape' || flow.hidden) return;
+      if (!titleList.hidden){ closeTitles(); titleBtn.focus(); return; }   // an open list closes first
+      if (!results.hidden){ resultsOpen = false; setBrowse(false); hideResults(); return; }
+      close();
+    });
 
     // --- step 2: first name
     nameInput.addEventListener('input', () => { nameBtn.disabled = !nameInput.value.trim(); });
@@ -2253,7 +2263,6 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     }
     titleBtn.addEventListener('click', () => { titleList.hidden ? openTitles() : closeTitles(); });
     document.addEventListener('click', e => { if (!e.target.closest('.flow__select')) closeTitles(); });
-    titleList.addEventListener('keydown', e => { if (e.key === 'Escape'){ e.stopPropagation(); closeTitles(); titleBtn.focus(); } });
 
     // --- step 3b: search every skill and niche, pick up to 3
     function renderChips(){
@@ -2281,18 +2290,26 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       if (cat){ const e = document.createElement('em'); e.textContent = cat; b.appendChild(e); }
       return b;
     }
-    let browsing = false;
+    let browsing = false, resultsOpen = false;
+    function hideResults(){
+      if (results.hidden) return;
+      results.classList.add('is-closing');
+      setTimeout(() => { results.hidden = true; results.classList.remove('is-closing'); }, 180);
+    }
     function renderResults(){
       const q = search.value.trim().toLowerCase();
       results.innerHTML = '';
       const full = state.picks.length >= 3;
-      if (full){ results.appendChild(row('You have picked 3. Remove one to change it.', '', 'flow__row--empty')); return; }
+      if (full){
+        if (!resultsOpen && !q){ hideResults(); return; }
+        results.hidden = false; results.appendChild(row('You have picked 3. Remove one to change it.', '', 'flow__row--empty')); return;
+      }
       let list;
       if (!q){
         // no query: show all when browsing, else the niches that go with the chosen title
         if (browsing) list = SKILLS;
-        else if (state.title) list = SKILLS.filter(s => s.cat === TITLES[state.title]);
-        else { results.hidden = true; return; }
+        else if (state.title && resultsOpen) list = SKILLS.filter(s => s.cat === TITLES[state.title]);
+        else { hideResults(); return; }
       } else {
         list = SKILLS.filter(s => s.name.toLowerCase().includes(q) || s.cat.toLowerCase().includes(q))
           .sort((a,b) => (a.name.toLowerCase().startsWith(q) ? 0 : 1) - (b.name.toLowerCase().startsWith(q) ? 0 : 1));
@@ -2319,7 +2336,15 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       browsing = v;
       browse.textContent = v ? 'Close all categories' : 'Browse all categories';
     }
-    search.addEventListener('input', () => { setBrowse(false); renderResults(); });
+    search.addEventListener('input', () => { resultsOpen = true; setBrowse(false); renderResults(); });
+    search.addEventListener('focus', () => { resultsOpen = true; renderResults(); });
+    search.addEventListener('click', () => { if (results.hidden){ resultsOpen = true; renderResults(); } });
+    // a click anywhere outside the search, its list and the browse toggle closes the list
+    document.addEventListener('click', e => {
+      if (flow.hidden || results.hidden) return;
+      if (e.target.closest('.flow__pill, .flow__results, #flowBrowse, .flow__chips')) return;
+      resultsOpen = false; setBrowse(false); hideResults();
+    });
     search.addEventListener('keydown', e => {
       if (e.key === 'Enter'){ e.preventDefault(); const first = results.querySelector('.flow__row'); if (first) first.click(); }
     });
@@ -2335,7 +2360,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
         save();
       }
       $('#cardName').textContent = state.name;
-      $('#cardNo').textContent = 'No. ' + state.no.toLocaleString('en-US');
+      $('#cardNo').textContent = '#' + state.no.toLocaleString('en-US');
       $('#cardTitle').textContent = state.title;
       $('#flowHi').textContent = 'Kasama ka na,\n' + state.name + '!';
       $('#flowLink').value = shareUrl();
@@ -2371,7 +2396,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       try { const ph = $('#cardPhoto'), k = Math.max(W / ph.naturalWidth, H / ph.naturalHeight), pw = ph.naturalWidth * k, phh = ph.naturalHeight * k;
         g.drawImage(ph, (W - pw) / 2, (H - phh) / 2, pw, phh); } catch(e){}   // cover, not stretch
       const grd = g.createLinearGradient(0,0,0,H);
-      grd.addColorStop(0,'rgba(20,38,24,0)'); grd.addColorStop(.34,'rgba(20,38,24,0)'); grd.addColorStop(.62,'rgba(20,38,24,.72)'); grd.addColorStop(.82,'rgba(20,38,24,.95)'); grd.addColorStop(1,'#142618');
+      grd.addColorStop(0,'rgba(20,38,24,.4)'); grd.addColorStop(.16,'rgba(20,38,24,0)'); grd.addColorStop(.34,'rgba(20,38,24,0)'); grd.addColorStop(.62,'rgba(20,38,24,.72)'); grd.addColorStop(.82,'rgba(20,38,24,.95)'); grd.addColorStop(1,'#142618');
       g.fillStyle = grd; g.fillRect(0,0,W,H);
       try { await document.fonts.ready; } catch(e){}
 
@@ -2379,15 +2404,13 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       const L = 25*S, R = (25+334)*S;
       g.textBaseline = 'alphabetic';
 
-      // name with the number on the same line, then the title
+      // the number top-right, then the name and the title
+      g.font = F(400,16); g.fillStyle = 'rgba(255,255,255,.85)';
+      g.textAlign = 'right'; g.fillText('#' + state.no.toLocaleString('en-US'), R, (25 + 12)*S); g.textAlign = 'left';
       g.fillStyle = '#fff'; g.font = F(500,40);
       let nm = state.name;
-      g.font = F(400,16); const noTxt = 'No. ' + state.no.toLocaleString('en-US'); const noW = g.measureText(noTxt).width;
-      g.font = F(500,40);
-      while (nm.length > 1 && g.measureText(nm).width > (334*S - noW - 14*S)) nm = nm.slice(0, -2) + '…';
+      while (nm.length > 1 && g.measureText(nm).width > 334*S) nm = nm.slice(0, -2) + '…';
       g.fillText(nm, L, (393 + 28)*S);
-      g.font = F(400,16); g.fillStyle = 'rgba(255,255,255,.72)';
-      g.textAlign = 'right'; g.fillText(noTxt, R, (393 + 28)*S); g.textAlign = 'left';
       g.font = F(400,20); g.fillStyle = 'rgba(255,255,255,.88)';
       g.fillText(state.title || '', L, (393 + 62)*S);
 
