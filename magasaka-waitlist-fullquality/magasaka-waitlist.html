@@ -1026,6 +1026,28 @@ html.mf-open{overscroll-behavior:none}
   min-height:calc(100svh - var(--band-m) * 2);border-radius:28px;justify-content:space-between;gap:60px;
   transform-origin:50% 100%;will-change:transform}
 @media (max-width:640px){.band{min-height:calc(100svh - var(--band-m) * 2);border-radius:20px;justify-content:space-between}}
+/* one centred group in the middle of the card (headline, line, email); socials sit in the footer */
+.band{justify-content:flex-start;gap:0}
+.band__inner{flex:1 1 auto;flex-direction:column;align-items:center;justify-content:center;gap:36px;text-align:center;padding-block:40px}
+.band__copy{align-items:center;text-align:center;gap:22px}
+.band h2{font-size:clamp(40px,5.2vw,80px);line-height:1.08;letter-spacing:-.025em;text-align:center}
+.band__sub{width:auto;font-size:19px}
+.band__right{width:min(460px,100%);align-self:auto}
+.band__scrim{background:radial-gradient(ellipse 70% 55% at 50% 48%,rgba(0,0,0,.42),transparent 75%),rgba(0,0,0,.36)}
+.band__foot{display:grid;grid-template-columns:1fr auto 1fr}
+.band__foot > a{justify-self:end}
+.band__foot .socials{gap:26px}
+.band__foot .socials svg{width:20px;height:20px}
+@media (max-width:640px){
+  .band{padding:28px 20px;align-items:stretch}
+  .band__inner{gap:28px;padding-block:24px}
+  .band__copy{align-items:center;gap:16px}
+  .band h2{font-size:clamp(34px,10vw,42px);text-align:center}
+  .band__sub{text-align:center;max-width:none}
+  .band__right{display:block;width:100%}
+  .band__foot{grid-template-columns:1fr 1fr;row-gap:22px;margin-top:0;font-size:14px}
+  .band__foot .socials{grid-column:1 / -1;grid-row:1;justify-self:center;order:0;margin:0}
+}
 </style>
 </head>
 <body>
@@ -1362,11 +1384,6 @@ html.mf-open{overscroll-behavior:none}
         <p class="band__sub">Be here when it opens.</p>
       </div>
       <div class="band__right">
-        <nav class="socials" aria-label="Magasaka on social">
-          <a href="#" aria-label="Magasaka on X"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 21L10.5484 13.4516M13.4516 10.5484L21 21H16L10.5484 13.4516L3 3H8L13.4516 10.5484ZM21 3L13.4516 10.5484" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-          <a href="#" aria-label="Magasaka on Instagram"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 12C3 7.75736 3 5.63604 4.31802 4.31802C5.63604 3 7.75736 3 12 3C16.2426 3 18.364 3 19.682 4.31802C21 5.63604 21 7.75736 21 12C21 16.2426 21 18.364 19.682 19.682C18.364 21 16.2426 21 12 21C7.75736 21 5.63604 21 4.31802 19.682C3 18.364 3 16.2426 3 12Z" stroke="currentColor" stroke-width="1.5"/><path d="M16 12C16 14.2091 14.2091 16 12 16C9.79086 16 8 14.2091 8 12C8 9.79086 9.79086 8 12 8C14.2091 8 16 9.79086 16 12Z" stroke="currentColor" stroke-width="1.5"/><path d="M17.375 6.75H17.25M17.5 6.75C17.5 6.88808 17.388 7 17.25 7C17.1119 7 17 6.88808 17 6.75C17 6.61193 17.1119 6.5 17.25 6.5C17.388 6.5 17.5 6.61193 17.5 6.75Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-          <a href="#" aria-label="Magasaka on LinkedIn"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21.829 0H2.17099C0.972 0 0 0.972 0 2.17099V21.8289C0 23.028 0.972 24 2.17099 24H21.8289C23.028 24 24 23.028 24 21.8289V2.17099C24 0.972 23.028 0 21.829 0ZM7.42662 20.7232C7.42662 21.0721 7.14377 21.355 6.79483 21.355H4.10544C3.7565 21.355 3.47365 21.0721 3.47365 20.7232V9.4494C3.47365 9.10046 3.7565 8.81761 4.10544 8.81761H6.79483C7.14377 8.81761 7.42662 9.10046 7.42662 9.4494V20.7232ZM5.45014 7.75489C4.0391 7.75489 2.8952 6.61099 2.8952 5.19996C2.8952 3.78892 4.0391 2.64503 5.45014 2.64503C6.86117 2.64503 8.00507 3.78892 8.00507 5.19996C8.00507 6.61099 6.86124 7.75489 5.45014 7.75489ZM21.4813 20.7741C21.4813 21.0949 21.2212 21.355 20.9004 21.355H18.0145C17.6937 21.355 17.4335 21.0949 17.4335 20.7741V15.486C17.4335 14.6972 17.6649 12.0292 15.372 12.0292C13.5934 12.0292 13.2327 13.8553 13.1602 14.6749V20.7741C13.1602 21.0949 12.9002 21.355 12.5793 21.355H9.78817C9.46737 21.355 9.20727 21.0949 9.20727 20.7741V9.39851C9.20727 9.07772 9.46737 8.81761 9.78817 8.81761H12.5793C12.9001 8.81761 13.1602 9.07772 13.1602 9.39851V10.3821C13.8197 9.39236 14.7998 8.62844 16.8866 8.62844C21.5077 8.62844 21.4813 12.9457 21.4813 15.3178V20.7741Z" fill="currentColor"/></svg></a>
-        </nav>
         <form class="signup" id="signup" novalidate>
           <input type="email" name="email" placeholder="Your email" aria-label="Your email" autocomplete="email" required>
           <button type="submit">Join the waitlist</button>
@@ -1375,6 +1392,11 @@ html.mf-open{overscroll-behavior:none}
     </div>
     <div class="band__foot">
       <span>Magasaka © 2026</span>
+      <nav class="socials" aria-label="Magasaka on social">
+        <a href="#" aria-label="Magasaka on X"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 21L10.5484 13.4516M13.4516 10.5484L21 21H16L10.5484 13.4516L3 3H8L13.4516 10.5484ZM21 3L13.4516 10.5484" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a href="#" aria-label="Magasaka on Instagram"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 12C3 7.75736 3 5.63604 4.31802 4.31802C5.63604 3 7.75736 3 12 3C16.2426 3 18.364 3 19.682 4.31802C21 5.63604 21 7.75736 21 12C21 16.2426 21 18.364 19.682 19.682C18.364 21 16.2426 21 12 21C7.75736 21 5.63604 21 4.31802 19.682C3 18.364 3 16.2426 3 12Z" stroke="currentColor" stroke-width="1.5"/><path d="M16 12C16 14.2091 14.2091 16 12 16C9.79086 16 8 14.2091 8 12C8 9.79086 9.79086 8 12 8C14.2091 8 16 9.79086 16 12Z" stroke="currentColor" stroke-width="1.5"/><path d="M17.375 6.75H17.25M17.5 6.75C17.5 6.88808 17.388 7 17.25 7C17.1119 7 17 6.88808 17 6.75C17 6.61193 17.1119 6.5 17.25 6.5C17.388 6.5 17.5 6.61193 17.5 6.75Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a href="#" aria-label="Magasaka on LinkedIn"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21.829 0H2.17099C0.972 0 0 0.972 0 2.17099V21.8289C0 23.028 0.972 24 2.17099 24H21.8289C23.028 24 24 23.028 24 21.8289V2.17099C24 0.972 23.028 0 21.829 0ZM7.42662 20.7232C7.42662 21.0721 7.14377 21.355 6.79483 21.355H4.10544C3.7565 21.355 3.47365 21.0721 3.47365 20.7232V9.4494C3.47365 9.10046 3.7565 8.81761 4.10544 8.81761H6.79483C7.14377 8.81761 7.42662 9.10046 7.42662 9.4494V20.7232ZM5.45014 7.75489C4.0391 7.75489 2.8952 6.61099 2.8952 5.19996C2.8952 3.78892 4.0391 2.64503 5.45014 2.64503C6.86117 2.64503 8.00507 3.78892 8.00507 5.19996C8.00507 6.61099 6.86124 7.75489 5.45014 7.75489ZM21.4813 20.7741C21.4813 21.0949 21.2212 21.355 20.9004 21.355H18.0145C17.6937 21.355 17.4335 21.0949 17.4335 20.7741V15.486C17.4335 14.6972 17.6649 12.0292 15.372 12.0292C13.5934 12.0292 13.2327 13.8553 13.1602 14.6749V20.7741C13.1602 21.0949 12.9002 21.355 12.5793 21.355H9.78817C9.46737 21.355 9.20727 21.0949 9.20727 20.7741V9.39851C9.20727 9.07772 9.46737 8.81761 9.78817 8.81761H12.5793C12.9001 8.81761 13.1602 9.07772 13.1602 9.39851V10.3821C13.8197 9.39236 14.7998 8.62844 16.8866 8.62844C21.5077 8.62844 21.4813 12.9457 21.4813 15.3178V20.7741Z" fill="currentColor"/></svg></a>
+      </nav>
       <a href="#manifesto">Magasaka Manifesto →</a>
     </div>
   </section>
