@@ -3022,6 +3022,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
         scroller.focus({preventScroll:true}); showHint();
         return;
       }
+      if (box.hidden){ busy = false; return; }   // closed while the 3D unfold was running: don't fall back to the CSS fold
       busy = true;
       const h = stage.clientHeight / 3;
       fold = document.createElement('div'); fold.className = 'mf__fold';
