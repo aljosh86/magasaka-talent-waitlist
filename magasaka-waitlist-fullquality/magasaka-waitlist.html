@@ -103,7 +103,7 @@ html.is-loading .grain{z-index:91}
 
 .opening p{margin:0;width:auto;white-space:nowrap;max-width:100%;font-weight:400;font-size:clamp(18px,1.46vw,22px);line-height:1.2;color:rgba(237,236,232,.8);text-box:trim-both cap alphabetic}
 /* icon only, sitting just right of the centred 390px sign-up pill and lined up with its middle */
-.scrollcue{position:absolute;left:calc(50% + 220px + 16px);bottom:calc(env(safe-area-inset-bottom,0px) + 48px);
+.scrollcue{position:absolute;left:calc(50% + 195px + 16px);bottom:calc(env(safe-area-inset-bottom,0px) + 48px);
   display:flex;align-items:center;height:36px;color:var(--field-white);
   font:400 16px/1 var(--font);letter-spacing:-.01em;pointer-events:none;will-change:opacity}
 .scrollcue svg{display:block;flex:none;width:24px;height:36px}
@@ -1095,13 +1095,7 @@ html.mf-open{overscroll-behavior:none}
   .band .signup input::placeholder{color:rgba(20,20,20,.72)}
 }
 /* ---------- Ask Mang Juan: a "?" beside the menu opens a small chat above the pill ---------- */
-.pill__ask{flex:none;width:49px;height:49px;border:0;padding:0;border-radius:100px;background:var(--field-white);color:var(--ink);display:grid;place-items:center;cursor:pointer;transition:background .2s}
-.pill__ask:hover,.pill__ask[aria-expanded="true"]{background:#fff}
-.pill--dark .pill__ask{background:var(--ink);color:var(--field-white)}
-.pill--dark .pill__ask:hover{background:#000}
-.pill[data-state="form"] .pill__ask{display:none}
-.pill:not([data-state="form"]){width:min(440px,calc(100% - 32px))}
-.ask{position:fixed;z-index:46;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 40px + 57px + 12px);width:min(460px,calc(100vw - 24px));
+.pill--dark .pill--dark .pill[data-state="form"] .ask{position:fixed;z-index:46;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 40px + 57px + 12px);width:min(460px,calc(100vw - 24px));
   height:min(560px,calc(100svh - 150px));display:flex;flex-direction:column;border-radius:28px;background:#f6f5f2;color:var(--ink);
   box-shadow:0 30px 70px -28px rgba(0,0,0,.55),0 0 0 1px rgba(20,20,20,.06);transform:translateX(-50%);transform-origin:50% 100%;overflow:hidden}
 .ask[hidden]{display:none}
@@ -1135,9 +1129,7 @@ html.mf-open{overscroll-behavior:none}
 .ask__form button:hover{background:#000}
 .ask__form button:active{transform:scale(.94)}
 @media (max-width:640px){
-  .pill:not([data-state="form"]){width:min(390px,calc(100% - 32px))}
-  .pill__ask svg{width:20px;height:20px}
-  .ask{width:calc(100vw - 20px);height:min(560px,calc(100svh - 140px));border-radius:24px}
+    .ask{width:calc(100vw - 20px);height:min(560px,calc(100svh - 140px));border-radius:24px}
   .ask__form input{font-size:16px}
 }
 @media (prefers-reduced-motion: reduce){.ask:not([hidden]),.ask__msg{animation:none}}
@@ -1155,6 +1147,32 @@ html.mf-open{overscroll-behavior:none}
 .band__links a{opacity:.8;text-decoration:none;transition:opacity .2s}
 .band__links a:hover{opacity:1}
 @media (min-width:641px){.band__links{display:contents}}
+/* Ask Mang Juan, on its own at the bottom right; minimal panel */
+.juan{position:fixed;z-index:46;right:clamp(16px,2vw,28px);bottom:calc(env(safe-area-inset-bottom,0px) + 40px);width:56px;height:56px;padding:0;border:0;border-radius:50%;
+  background:none;cursor:pointer;box-shadow:0 10px 24px -8px rgba(20,40,10,.55);opacity:0;transform:translateY(12px) scale(.9);pointer-events:none;
+  transition:opacity .5s,transform .45s cubic-bezier(.22,1,.36,1),box-shadow .3s}
+.is-ready .juan{opacity:1;transform:none;pointer-events:auto}
+.juan img{display:block;width:100%;height:100%;border-radius:50%}
+.is-ready .juan:hover{transform:scale(1.06);box-shadow:0 14px 30px -8px rgba(20,40,10,.6)}
+.is-ready .juan:active{transform:scale(.96)}
+.juan:focus-visible{outline:2px solid var(--logo-green);outline-offset:3px}
+.mf-open .juan,body:has(#flow:not([hidden])) .juan{opacity:0;pointer-events:none}
+.ask{left:auto;right:clamp(16px,2vw,28px);bottom:calc(env(safe-area-inset-bottom,0px) + 40px + 56px + 12px);transform:none;transform-origin:100% 100%;
+  width:min(420px,calc(100vw - 24px));height:min(540px,calc(100svh - 150px));background:#fff;border-radius:28px;box-shadow:0 30px 70px -24px rgba(0,0,0,.45),0 0 0 1px rgba(20,20,20,.05)}
+@keyframes ask-in{from{opacity:0;transform:translateY(12px) scale(.96)}to{opacity:1;transform:none}}
+.ask__head{padding:20px 18px 12px 20px}
+.ask__avatar{width:36px;height:36px;border-radius:50%;background:none}
+.ask__who{display:block;font:500 17px/1 var(--font);letter-spacing:-.01em}
+.ask__log{background:#fff}
+.ask__msg--bot{background:#f3f3f0;box-shadow:none}
+.ask__chips button{background:#fff;box-shadow:0 0 0 1px rgba(20,20,20,.1)}
+.ask__chips button:hover{background:#f3f3f0}
+.ask__form input{border-color:rgba(20,20,20,.18)}
+@media (max-width:640px){
+  .juan{right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 40px + 57px + 14px);width:50px;height:50px}
+  .scrollcue{bottom:calc(env(safe-area-inset-bottom,0px) + 175px)}
+  .ask{right:10px;bottom:calc(env(safe-area-inset-bottom,0px) + 40px + 57px + 14px + 50px + 10px);width:calc(100vw - 20px);height:min(520px,calc(100svh - 200px))}
+}
 </style>
 </head>
 <body>
@@ -1653,7 +1671,6 @@ Marc!</h2>
     </form>
   </div>
   <button class="pill__menu" id="menuBtn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="menu"><svg class="ic ic--menu" width="24" height="24" aria-hidden="true" focusable="false" fill="none"><path d="M4 5H20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M4 12H20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M4 19H20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><svg class="ic ic--close" width="24" height="24" aria-hidden="true" focusable="false" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
-  <button class="pill__ask" id="askBtn" type="button" aria-label="Ask Mang Juan" aria-expanded="false" aria-controls="ask"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M8.2 8.4a2.9 2.9 0 1 1 4.1 2.6c-.8.4-1.3 1-1.3 1.9v.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="11" cy="16.6" r="1.1" fill="currentColor"/></svg></button>
   <div class="menu" id="menu" hidden>
     <a href="#top" data-menu="home"><span>Home</span></a>
     <a href="#manifesto"><span>Our Manifesto</span></a>
@@ -1661,10 +1678,11 @@ Marc!</h2>
   </div>
 </nav>
 
+<button class="juan" id="askBtn" type="button" aria-label="Ask Mang Juan" aria-expanded="false" aria-controls="ask"><img src="images/mang-juan.webp" width="56" height="56" alt=""></button>
 <section class="ask" id="ask" hidden role="dialog" aria-label="Ask Mang Juan">
   <header class="ask__head">
-    <span class="ask__avatar" aria-hidden="true">MJ</span>
-    <div class="ask__who"><strong>Ask Mang Juan</strong><span>Questions about Magasaka and the waitlist</span></div>
+    <img class="ask__avatar" src="images/mang-juan.webp" width="36" height="36" alt="">
+    <strong class="ask__who">Ask Mang Juan</strong>
     <button class="ask__close" type="button" aria-label="Close" data-ask-close><svg width="16" height="16" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M16.5 5.5L5.5 16.5M16.5 16.5L5.5 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
   </header>
   <div class="ask__log" id="askLog" aria-live="polite"></div>
@@ -3360,12 +3378,10 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       input.value = '';
       answer(q);
     }
-    let greeted = false;
     function open(){
       const menu = document.getElementById('menu');
       if (menu && !menu.hidden) document.getElementById('menuBtn').click();
       box.hidden = false; btn.setAttribute('aria-expanded', 'true');
-      if (!greeted){ greeted = true; add("Kumusta! Ako si Mang Juan. Ask me anything about Magasaka: the launch, fees, getting paid, Seeds, or what kind of work fits here.", 'bot'); }
       if (matchMedia('(hover: hover)').matches) setTimeout(() => input.focus({preventScroll:true}), 60);
     }
     function close(){ box.hidden = true; btn.setAttribute('aria-expanded', 'false'); }
