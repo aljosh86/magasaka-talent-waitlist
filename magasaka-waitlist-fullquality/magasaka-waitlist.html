@@ -944,6 +944,9 @@ html.mf-open{overscroll-behavior:none}
 .mf__face{position:absolute;inset:0;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden}
 .mf__face > .mf__sheet{inset:auto 0 auto 0;box-shadow:none}
 /* back of the paper: the same crumpled stock, a shade darker, with the ink bleeding through mirrored */
+.mf__cast{position:absolute;left:0;right:0;height:80%;pointer-events:none;opacity:0}
+.mf__cast--top{top:0;background:linear-gradient(180deg,rgba(0,0,0,.55),rgba(0,0,0,.18) 45%,rgba(0,0,0,0))}
+.mf__cast--bot{bottom:0;background:linear-gradient(0deg,rgba(0,0,0,.55),rgba(0,0,0,.18) 45%,rgba(0,0,0,0))}
 .mf__edge{position:absolute;background:linear-gradient(90deg,#cfcdc6,#e2e0da 50%,#cfcdc6);backface-visibility:visible}
 .mf__back{background:#e6e5e1 url(images/manifesto-paper.jpg) 0 0 / 100% auto;
   box-shadow:inset 0 0 40px rgba(60,55,45,.14)}
@@ -2758,7 +2761,15 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       const ghost = document.createElement('div'); ghost.className = 'mf__ghost';
       const through = copy.cloneNode(true);
       through.querySelectorAll('.mf__shade').forEach(n => n.remove());
-      ghost.appendChild(through); back.appendChild(ghost); panel.appendChild(back);
+      ghost.appendChild(through); back.appendChild(ghost);
+      const backShade = document.createElement('div'); backShade.className = 'mf__shade'; back.appendChild(backShade);
+      panel.appendChild(back);
+      // on the middle third: the shadows the flaps throw on it as they stand up near each fold
+      let castTop = null, castBot = null;
+      if (i === 1){
+        castTop = document.createElement('div'); castTop.className = 'mf__cast mf__cast--top'; face.appendChild(castTop);
+        castBot = document.createElement('div'); castBot.className = 'mf__cast mf__cast--bot'; face.appendChild(castBot);
+      }
       const w = stage.clientWidth, half = PAPER / 2;
       [['top', 0], ['bottom', h]].forEach(([, y]) => {
         const e = document.createElement('div'); e.className = 'mf__edge';
@@ -2770,7 +2781,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
         e.style.cssText = 'top:0;height:' + h + 'px;left:' + (x - half) + 'px;width:' + PAPER + 'px;transform:rotateY(90deg)';
         panel.appendChild(e);
       });
-      return {panel, shade};
+      return {panel, shade, backShade, castTop, castBot};
     }
 
     function unzoom(){ scroller.scrollTo(0, 0); }   // back to the top of the letter
@@ -2832,8 +2843,8 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       const anims = [
         fold.animate([
           {transform:'translate3d(0,120px,-240px) rotateX(64deg) rotateZ(-14deg) scale(.7)', opacity:0, easing:'cubic-bezier(.2,.8,.3,1)'},
-          {offset:.22, transform:'translate3d(0,40px,-120px) rotateX(46deg) rotateZ(-5deg) scale(.9)', opacity:1, easing:'linear'},
-          {offset:.64, transform:'translate3d(0,30px,-100px) rotateX(42deg) rotateZ(-3deg) scale(.92)', opacity:1, easing:glide},
+          {offset:.22, transform:'translate3d(0,60px,-140px) rotateX(56deg) rotateZ(-5deg) scale(.9)', opacity:1, easing:'linear'},
+          {offset:.64, transform:'translate3d(0,50px,-120px) rotateX(52deg) rotateZ(-3deg) scale(.92)', opacity:1, easing:glide},
           {transform:'translate3d(0,0,0) rotateX(0deg) rotateZ(0deg) scale(1)', opacity:1}], {duration:T, fill:'both'}),
         // the shadow under the paper only spreads where paper has landed: the middle third first, then upward
         // as the top flap comes down flat (60-100% of its swing), then downward as the bottom flap does
@@ -2847,11 +2858,16 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
           {offset:1,    top:'0px',      height:(h*3)+'px', opacity:.9}], {duration:T, easing:'linear', fill:'both'}),
         // the top flap lifts off the paper and falls back open
         top.panel.animate([{transform:'rotateX(-180deg)'},{transform:'rotateX(0deg)'}], {duration:1050, delay:520, easing:swing, fill:'both'}),
-        top.shade.animate([{opacity:.45},{offset:.5, opacity:.28},{opacity:0}], {duration:1050, delay:520, easing:'ease-out', fill:'both'}),
+        // back of the top flap darkens as it stands up; its front comes over dark and brightens as it lies flat
+        top.backShade.animate([{opacity:0},{offset:.48, opacity:.55},{opacity:.55}], {duration:1050, delay:520, easing:'ease-in', fill:'both'}),
+        top.shade.animate([{opacity:.6},{offset:.5, opacity:.6},{offset:.78, opacity:.18},{opacity:0}], {duration:1050, delay:520, easing:'ease-out', fill:'both'}),
+        mid.castTop.animate([{opacity:0},{offset:.18, opacity:.25},{offset:.42, opacity:.9},{offset:.62, opacity:.55},{offset:.85, opacity:.1},{opacity:0}], {duration:1050, delay:520, easing:'ease-in-out', fill:'both'}),
         // the middle third sits in the shade of the flaps until they are open
         mid.shade.animate([{opacity:.28},{offset:.45, opacity:.18},{offset:.8, opacity:.06},{opacity:0}], {duration:1650, delay:520, easing:'ease-out', fill:'both'}),
         bot.panel.animate([{transform:'rotateX(180deg)'},{transform:'rotateX(0deg)'}], {duration:1050, delay:1120, easing:swing, fill:'both'}),
-        bot.shade.animate([{opacity:.5},{offset:.5, opacity:.3},{opacity:0}], {duration:1050, delay:1120, easing:'ease-out', fill:'both'})
+        bot.backShade.animate([{opacity:0},{offset:.48, opacity:.5},{opacity:.5}], {duration:1050, delay:1120, easing:'ease-in', fill:'both'}),
+        bot.shade.animate([{opacity:.6},{offset:.5, opacity:.6},{offset:.78, opacity:.18},{opacity:0}], {duration:1050, delay:1120, easing:'ease-out', fill:'both'}),
+        mid.castBot.animate([{opacity:0},{offset:.18, opacity:.25},{offset:.42, opacity:.9},{offset:.62, opacity:.55},{offset:.85, opacity:.1},{opacity:0}], {duration:1050, delay:1120, easing:'ease-in-out', fill:'both'})
       ];
       Promise.all(anims.map(x => x.finished)).then(() => {
         sheet.style.visibility = ''; fold.remove(); fold = null; busy = false;
