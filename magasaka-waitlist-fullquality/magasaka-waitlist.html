@@ -960,18 +960,23 @@ html.mf-open{overscroll-behavior:none}
 .mf__face{background-color:#efefee}
 
 /* phones: the letter as live handwriting on the same paper (the photo's long lines are unreadable at phone width) */
-@font-face{font-family:'Magasaka Hand';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/indie-flower-latin.woff2) format('woff2')}
+/* Marc's own handwriting (fonts/magasaka-hand.otf) has letters only, so punctuation and digits come from
+   Indie Flower, the way the handwriting tool fills them in. One family, split by character range. */
+@font-face{font-family:'Magasaka Hand';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/magasaka-hand.otf) format('opentype');
+  unicode-range:U+0041-005A,U+0061-007A}
+@font-face{font-family:'Magasaka Hand';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/indie-flower-latin.woff2) format('woff2');
+  unicode-range:U+0020-0040,U+005B-0060,U+007B-007E,U+00A0-00FF,U+2010-2027}
 .mf__text{display:none}
 @media (max-width:640px){
   .mf__stage{width:calc(100vw - 24px);height:calc(100svh - 24px);aspect-ratio:auto}
   .mf__photo{display:none}
   .mf__sheet .mf__scroll{display:block;background:#f2f2f1 url(images/manifesto-paper.jpg) 0 0 / 100% auto repeat-y}
   .mf__text{display:block;position:relative;min-height:100%;padding:56px 22px 56px 46px;
-    font-family:'Magasaka Hand','Segoe Print','Bradley Hand',cursive;font-size:20px;line-height:1.6;letter-spacing:.01em;color:#3b3b37}
+    font-family:'Magasaka Hand','Segoe Print','Bradley Hand',cursive;font-size:22px;line-height:1.55;letter-spacing:.015em;color:#3b3b37}
   /* the red margin line, as on the paper */
   .mf__text::before{content:"";position:absolute;top:0;bottom:0;left:28px;width:2px;background:rgba(214,96,96,.62)}
   .mf__text p{margin:0 0 1.1em}
-  .mf__text p:first-child{font-size:23px}
+  .mf__text p:first-child{font-size:25px}
   .mf__sign{margin-top:1.6em!important}
 }
 </style>
@@ -2736,7 +2741,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       requestAnimationFrame(() => box.classList.add('is-open'));
       // desktop shows the photo, so wait for it; phones use the text version and never need the photo
       if (matchMedia('(min-width:641px)').matches){ photo.loading = 'eager'; try { await photo.decode(); } catch(e){} }
-      else { try { await document.fonts.load('20px "Magasaka Hand"'); } catch(e){} }
+      else { try { await Promise.all([document.fonts.load('22px "Magasaka Hand"', 'Aa'), document.fonts.load('22px "Magasaka Hand"', '.,')]); } catch(e){} }
       if (reduce){
         sheet.style.visibility = '';
         sheet.animate([{opacity:0},{opacity:1}], {duration:250});
