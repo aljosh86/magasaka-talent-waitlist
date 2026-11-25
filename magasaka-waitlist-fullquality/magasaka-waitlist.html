@@ -449,7 +449,7 @@ body:has(.pill:not([data-state="idle"])) .scrollcue{opacity:0 !important;transit
   .pill__menu .ic{margin:-11px 0 0 -11px}
 
   /* page rhythm */
-  .after{padding:100px 20px 0}
+  .after{padding:12px 20px 0}   /* the film grows to full screen right away, so no lead-in gap */
   .after__inner{gap:120px;max-width:353px}
 
   /* manifesto film block */
@@ -1980,7 +1980,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       const eased = p * p * (3 - 2 * p);
       // desktop: grow until the frame nearly fills the screen (92% wide or 90% tall, whichever hits first)
       const big = Math.max(1.2, Math.min(document.documentElement.clientWidth * .92 / block.offsetWidth, innerHeight * .9 / block.offsetHeight));
-      const s = 0.86 + eased * (innerWidth <= 640 ? 0.14 : big - 0.86);
+      const s = innerWidth <= 640 ? 0.92 + eased * 0.08 : 0.86 + eased * (big - 0.86);   // phone starts closer to full size: less gap above
       block.style.transform = `scale(${s.toFixed(4)})`;
       block.style.borderRadius = innerWidth <= 640 ? (radius * (1 - eased)).toFixed(2) + 'px'   // phone: card corners melt away at full bleed
         : s > 1 ? (radius / s).toFixed(2) + 'px' : '';
