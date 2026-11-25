@@ -33,6 +33,7 @@ Open <http://localhost:4173/magasaka-waitlist.html>. Refresh the page to replay 
 ```
 
 - `magasaka-waitlist-fullquality/magasaka-waitlist.html`: the active page, including its CSS, scripts, and logo loader.
+- `magasaka-waitlist-fullquality/manifesto.html`: the Magasaka Manifesto page (linked from "Magasaka Manifesto →"); uses `fonts/` and `images/manifesto-hero*.jpg`.
 - `magasaka-waitlist-fullquality/frames/hd/`: 616 hero frames at 2560 × 1440.
 - `magasaka-waitlist-fullquality/frames/sd/`: 616 hero frames at 1280 × 720 for phones.
 - `magasaka-waitlist-fullquality/images/`: app screenshots and role photos.

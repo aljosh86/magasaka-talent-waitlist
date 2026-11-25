@@ -1013,7 +1013,7 @@ html.flow-open, html.flow-open body{overflow:hidden}
         <div class="filmblock__scrim"></div>
         <div class="filmblock__text">
           <h2>Para sa mas magandang <br class="br-phone">bukas <br class="br-wide">ng bawat Pilipino.</h2>
-          <a class="filmblock__link" href="#manifesto">Magasaka Manifesto →</a>
+          <a class="filmblock__link" href="manifesto.html">Magasaka Manifesto →</a>
         </div>
       </div>
 
@@ -1227,7 +1227,7 @@ html.flow-open, html.flow-open body{overflow:hidden}
     </div>
     <div class="band__foot">
       <span>Magasaka © 2026</span>
-      <a href="#manifesto">Magasaka Manifesto →</a>
+      <a href="manifesto.html">Magasaka Manifesto →</a>
     </div>
   </section>
 
@@ -1544,6 +1544,8 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     document.documentElement.classList.remove('is-loading');
     document.documentElement.classList.add('is-ready');
     onScroll();
+    // arriving with a hash (e.g. manifesto.html -> #waitlist): the intro pinned us to the top, so go there now
+    if (location.hash.length > 1){ const t = document.getElementById(location.hash.slice(1)); if (t) t.scrollIntoView(); }
   }
   // A missing or stalled image must never leave the page locked behind the intro.
   const introFallback = setTimeout(finishIntro, 12000);
