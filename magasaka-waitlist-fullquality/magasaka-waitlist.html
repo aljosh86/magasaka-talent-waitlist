@@ -943,7 +943,12 @@ html.mf-open{overscroll-behavior:none}
 .mf__panel{position:absolute;left:0;right:0;transform-style:preserve-3d}
 .mf__face{position:absolute;inset:0;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden}
 .mf__face > .mf__sheet{inset:auto 0 auto 0;box-shadow:none}
-.mf__back{transform:rotateX(180deg);box-shadow:inset 0 0 40px rgba(90,80,60,.12)}
+/* back of the paper: the same crumpled stock, a shade darker, with the ink bleeding through mirrored */
+.mf__back{transform:rotateX(180deg);background:#e6e5e1 url(images/manifesto-paper.jpg) 0 0 / 100% auto;
+  box-shadow:inset 0 0 40px rgba(60,55,45,.14)}
+.mf__ghost{position:absolute;inset:0;overflow:hidden;transform:scaleY(-1);opacity:.16;filter:grayscale(1) blur(.5px);mix-blend-mode:multiply}
+.mf__ghost > .mf__sheet{background:transparent;box-shadow:none}
+.mf__ghost .mf__scroll{background:none!important}
 .mf__shade{position:absolute;inset:0;pointer-events:none;background:#000;opacity:0}
 @media (max-width:640px){
   .mf{padding:12px}
@@ -2743,7 +2748,14 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       face.appendChild(copy);
       const shade = document.createElement('div'); shade.className = 'mf__shade'; face.appendChild(shade);
       panel.appendChild(face);
-      if (i !== 1){ const back = document.createElement('div'); back.className = 'mf__face mf__back'; panel.appendChild(back); }
+      if (i !== 1){
+        // the back of a flap: paper texture, with the writing on the front showing through, mirrored
+        const back = document.createElement('div'); back.className = 'mf__face mf__back';
+        const ghost = document.createElement('div'); ghost.className = 'mf__ghost';
+        const through = copy.cloneNode(true);
+        through.querySelectorAll('.mf__shade').forEach(n => n.remove());
+        ghost.appendChild(through); back.appendChild(ghost); panel.appendChild(back);
+      }
       return {panel, shade};
     }
 
