@@ -215,14 +215,15 @@ body:has(.pill:not([data-state="idle"])) .scrollcue{opacity:0 !important;transit
 @media (min-width:641px){
 .cstage{position:relative;width:100%}
 .cstage .changes__row{position:sticky;height:750px;display:block}
-.cstage .chcard{position:absolute;left:0;right:0;top:0;opacity:0;pointer-events:none;transition:opacity .45s ease}
-.cstage .chcard.is-active{opacity:1;pointer-events:auto}
+.cstage .chcard{position:absolute;left:0;right:0;top:0;pointer-events:none}
+.cstage .chcard.is-active{pointer-events:auto}
 .cstage .chcard .chcard__label,.cstage .chcard .chcard__foot{transition:opacity .45s ease,transform .6s cubic-bezier(.22,1,.36,1);opacity:0;transform:translateY(18px)}
 .cstage .chcard.is-active .chcard__label,.cstage .chcard.is-active .chcard__foot{opacity:1;transform:none}
 .cstage .chcard.is-active .chcard__foot{transition-delay:.06s}
-.cstage .chcard .chcard__mock{opacity:0;transition:opacity .45s ease}
-.cstage .chcard.is-active .chcard__mock{opacity:1}
-.cstage .chcard:not(.is-active) .chcard__mock{background:transparent}
+/* the panels stack: the next one slides up over the last, which settles back a little; only the copy cross-fades */
+.cstage .chcard .chcard__mock{transform:translateY(105vh);transition:transform .9s cubic-bezier(.22,1,.36,1),filter .9s ease;will-change:transform}
+.cstage .chcard.is-active .chcard__mock{transform:none}
+.cstage .chcard.is-past .chcard__mock{transform:scale(.94);filter:brightness(.82)}
 .cdots{position:absolute;left:0;top:calc(50% - 30px);display:flex;flex-direction:column;gap:10px}
 .cdots i{width:6px;height:6px;border-radius:100px;background:rgba(20,20,20,.18);transition:background .3s,transform .3s}
 .cdots i.is-on{background:var(--ink);transform:scale(1.25)}
@@ -488,14 +489,15 @@ body:has(.pill:not([data-state="idle"])) .scrollcue{opacity:0 !important;transit
   /* pinned stage: the panel stays, the content swaps as you scroll */
 .cstage{position:relative;width:100%}
 .cstage .changes__row{position:sticky;height:750px;display:block}
-.cstage .chcard{position:absolute;left:0;right:0;top:0;opacity:0;pointer-events:none;transition:opacity .45s ease}
-.cstage .chcard.is-active{opacity:1;pointer-events:auto}
+.cstage .chcard{position:absolute;left:0;right:0;top:0;pointer-events:none}
+.cstage .chcard.is-active{pointer-events:auto}
 .cstage .chcard .chcard__label,.cstage .chcard .chcard__foot{transition:opacity .45s ease,transform .6s cubic-bezier(.22,1,.36,1);opacity:0;transform:translateY(18px)}
 .cstage .chcard.is-active .chcard__label,.cstage .chcard.is-active .chcard__foot{opacity:1;transform:none}
 .cstage .chcard.is-active .chcard__foot{transition-delay:.06s}
-.cstage .chcard .chcard__mock{opacity:0;transition:opacity .45s ease}
-.cstage .chcard.is-active .chcard__mock{opacity:1}
-.cstage .chcard:not(.is-active) .chcard__mock{background:transparent}
+/* the panels stack: the next one slides up over the last, which settles back a little; only the copy cross-fades */
+.cstage .chcard .chcard__mock{transform:translateY(105vh);transition:transform .9s cubic-bezier(.22,1,.36,1),filter .9s ease;will-change:transform}
+.cstage .chcard.is-active .chcard__mock{transform:none}
+.cstage .chcard.is-past .chcard__mock{transform:scale(.94);filter:brightness(.82)}
 .cdots{position:absolute;left:0;top:calc(50% - 30px);display:flex;flex-direction:column;gap:10px}
 .cdots i{width:6px;height:6px;border-radius:100px;background:rgba(20,20,20,.18);transition:background .3s,transform .3s}
 .cdots i.is-on{background:var(--ink);transform:scale(1.25)}
@@ -2015,7 +2017,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       stage.remove(); stage = null;
       dots?.remove(); dots = null;
       row.style.top = '';
-      cards.forEach(c => c.classList.remove('is-active'));
+      cards.forEach(c => c.classList.remove('is-active', 'is-past'));
       current = -1;
     };
     const build = () => {
@@ -2045,7 +2047,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       const i = Math.min(cards.length - 1, Math.floor(p * cards.length + 0.0001));
       if (i === current) return;
       current = i;
-      cards.forEach((c, k) => c.classList.toggle('is-active', k === i));
+      cards.forEach((c, k) => { c.classList.toggle('is-active', k === i); c.classList.toggle('is-past', k < i); });
       [...dots.children].forEach((d, k) => d.classList.toggle('is-on', k === i));
     };
     const sync = () => { if (innerWidth > WIDE) build(); else teardown(); };
