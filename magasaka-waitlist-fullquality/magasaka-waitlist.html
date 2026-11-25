@@ -2,6 +2,13 @@
 <html lang="en" class="is-loading">
 <head>
 <meta charset="utf-8">
+<script>
+  (() => {
+    let n = 1;
+    try { n = (parseInt(localStorage.getItem('mg-loads'), 10) || 0) + 1; localStorage.setItem('mg-loads', String(n)); } catch(e){}
+    if (n > 2 && (n - 2) % 5 !== 0) document.documentElement.classList.add('ld-skip');
+  })();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Magasaka: Great talent deserves room to grow</title>
 <meta name="description" content="Magasaka is a freelance marketplace being built to connect Filipino talent with clients around the world. Join the waitlist.">
@@ -35,6 +42,7 @@ a{color:inherit}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
 /* ---------- Intro loader: the logo draws in, then its counter opens into the hero ---------- */
+html.ld-skip #loader{display:none}
 /* scrolling is locked in JS while loading, not with overflow:hidden: hiding the scrollbar made the
    page widen and then snap narrower the moment the intro zoom finished */
 html.is-loading, html.is-loading body{overscroll-behavior:none}
@@ -1985,6 +1993,12 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
   }
   async function runIntro(){
     try {
+      // a returning visitor (see the ld-skip check in <head>): no intro, just wait briefly for the first hero frames
+      if (document.documentElement.classList.contains('ld-skip')){
+        await Promise.race([framesReady, wait(1500)]);
+        finishIntro();
+        return;
+      }
       if (reduce){
         // Show the finished mark, then reveal the hero without drawing or zooming.
         marks.forEach(mark => { mark.style.transform = 'none'; mark.style.fillOpacity = '1'; });
