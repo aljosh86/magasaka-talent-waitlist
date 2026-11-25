@@ -89,6 +89,11 @@ html.is-loading .grain{z-index:91}
   font-weight:400;font-size:clamp(15px,1.19vw,18px);line-height:1.3;color:var(--field-white);white-space:nowrap;max-width:100%;
   opacity:0;transform:translateY(8px);transition:opacity .4s ease,transform .5s cubic-bezier(.65,0,.35,1)}
 .beat:hover .beat__sub,.beat:focus-visible .beat__sub,.beat[data-open="true"] .beat__sub{opacity:1;transform:none}
+/* mouse devices: the chip no longer unfolds below the line; it floats beside the cursor and trails it */
+.beats-follow .beat__subwrap{display:block}
+.beats-follow .beat__subwrap>div{overflow:visible;padding:0;margin:0}
+.beats-follow .beat__sub{position:absolute;left:0;top:0;margin:0;max-width:none;pointer-events:none;z-index:2;
+  transition:opacity .25s ease;will-change:transform,opacity}
 
 /* ---------- Frame 1: opening headline + scroll cue ---------- */
 .opening{position:absolute;left:clamp(20px,5.3vw,80px);bottom:calc(env(safe-area-inset-bottom,0px) + 203px);display:flex;flex-direction:column;align-items:flex-start;gap:40px;max-width:calc(100% - 40px);will-change:opacity,transform}
@@ -1478,9 +1483,48 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     el.addEventListener('focus', () => setOpen(el, true));
     el.addEventListener('blur', () => { if (el.dataset.pinned !== 'true') setOpen(el, false); });
     if (!canHover) return;
-    el.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') setOpen(el, true); });
+    el.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse'){ followStart(el, e); setOpen(el, true); } });
+    el.addEventListener('pointermove', e => { if (e.pointerType === 'mouse') followAim(el, e); });
     el.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse' && el.dataset.pinned !== 'true') setOpen(el, false); });
+    el.addEventListener('focus', () => { if (!el.matches(':hover')) followRest(el); });
   });
+
+  // cursor-follow chip (mouse only): eases toward a point just below-right of the pointer, kept on screen
+  const follow = { el: null, x: 0, y: 0, tx: 0, ty: 0, raf: 0 };
+  if (canHover) document.documentElement.classList.add('beats-follow');
+  function followTarget(el, e){
+    const sub = el.querySelector('.beat__sub'), r = el.getBoundingClientRect();
+    const w = sub.offsetWidth, h = sub.offsetHeight, pad = 16;
+    let x = e.clientX + 18, y = e.clientY + 22;
+    if (x + w > innerWidth - pad) x = Math.max(pad, e.clientX - 18 - w);
+    if (y + h > innerHeight - pad) y = e.clientY - 18 - h;
+    return [x - r.left, y - r.top];
+  }
+  function followPaint(){
+    const s = follow.el && follow.el.querySelector('.beat__sub');
+    if (s) s.style.transform = `translate3d(${follow.x.toFixed(1)}px,${follow.y.toFixed(1)}px,0)`;
+  }
+  function followTick(){
+    const k = reduce ? 1 : .2;
+    follow.x += (follow.tx - follow.x) * k; follow.y += (follow.ty - follow.y) * k;
+    followPaint();
+    follow.raf = Math.abs(follow.tx - follow.x) + Math.abs(follow.ty - follow.y) > .3 ? requestAnimationFrame(followTick) : 0;
+  }
+  function followStart(el, e){
+    follow.el = el; [follow.tx, follow.ty] = followTarget(el, e);
+    follow.x = follow.tx; follow.y = follow.ty; followPaint();
+  }
+  function followAim(el, e){
+    if (follow.el !== el) return followStart(el, e);
+    [follow.tx, follow.ty] = followTarget(el, e);
+    if (!follow.raf) follow.raf = requestAnimationFrame(followTick);
+  }
+  // keyboard focus without a pointer: rest the chip under the line, as before
+  function followRest(el){
+    const sub = el.querySelector('.beat__sub'), head = el.querySelector('.beat__head');
+    sub.style.transform = `translate3d(0,${head.offsetHeight + 24}px,0)`;
+    if (follow.el === el){ cancelAnimationFrame(follow.raf); follow.raf = 0; follow.el = null; }
+  }
 
   const menuBtn = document.getElementById('menuBtn'), menu = document.getElementById('menu');
   function closeMenu(){ menu.hidden = true; menuBtn.setAttribute('aria-expanded','false'); }
