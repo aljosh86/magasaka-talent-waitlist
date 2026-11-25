@@ -686,6 +686,25 @@ html.flow-open, html.flow-open body{overflow:hidden}
 .flow__chip{display:inline-flex;align-items:center;gap:10px;padding:10px 18px;border-radius:100px;
   background:var(--ink);border:1.5px solid var(--ink);color:#fff;font-size:18px;letter-spacing:-.03em}
 .flow__chip button{display:grid;place-items:center;width:22px;height:22px;padding:0;border:0;background:none;color:inherit;cursor:pointer}
+/* title dropdown: opens with a short drop-and-fade, options cascade in; closing plays it back quickly */
+.flow__select{position:relative}
+.flow__selbtn{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;height:58px;padding:0 20px;border:0;border-radius:100px;
+  background:#fff;font:400 16px/1 var(--font);letter-spacing:-.01em;color:#1a1b18;cursor:pointer;text-align:left}
+.flow__selbtn.is-empty span{color:#818181}
+.flow__selbtn svg{flex:none;color:#4a4b46;transition:transform .35s cubic-bezier(.22,1,.36,1)}
+.flow__selbtn[aria-expanded="true"] svg{transform:rotate(180deg)}
+.flow__options{position:absolute;left:0;right:0;top:calc(100% + 8px);z-index:6;max-height:320px;overflow-y:auto;padding:6px;border-radius:18px;
+  background:#fff;box-shadow:0 22px 50px -22px rgba(20,20,20,.4);transform-origin:50% 0;animation:dd-in .34s cubic-bezier(.22,1,.36,1)}
+.flow__options.is-closing{animation:dd-out .18s ease forwards}
+.flow__options button{display:block;width:100%;padding:13px 14px;border:0;border-radius:12px;background:none;text-align:left;cursor:pointer;
+  font:400 15px/1.2 var(--font);letter-spacing:-.01em;color:#1a1b18;animation:dd-row .4s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(var(--i,0) * 18ms)}
+.flow__options button:hover,.flow__options button[aria-selected="true"]{background:rgba(81,124,53,.1)}
+.flow__results:not([hidden]){animation:dd-in .34s cubic-bezier(.22,1,.36,1)}
+.flow__results.is-list .flow__row{animation:dd-row .4s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(var(--i,0) * 22ms)}
+@keyframes dd-in{from{opacity:0;transform:translateY(-8px) scaleY(.96)}to{opacity:1;transform:none}}
+@keyframes dd-out{to{opacity:0;transform:translateY(-6px) scaleY(.97)}}
+@keyframes dd-row{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.flow__options,.flow__options button,.flow__results,.flow__results .flow__row{animation:none!important}}
 .flow__results{width:100%;background:#fdfdfb;border:1px solid #fff;border-radius:16px;overflow:hidden;max-height:330px;overflow-y:auto}
 .flow__row{display:flex;align-items:center;gap:16px;width:100%;padding:18px;border:0;border-bottom:1px solid #e6e6e0;
   background:none;text-align:left;cursor:pointer;font:500 15px/1.2 var(--font);letter-spacing:-.01em;color:var(--ink)}
@@ -703,6 +722,7 @@ html.flow-open, html.flow-open body{overflow:hidden}
 /* step 4: card */
 .flow__final{display:flex;align-items:center;gap:50px;flex-wrap:wrap;justify-content:center}
 .wcard{position:relative;width:384px;height:550px;border-radius:24px;overflow:hidden;background:#142618;flex:none;
+  user-select:none;-webkit-user-select:none;   /* the card is an object, not text to copy */
   --rx:0deg;--ry:0deg;--mx:50%;--my:50%;
   transform:perspective(1100px) rotateX(var(--rx)) rotateY(var(--ry)) scale(1);
   transform-style:preserve-3d;will-change:transform;
@@ -735,14 +755,17 @@ html.flow-open, html.flow-open body{overflow:hidden}
 .wcard.is-live .wcard__gloss{opacity:1}
 .wcard.is-live img{transform:translate3d(calc(var(--px,0) * -9px),calc(var(--py,0) * -9px),0) scale(1.05)}
 .wcard img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-/* the photo (rice terraces) fades into deep field green at the bottom, so the name and skills sit on a calm field;
-   a lighter band of the same green at the top keeps EARLY ACCESS / NO. readable over the bright terraces */
-.wcard__veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,38,24,.55) 0%,rgba(20,38,24,0) 20%,rgba(20,38,24,0) 34%,rgba(20,38,24,.72) 62%,rgba(20,38,24,.95) 82%,#142618 100%)}
+/* the photo (rice terraces) fades into deep field green at the bottom, so the name and title sit on a calm field */
+.wcard__veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,38,24,0) 0%,rgba(20,38,24,0) 34%,rgba(20,38,24,.72) 62%,rgba(20,38,24,.95) 82%,#142618 100%)}
 .wcard__top{position:absolute;left:25px;top:25px;width:calc(100% - 50px);display:flex;align-items:center;justify-content:space-between;
   font-size:20px;letter-spacing:-.01em;color:#fff}
 .wcard__top span{text-box:trim-both cap alphabetic}
 .wcard__foot{position:absolute;left:25px;bottom:25px;width:calc(100% - 50px);display:flex;flex-direction:column;gap:50px}
-.wcard__who{display:flex;flex-direction:column;gap:24px}
+.wcard__who{display:flex;flex-direction:column;gap:18px}
+.wcard__nameline{display:flex;align-items:baseline;justify-content:space-between;gap:14px}
+.wcard__nameline .wcard__name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wcard__no{flex:none;font-size:16px;letter-spacing:.02em;color:rgba(255,255,255,.72);font-variant-numeric:tabular-nums}
+.wcard__title{margin:0;font-size:20px;line-height:1.25;letter-spacing:-.01em;color:rgba(255,255,255,.88)}
 .wcard__name{margin:0;font-weight:500;font-size:40px;letter-spacing:-.01em;color:#fff;text-box:trim-both cap alphabetic}
 .wcard__picks{display:flex;align-items:center;gap:15px;flex-wrap:wrap;font-size:20px;line-height:1;letter-spacing:-.01em;color:rgba(255,255,255,.8)}
 .wcard__picks span{text-box:trim-both cap alphabetic}
@@ -764,7 +787,8 @@ html.flow-open, html.flow-open body{overflow:hidden}
 .flow__copy{flex:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;width:110px;height:44px;
   border:0;border-radius:100px;background:var(--apple);color:var(--field-white);font:400 15px/1 var(--font);letter-spacing:-.01em;cursor:pointer}
 .flow__socials{display:flex;flex-wrap:wrap;gap:10px}
-.flow__socials a,.flow__socials button{display:inline-flex;align-items:center;gap:8px;height:50px;padding:0 19px;border:0;border-radius:100px;
+/* share: round logo buttons, no labels (names live in aria-label / title) */
+.flow__socials a,.flow__socials button{display:inline-flex;align-items:center;justify-content:center;gap:0;width:42px;height:42px;padding:0;border:0;border-radius:50%;
   background:#fff;color:#1a1b18;font:400 15px/1 var(--font);letter-spacing:-.01em;text-decoration:none;cursor:pointer}
 .flow__socials a:hover,.flow__socials button:hover{background:#f4f3ef}
 .flow__count{margin:0;font-size:22px;letter-spacing:-.01em;color:#818181}
@@ -816,11 +840,11 @@ html.flow-open, html.flow-open body{overflow:hidden}
   .wcard{order:1;align-self:center;width:min(76vw,290px);height:auto;aspect-ratio:384/550;border-radius:18px;
     touch-action:pan-y;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
   .wcard img{pointer-events:none;-webkit-user-drag:none}
-  .wcard__top{left:18px;top:18px;width:calc(100% - 36px);font-size:14px}
   .wcard__foot{left:18px;bottom:18px;top:auto;width:calc(100% - 36px);gap:26px}
   .wcard__who{gap:14px}
   .wcard__name{font-size:28px}
-  .wcard__picks{font-size:14px;gap:9px}
+  .wcard__no{font-size:13px}
+  .wcard__title{font-size:16px}
   .wcard__sig .wcard__mark{width:76px;height:10px}
   .wcard__sig em{font-size:12px}
   .flow__sharein{gap:25px}
@@ -832,7 +856,7 @@ html.flow-open, html.flow-open body{overflow:hidden}
   .flow__copy{width:110px;height:44px;font-size:14px}
   .flow__copy svg{width:16px;height:16px}
   .flow__socials{gap:10px}
-  .flow__socials a,.flow__socials button{height:36px;padding:0 14px;font-size:14px}
+  .flow__socials a,.flow__socials button{width:40px;height:40px;padding:0}
   .flow__count{font-size:15px}
   .flow__edit{margin:-14px 0 0;font-size:14px}
 }
@@ -1244,9 +1268,13 @@ html.flow-open, html.flow-open body{overflow:hidden}
     <div class="flow__panel">
       <div class="flow__head">
         <h2>What do you do?</h2>
-        <p class="flow__sub">Search any skill or niche. Pick up to 3.</p>
+        <p class="flow__sub">Pick one title, then up to 3 skills or niches.</p>
       </div>
       <div class="flow__field">
+        <div class="flow__select">
+          <button class="flow__selbtn is-empty" id="flowTitleBtn" type="button" aria-haspopup="listbox" aria-expanded="false"><span id="flowTitleVal">Choose your title</span><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M4.5 6.75L9 11.25L13.5 6.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div class="flow__options" id="flowTitleList" role="listbox" aria-label="Your title" hidden></div>
+        </div>
         <div class="flow__chips" id="flowChips"></div>
         <div class="flow__pill"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M15.584 15.5834L19.2507 19.25" stroke="currentColor" stroke-width="1.375" stroke-linecap="round" stroke-linejoin="round"/><path d="M17.4167 10.0833C17.4167 6.03324 14.1334 2.75 10.0833 2.75C6.03324 2.75 2.75 6.03324 2.75 10.0833C2.75 14.1334 6.03324 17.4167 10.0833 17.4167C14.1334 17.4167 17.4167 14.1334 17.4167 10.0833Z" stroke="currentColor" stroke-width="1.375" stroke-linecap="round" stroke-linejoin="round"/></svg><input id="flowSearch" type="text" placeholder="Search any skill or niche" aria-label="Search skills"></div>
         <div class="flow__results" id="flowResults" hidden></div>
@@ -1265,11 +1293,10 @@ html.flow-open, html.flow-open body{overflow:hidden}
         <img id="cardPhoto" src="images/card-photo.jpg" alt="" aria-hidden="true">
         <span class="wcard__veil" aria-hidden="true"></span>
         <span class="wcard__gloss" aria-hidden="true"></span>
-        <div class="wcard__top"><span>EARLY ACCESS</span><span id="cardNo">NO. 1,248</span></div>
-        <div class="wcard__foot">
+                <div class="wcard__foot">
           <div class="wcard__who">
-            <p class="wcard__name" id="cardName">Marc</p>
-            <div class="wcard__picks" id="cardPicks"></div>
+            <div class="wcard__nameline"><p class="wcard__name" id="cardName">Marc</p><span class="wcard__no" id="cardNo">No. 1,248</span></div>
+            <p class="wcard__title" id="cardTitle">Virtual Assistant</p>
           </div>
           <div class="wcard__sig">
             <span class="wcard__mark" aria-hidden="true"><svg aria-hidden="true" focusable="false" viewBox="0 0 155 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1294,7 +1321,7 @@ html.flow-open, html.flow-open body{overflow:hidden}
 </clipPath>
 </defs>
 </svg></span>
-            <em>FILIPINO TALENT</em>
+            <em>FOUNDING MEMBER</em>
           </div>
         </div>
       </div>
@@ -1311,11 +1338,11 @@ Marc!</h2>
             <button class="flow__copy" id="flowCopy" type="button"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M5.625 10.875C5.625 8.40015 5.625 7.16269 6.39385 6.39385C7.16269 5.625 8.40015 5.625 10.875 5.625C13.3498 5.625 14.5873 5.625 15.3562 6.39385C16.125 7.16269 16.125 8.40015 16.125 10.875C16.125 13.3498 16.125 14.5873 15.3562 15.3562C14.5873 16.125 13.3498 16.125 10.875 16.125C8.40015 16.125 7.16269 16.125 6.39385 15.3562C5.625 14.5873 5.625 13.3498 5.625 10.875Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.625 12.375C4.57766 12.375 4.054 12.375 3.63301 12.2277C2.87899 11.9639 2.28615 11.371 2.02231 10.617C1.875 10.196 1.875 9.6723 1.875 8.625V7.125C1.875 4.65013 1.875 3.41269 2.64385 2.64385C3.41269 1.875 4.65013 1.875 7.125 1.875H8.625C9.6723 1.875 10.196 1.875 10.617 2.02231C11.371 2.28615 11.9639 2.87899 12.2277 3.63301C12.375 4.054 12.375 4.57766 12.375 5.625" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Copy</span></button>
           </div>
           <div class="flow__socials">
-            <a id="shFacebook" href="#" target="_blank" rel="noopener">Facebook</a>
-            <a id="shMessenger" href="#" target="_blank" rel="noopener">Messenger</a>
-            <a id="shX" href="#" target="_blank" rel="noopener">X</a>
-            <a id="shLinkedIn" href="#" target="_blank" rel="noopener">LinkedIn</a>
-            <button id="flowSave" type="button"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M4.5 15H13.5" stroke="#4A4B46" stroke-width="1.5" stroke-linecap="round"/><path d="M9 12V3" stroke="#4A4B46" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 9L9 12L6 9" stroke="#4A4B46" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Save</button>
+            <a id="shFacebook" href="#" target="_blank" rel="noopener" aria-label="Share on Facebook" title="Facebook"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M13.5 21v-7.6h2.6l.4-3h-3V8.5c0-.9.3-1.5 1.5-1.5h1.6V4.3c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 4v2.2H7.8v3h2.6V21z"/></svg></a>
+            <a id="shMessenger" href="#" target="_blank" rel="noopener" aria-label="Share on Messenger" title="Messenger"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2.5c-5.3 0-9.5 3.9-9.5 9.1 0 2.7 1.1 5.1 3 6.8v3.1l2.9-1.6c1.1.3 2.3.5 3.6.5 5.3 0 9.5-3.9 9.5-9.1S17.3 2.5 12 2.5zm1 12.2-2.4-2.6-4.7 2.6 5.2-5.5 2.5 2.6 4.6-2.6z"/></svg></a>
+            <a id="shX" href="#" target="_blank" rel="noopener" aria-label="Share on X" title="X"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M17.8 3h3.1l-6.8 7.8 8 10.2h-6.3l-4.9-6.4L5.3 21H2.2l7.3-8.3L1.8 3h6.4l4.4 5.8zm-1.1 16.2h1.7L7.4 4.7H5.6z"/></svg></a>
+            <a id="shLinkedIn" href="#" target="_blank" rel="noopener" aria-label="Share on LinkedIn" title="LinkedIn"><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 3.3a2.1 2.1 0 1 1 0 4.2 2.1 2.1 0 0 1 0-4.2zM3.2 9h3.6v12H3.2zM9.1 9h3.5v1.7c.5-.9 1.7-2 3.5-2 3.7 0 4.4 2.5 4.4 5.7V21h-3.7v-5.9c0-1.4 0-3.2-1.9-3.2s-2.2 1.5-2.2 3.1v6H9.1z"/></svg></a>
+            <button id="flowSave" type="button" aria-label="Save card image" title="Save image"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M4.5 15H13.5" stroke="#4A4B46" stroke-width="1.5" stroke-linecap="round"/><path d="M9 12V3" stroke="#4A4B46" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 9L9 12L6 9" stroke="#4A4B46" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
           </div>
           <p class="flow__count">Friends who joined with your link: <b id="flowFriends">0</b></p>
           <button class="flow__edit" id="flowEdit" type="button">Edit my name and skills</button>
@@ -2135,6 +2162,14 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       'Education': ['Online Teaching','Tutoring','Course Creation'],
       'Legal': ['Paralegal','Legal Research']
     };
+    // one title per person (shown on the card); each maps to the category whose niches it suggests
+    const TITLES = {
+      'Virtual Assistant':'Admin & Virtual Assistance', 'Customer Support Specialist':'Customer Support',
+      'Sales & Lead Generation Specialist':'Sales & Lead Generation', 'Marketer':'Marketing', 'Designer & Creative':'Creative & Design',
+      'Writer & Translator':'Writing & Translation', 'Developer':'Tech & Development', 'Data & AI Specialist':'Data & AI',
+      'Bookkeeper & Accountant':'Finance & Accounting', 'E-commerce Specialist':'E-commerce', 'HR & Recruiter':'HR & Recruitment',
+      'Engineer & Drafter':'Engineering & Architecture', 'Healthcare Professional':'Healthcare', 'Educator':'Education', 'Legal Assistant':'Legal'
+    };
     const SKILLS = [];
     for (const cat in CATS) for (const s of CATS[cat]) SKILLS.push({name:s, cat});
 
@@ -2146,7 +2181,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     const search = $('#flowSearch'), chipWrap = $('#flowChips'), results = $('#flowResults');
     const meta = $('#flowPicked'), browse = $('#flowBrowse'), cardBtn = $('#flowCardBtn');
 
-    let state = {email:'', name:'', picks:[], ref:'', no:0};
+    let state = {email:'', name:'', title:'', picks:[], ref:'', no:0};
     try { const raw = localStorage.getItem(STORE); if (raw) state = Object.assign(state, JSON.parse(raw)); } catch(e){}
     const save = () => { try { localStorage.setItem(STORE, JSON.stringify(state)); } catch(e){} };
 
@@ -2188,7 +2223,39 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       show(1); setTimeout(() => search.focus({preventScroll:true}), 220);
     });
 
-    // --- step 3: search every skill and niche, pick up to 3
+    // --- step 3a: the title, from an animated dropdown
+    const titleBtn = $('#flowTitleBtn'), titleVal = $('#flowTitleVal'), titleList = $('#flowTitleList');
+    function renderTitle(){
+      titleVal.textContent = state.title || 'Choose your title';
+      titleBtn.classList.toggle('is-empty', !state.title);
+    }
+    function closeTitles(){
+      if (titleList.hidden) return;
+      titleBtn.setAttribute('aria-expanded', 'false');
+      titleList.classList.add('is-closing');
+      setTimeout(() => { titleList.hidden = true; titleList.classList.remove('is-closing'); }, 180);
+    }
+    function openTitles(){
+      titleList.innerHTML = '';
+      Object.keys(TITLES).forEach((t, i) => {
+        const b = document.createElement('button');
+        b.type = 'button'; b.setAttribute('role', 'option'); b.textContent = t; b.style.setProperty('--i', i);
+        b.setAttribute('aria-selected', String(t === state.title));
+        b.addEventListener('click', () => {
+          state.title = t; save(); renderTitle(); closeTitles(); setBrowse(false); renderChips(); renderResults();
+          setTimeout(() => search.focus({preventScroll:true}), 200);
+        });
+        titleList.appendChild(b);
+      });
+      titleList.hidden = false;
+      titleBtn.setAttribute('aria-expanded', 'true');
+      titleList.querySelector('[aria-selected="true"]')?.scrollIntoView({block:'nearest'});
+    }
+    titleBtn.addEventListener('click', () => { titleList.hidden ? openTitles() : closeTitles(); });
+    document.addEventListener('click', e => { if (!e.target.closest('.flow__select')) closeTitles(); });
+    titleList.addEventListener('keydown', e => { if (e.key === 'Escape'){ e.stopPropagation(); closeTitles(); titleBtn.focus(); } });
+
+    // --- step 3b: search every skill and niche, pick up to 3
     function renderChips(){
       chipWrap.innerHTML = '';
       state.picks.forEach((p, i) => {
@@ -2200,7 +2267,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
         chipWrap.appendChild(chip);
       });
       meta.textContent = state.picks.length + ' of 3 picked';
-      cardBtn.disabled = state.picks.length === 0;
+      cardBtn.disabled = !state.title || state.picks.length === 0;
     }
     function addPick(v){
       if (state.picks.length >= 3 || state.picks.includes(v)) return;
@@ -2222,15 +2289,19 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       if (full){ results.appendChild(row('You have picked 3. Remove one to change it.', '', 'flow__row--empty')); return; }
       let list;
       if (!q){
-        if (!browsing){ results.hidden = true; return; }
-        list = SKILLS;
+        // no query: show all when browsing, else the niches that go with the chosen title
+        if (browsing) list = SKILLS;
+        else if (state.title) list = SKILLS.filter(s => s.cat === TITLES[state.title]);
+        else { results.hidden = true; return; }
       } else {
         list = SKILLS.filter(s => s.name.toLowerCase().includes(q) || s.cat.toLowerCase().includes(q))
           .sort((a,b) => (a.name.toLowerCase().startsWith(q) ? 0 : 1) - (b.name.toLowerCase().startsWith(q) ? 0 : 1));
       }
       results.hidden = false;
-      list.slice(0, browsing && !q ? SKILLS.length : 6).forEach(s => {
+      results.classList.toggle('is-list', !q);          // stagger the rows in only when a list opens, not per keystroke
+      list.slice(0, !q ? list.length : 6).forEach((s, i) => {
         const r = row(s.name, s.cat);
+        r.style.setProperty('--i', Math.min(i, 12));
         if (state.picks.includes(s.name)) r.classList.add('is-active');
         r.addEventListener('click', () => addPick(s.name));
         results.appendChild(r);
@@ -2253,7 +2324,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       if (e.key === 'Enter'){ e.preventDefault(); const first = results.querySelector('.flow__row'); if (first) first.click(); }
     });
     browse.addEventListener('click', () => { setBrowse(!browsing); search.value = ''; renderResults(); });
-    cardBtn.addEventListener('click', () => { if (state.picks.length) buildCard(); });
+    cardBtn.addEventListener('click', () => { if (state.title && state.picks.length) buildCard(); });
 
     // --- step 4: the card and the share link
     function buildCard(){
@@ -2264,18 +2335,13 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
         save();
       }
       $('#cardName').textContent = state.name;
-      $('#cardNo').textContent = 'NO. ' + state.no.toLocaleString('en-US');
-      const picks = $('#cardPicks'); picks.innerHTML = '';
-      state.picks.forEach((p, i) => {
-        if (i){ const dot = document.createElement('i'); dot.setAttribute('aria-hidden','true'); picks.appendChild(dot); }
-        const s = document.createElement('span'); s.textContent = p; picks.appendChild(s);
-      });
+      $('#cardNo').textContent = 'No. ' + state.no.toLocaleString('en-US');
+      $('#cardTitle').textContent = state.title;
       $('#flowHi').textContent = 'Kasama ka na,\n' + state.name + '!';
       $('#flowLink').value = shareUrl();
       $('#flowFriends').textContent = '0';
       wireShare();
       show(2);
-      requestAnimationFrame(tidyPickDots);
     }
 
     function wireShare(){
@@ -2294,18 +2360,6 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       label.textContent = 'Copied'; setTimeout(() => label.textContent = 'Copy', 1600);
     });
 
-    // when the skills wrap, hide the dot that would end a line ("General VA •" / "Project Management")
-    function tidyPickDots(){
-      const picks = $('#cardPicks');
-      [...picks.querySelectorAll('i')].forEach(dot => {
-        dot.style.visibility = '';
-        const prev = dot.previousElementSibling, next = dot.nextElementSibling;
-        // visibility, not display: keeping the dot's space means hiding it can't pull the next skill back up
-        if (prev && next && next.offsetTop > prev.offsetTop + 2) dot.style.visibility = 'hidden';
-      });
-    }
-    addEventListener('resize', () => { if (!flow.hidden) tidyPickDots(); });
-
     // "Save" renders the card to a PNG for IG and FB stories
     $('#flowSave').addEventListener('click', async () => {
       const S = 2, W = 384 * S, H = 550 * S, r = 24 * S;
@@ -2317,7 +2371,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       try { const ph = $('#cardPhoto'), k = Math.max(W / ph.naturalWidth, H / ph.naturalHeight), pw = ph.naturalWidth * k, phh = ph.naturalHeight * k;
         g.drawImage(ph, (W - pw) / 2, (H - phh) / 2, pw, phh); } catch(e){}   // cover, not stretch
       const grd = g.createLinearGradient(0,0,0,H);
-      grd.addColorStop(0,'rgba(20,38,24,.55)'); grd.addColorStop(.2,'rgba(20,38,24,0)'); grd.addColorStop(.34,'rgba(20,38,24,0)'); grd.addColorStop(.62,'rgba(20,38,24,.72)'); grd.addColorStop(.82,'rgba(20,38,24,.95)'); grd.addColorStop(1,'#142618');
+      grd.addColorStop(0,'rgba(20,38,24,0)'); grd.addColorStop(.34,'rgba(20,38,24,0)'); grd.addColorStop(.62,'rgba(20,38,24,.72)'); grd.addColorStop(.82,'rgba(20,38,24,.95)'); grd.addColorStop(1,'#142618');
       g.fillStyle = grd; g.fillRect(0,0,W,H);
       try { await document.fonts.ready; } catch(e){}
 
@@ -2325,33 +2379,17 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       const L = 25*S, R = (25+334)*S;
       g.textBaseline = 'alphabetic';
 
-      g.fillStyle = '#fff'; g.font = F(400,20);
-      g.fillText('EARLY ACCESS', L, 25*S + 16*S);
-      g.textAlign = 'right'; g.fillText('NO. ' + state.no.toLocaleString('en-US'), R, 25*S + 16*S); g.textAlign = 'left';
-
+      // name with the number on the same line, then the title
+      g.fillStyle = '#fff'; g.font = F(500,40);
+      let nm = state.name;
+      g.font = F(400,16); const noTxt = 'No. ' + state.no.toLocaleString('en-US'); const noW = g.measureText(noTxt).width;
       g.font = F(500,40);
-      g.fillText(state.name, L, (393 + 28)*S);
-
-      // the picks wrap onto a second line rather than running off the card
-      const maxW = 334*S, gap = 15*S, dot = 5*S;
-      let size = 20;
-      const widths = () => { g.font = F(400,size); return state.picks.map(p => g.measureText(p).width); };
-      let w = widths();
-      let total = w.reduce((a,b)=>a+b,0) + Math.max(0,state.picks.length-1)*(gap*2+dot);
-      while (total > maxW * 2 && size > 14){ size -= 1; w = widths(); total = w.reduce((a,b)=>a+b,0) + Math.max(0,state.picks.length-1)*(gap*2+dot); }
-      g.font = F(400,size); g.fillStyle = 'rgba(255,255,255,.8)';
-      const lineH = (size + 6) * S;
-      let x = L, line = 0;
-      state.picks.forEach((p,i) => {
-        const pw = w[i], sep = i ? gap*2 + dot : 0;
-        if (i && x + sep + pw > L + maxW){ line++; x = L; }
-        else if (i){
-          g.beginPath(); g.arc(x + gap + dot/2, (393 + 53 + size*0.45)*S + line*lineH, dot/2, 0, Math.PI*2); g.fill();
-          x += sep;
-        }
-        g.fillText(p, x, (393 + 53 + size*0.72)*S + line*lineH);
-        x += pw;
-      });
+      while (nm.length > 1 && g.measureText(nm).width > (334*S - noW - 14*S)) nm = nm.slice(0, -2) + '…';
+      g.fillText(nm, L, (393 + 28)*S);
+      g.font = F(400,16); g.fillStyle = 'rgba(255,255,255,.72)';
+      g.textAlign = 'right'; g.fillText(noTxt, R, (393 + 28)*S); g.textAlign = 'left';
+      g.font = F(400,20); g.fillStyle = 'rgba(255,255,255,.88)';
+      g.fillText(state.title || '', L, (393 + 62)*S);
 
       // the wordmark, taken straight from the card so it is the real logo
       try {
@@ -2365,7 +2403,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
         g.drawImage(im, L, (393 + 118)*S, 108*S, 14*S);
       } catch(e){}
       g.font = F(400,18); g.fillStyle = 'rgba(255,255,255,.8)';
-      g.textAlign = 'right'; g.fillText('FILIPINO TALENT', R, (393 + 131)*S); g.textAlign = 'left';
+      g.textAlign = 'right'; g.fillText('FOUNDING MEMBER', R, (393 + 131)*S); g.textAlign = 'left';
 
       const a = document.createElement('a');
       a.download = 'magasaka-' + (state.ref || 'card') + '.png';
@@ -2438,7 +2476,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       nameInput.value = state.name || '';
       nameBtn.disabled = !nameInput.value.trim();
       search.value = ''; setBrowse(false);
-      renderChips(); renderResults();
+      renderTitle(); renderChips(); renderResults();
     }
     window.__mgJoin = function(email){
       const same = state.email && state.email.toLowerCase() === email.toLowerCase();
@@ -2447,7 +2485,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
         save(); startFlow(0); return;
       }
       state.email = email; save();
-      if (state.name && state.picks.length){ buildCard(); open(2); return; }   // already on the list: show their card again
+      if (state.name && state.title && state.picks.length){ buildCard(); open(2); return; }   // already on the list: show their card again
       startFlow(state.name ? 1 : 0);
     };
     // a way back into the steps from the card
