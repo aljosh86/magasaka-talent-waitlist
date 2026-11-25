@@ -14,19 +14,40 @@ Open <http://localhost:4173/magasaka-waitlist.html>. Refresh the page to replay 
 
 ## Files
 
+```text
+.
+|-- README.md
+|-- design-assets/
+|   |-- hero-stills/
+|   |-- hero-clips/
+|   |-- page-references/
+|   `-- previews/
+`-- magasaka-waitlist-fullquality/
+    |-- magasaka-waitlist.html
+    |-- README.txt
+    |-- frames/
+    |   |-- hd/
+    |   `-- sd/
+    |-- images/
+    `-- video/
+```
+
 - `magasaka-waitlist-fullquality/magasaka-waitlist.html`: the active page, including its CSS, scripts, and logo loader.
 - `magasaka-waitlist-fullquality/frames/hd/`: 616 hero frames at 2560 × 1440.
 - `magasaka-waitlist-fullquality/frames/sd/`: 616 hero frames at 1280 × 720 for phones.
 - `magasaka-waitlist-fullquality/images/`: app screenshots and role photos.
 - `magasaka-waitlist-fullquality/video/1.mp4`: section video.
-- `magasaka-loader.html`: standalone reference/demo for the new logo loader. The active page embeds the loader and does not load this file.
-- `A-E/`, `Clips/`, `Page/`, and `New Folder/`: supplied design and media source files.
+- `design-assets/hero-stills/`: supplied hero stills, previously in `A-E/`.
+- `design-assets/hero-clips/`: supplied source clips, previously in `Clips/`.
+- `design-assets/page-references/`: supplied page reference images and video, previously in `Page/`.
+- `design-assets/previews/`: supplied preview video and screen recording, previously in `New Folder/`.
 
 Keep the active page and its asset folders together when serving or deploying. The page filename is `magasaka-waitlist.html`.
+Only `magasaka-waitlist-fullquality/` is needed to serve the website; `design-assets/` contains source material for editing.
 
 ## Logo loader update
 
-The old three-cut-out loader has been removed from the active page, including its embedded cut-out images, gathering styles, and panel-exit animation.
+The old three-cut-out loader has been removed from the active page, including its embedded cut-out images, gathering styles, and panel-exit animation. The standalone loader demo previously at the repository root has also been removed, leaving one loader implementation in the active page.
 
 The new intro draws the Magasaka logo on a green background, fills its letters, then zooms through the counter of the “g” to reveal the hero. Its SVG, styles, and animation are embedded in the active page.
 

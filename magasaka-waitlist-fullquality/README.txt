@@ -1,14 +1,30 @@
-Magasaka waitlist - hero (full quality)
+Magasaka waitlist - full quality
 
-index.html          the page
-frames/hd/          616 frames at 2560x1440 (laptops, desktops, tablets)
-frames/sd/          616 frames at 1280x720 (phones)
+magasaka-waitlist.html   the active page, including the new logo loader
+frames/hd/              616 frames at 2560x1440 (laptops, desktops, tablets)
+frames/sd/              616 frames at 1280x720 (phones)
+video/1.mp4             section video
+images/roles/           role photos
+images/app-1..4.png      app screenshots
 
-Keep index.html and the frames folder together. Browsers can open index.html
-directly, but for testing and deployment serve the folder from a web server
-(for example: npx serve .  or  python3 -m http.server).
+Keep magasaka-waitlist.html and its asset folders together.
+From this folder, run:
 
-video/              put the section video here, named 1.mp4 (H.264 MP4, muted, ~1920 wide)
-images/             replace 1.png and 2.png with the section photos exported from Figma (700x600 or larger)
-images/roles/1..12.jpg   role photos for the "Your kind of work belongs here" row
-images/app-1..4.png      app screenshots, one per tab in the concept preview
+    py -3 -m http.server 4173 --bind 127.0.0.1
+
+Then open http://localhost:4173/magasaka-waitlist.html.
+Refresh the page to replay the intro.
+
+The old three-cut-out loader and its animation have been removed from the
+active page. The new loader draws the Magasaka logo, fills it, and zooms
+through the letter g into the hero. Reduced motion uses a static logo and
+a short fade. The reveal waits for opening frames, with a timeout fallback.
+There is no separate loader HTML file; the loader is embedded in the page.
+
+This folder contains the website and its runtime assets. Original design
+references and preview recordings are kept separately in ../design-assets/.
+
+Signup state currently stays in browser localStorage; no backend endpoint
+is connected yet.
+
+See ../README.md for the repository overview and loader verification notes.
