@@ -47,7 +47,7 @@ Only `magasaka-waitlist-fullquality/` is needed to serve the website; `design-as
 
 ## Hero navigation
 
-The opening "Scroll to explore" button advances into the first story moment. It supports mouse, touch, and keyboard input, with a circular arrow and visible focus feedback. The former "Skip hero story" controls have been removed from the hero and menu. In reduced motion, the scroll prompt is hidden alongside the scroll-driven sequence.
+The opening "Scroll to explore" cue has a static circular arrow. It is a visual prompt for manual scrolling, with no click-triggered scrolling or hover movement. The former "Skip hero story" controls have been removed from the hero and menu. In reduced motion, the scroll prompt is hidden alongside the scroll-driven sequence.
 
 ## Logo loader update
 
