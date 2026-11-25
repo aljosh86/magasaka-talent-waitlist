@@ -728,12 +728,12 @@ html.flow-open, html.flow-open body{overflow:hidden}
 .wcard.is-tilt .wcard__gloss{opacity:1}
 @media (prefers-reduced-motion: reduce){.wcard,.wcard.is-tilt{transform:none;transition:none}}
 /* live 3D (set up in JS): one rAF loop eases toward the pointer, so the CSS transition is off. The photo slides
-   back, the text slides forward and the shadow swings opposite the tilt, which gives the card its depth */
+   back and the shadow swings opposite the tilt, which gives the card its depth. The text stays printed on the
+   face: sliding it too made it look like it floated above the card */
 .wcard.is-live{transition:none;transform:perspective(1000px) rotateX(var(--rx)) rotateY(var(--ry)) scale(var(--s,1));
   box-shadow:calc(var(--px,0) * -46px) calc(34px + var(--py,0) * -28px) 70px -30px rgba(20,20,20,.55)}
 .wcard.is-live .wcard__gloss{opacity:1}
 .wcard.is-live img{transform:translate3d(calc(var(--px,0) * -18px),calc(var(--py,0) * -18px),0) scale(1.08)}
-.wcard.is-live .wcard__top,.wcard.is-live .wcard__foot{transform:translate3d(calc(var(--px,0) * 10px),calc(var(--py,0) * 10px),0)}
 .wcard img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .wcard__veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(26,27,24,0) 0%,#1a1b18 100%)}
 .wcard__top{position:absolute;left:25px;top:25px;width:calc(100% - 50px);display:flex;align-items:center;justify-content:space-between;
