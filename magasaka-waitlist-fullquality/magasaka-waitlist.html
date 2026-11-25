@@ -2147,7 +2147,12 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       // the punch line gets a longer turn so it can land and hold before the section lets go
       let x = q * total, k = 0;
       while (k < parts.length - 1 && x >= weights[k]){ x -= weights[k]; k++; }
-      const u = x / weights[k];
+      let u = x / weights[k];
+      // a fast flick can jump past a boundary in one frame: if the part on screen hasn't finished, stay on it
+      const holdLimit = i => Math.floor(r.top + scrollY - rest - lead + weights.slice(0, i + 1).reduce((a, b) => a + b, 0) / total * (span + lead)) - 2;
+      if (current >= 0 && k > current && performance.now() < doneAt[current]){
+        scrollTo(0, holdLimit(current)); k = current; u = 1;
+      }
       if (k !== current){
         parts.forEach((part, i) => { part.classList.toggle('is-active', i === k); part.classList.toggle('is-past', i < k); });
         if (punch) punch.dispatchEvent(new Event(parts[k] === punch ? 'punch:on' : 'punch:off'));
@@ -2167,9 +2172,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       });
       // hold the reader at the end of this part's turn until it has finished writing
       if (begun && performance.now() < doneAt[k]){
-        const reach = weights.slice(0, k + 1).reduce((a, b) => a + b, 0) / total;   // q where the next part would start
-        const stageTop = r.top + scrollY;
-        const limit = Math.floor(stageTop - rest - lead + reach * (span + lead)) - 2;
+        const limit = holdLimit(k);   // where the next part would start
         if (scrollY > limit) scrollTo(0, limit);
       }
       // the section fades in as it arrives, and away once the punch line has held
