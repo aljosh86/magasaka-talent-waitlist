@@ -1004,11 +1004,11 @@ html.mf-open{overscroll-behavior:none}
   .mf__photo{display:none}
   .mf__sheet .mf__scroll{display:block;background:#f2f2f1 url(images/manifesto-paper.jpg) 0 0 / 100% auto repeat-y}
   .mf__text{display:block;position:relative;min-height:100%;padding:56px 22px 56px 46px;
-    font-family:'Magasaka Hand','Segoe Print','Bradley Hand',cursive;font-size:22px;line-height:1.55;letter-spacing:.015em;color:#3b3b37}
+    font-family:'Magasaka Hand','Segoe Print','Bradley Hand',cursive;font-size:20px;line-height:1.55;letter-spacing:0;color:#3b3b37}
   /* the red margin line, as on the paper */
   .mf__text::before{content:"";position:absolute;top:0;bottom:0;left:28px;width:2px;background:rgba(214,96,96,.62)}
-  .mf__text p{margin:0 0 1.1em}
-  .mf__text p:first-child{font-size:25px}
+  .mf__text p{margin:0 0 .6em}
+  .mf__text p:first-child{font-size:23px;line-height:calc(20px * 1.55)}
   .mf__sign{margin-top:1.6em!important}
 }
 
@@ -3194,15 +3194,15 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       const text = sheet.querySelector('.mf__text'); const ps = [...text.querySelectorAll('p')];
       let y = 56 * scale; const x = 46 * scale, maxW = (W - 46 - 22) * scale;
       ps.forEach((p, i) => {
-        const size = (i === 0 ? 25 : 22) * scale, lh = 22 * 1.55 * scale;
+        const size = (i === 0 ? 23 : 20) * scale, lh = 20 * 1.55 * scale;
         g.font = size + 'px "Magasaka Hand", cursive'; g.fillStyle = '#3b3b37'; g.textBaseline = 'top';
         let line = '';
         p.textContent.split(/\s+/).forEach(w => {
           const t = line ? line + ' ' + w : w;
-          if (g.measureText(t).width > maxW && line){ g.fillText(line, x, y); y += lh; line = w; } else line = t;
+          if (g.measureText(t).width > maxW && line){ g.fillText(line, x, y + (lh - size) / 2); y += lh; line = w; } else line = t;
         });
-        if (line){ g.fillText(line, x, y); y += lh; }
-        y += 22 * 1.1 * scale - (lh - 22 * scale);
+        if (line){ g.fillText(line, x, y + (lh - size) / 2); y += lh; }
+        y += (i === 0 ? 23 : 20) * .6 * scale;   // the paragraph gap, as in the CSS (.6em)
       });
       return c;
     }
@@ -3314,7 +3314,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       if (matchMedia('(min-width:641px)').matches){
         photo.loading = 'eager'; try { await photo.decode(); } catch(e){}
       }
-      else { try { await Promise.all([document.fonts.load('22px "Magasaka Hand"', 'Aa'), document.fonts.load('22px "Magasaka Hand"', '.,')]); } catch(e){} }
+      else { try { await Promise.all([document.fonts.load('20px "Magasaka Hand"', 'Aa'), document.fonts.load('20px "Magasaka Hand"', '.,')]); } catch(e){} }
       if (reduce){
         busy = false;
         sheet.style.visibility = '';
