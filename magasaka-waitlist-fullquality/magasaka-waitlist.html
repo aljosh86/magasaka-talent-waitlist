@@ -302,6 +302,14 @@ body:has(.pill:not([data-state="idle"])) .scrollcue{opacity:0 !important;transit
 /* ---------- FAQ (Figma 24:505) ---------- */
 .faq{display:flex;align-items:flex-start;justify-content:space-between;gap:clamp(40px,9vw,136px);width:100%;flex-wrap:wrap}
 @media (min-width:641px){.faq{margin-inline:calc(clamp(20px,5.3vw,80px) - clamp(20px,7.68vw,116px));width:auto;align-self:stretch}}
+/* desktop: one centred column, heading over the list (the left column was empty once the photo went) */
+@media (min-width:641px){
+  .faq{flex-direction:column;align-items:center;flex-wrap:nowrap;gap:56px}
+  .faq__head{flex:none;align-items:center;text-align:center}
+  .faq__head h2{max-width:none}
+  .faq__head h2 br{display:none}
+  .faq__list{flex:none;width:100%;max-width:720px}
+}
 .faq__head{flex:1 1 320px;display:flex;flex-direction:column;gap:30px}
 .faq__head h2{margin:0;font-weight:500;font-size:clamp(26px,2.75vw,36px);line-height:1.4;color:var(--ink);max-width:374px}
 .faq__list{flex:1 1 480px;max-width:575px;display:flex;flex-direction:column}
@@ -1070,7 +1078,7 @@ html.flow-open, html.flow-open body{overflow:hidden}
             <button class="faq__q" type="button" aria-expanded="true" aria-controls="faq-a-1">
               <span>When does Magasaka launch?</span><svg class="faq__icon" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10.0007 3.3335V16.6668M16.6673 10.0002H3.33398" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
-            <div class="faq__a" id="faq-a-1"><div><p>We’re aiming for December 2026. Waitlist members hear first, and the first 10,000 to complete their profile and identity check at launch become Founding Members, with a permanent badge and bonus Seeds. Joining doesn’t guarantee a job, but you’ll be first in line.</p></div></div>
+            <div class="faq__a" id="faq-a-1"><div><p>We’re aiming for early 2027. Waitlist members hear first, and the first 10,000 verified profiles become Founding Members, with a permanent badge and bonus Seeds.</p></div></div>
           </div>
           <div class="faq__item" data-open="false">
             <button class="faq__q" type="button" aria-expanded="false" aria-controls="faq-a-2">
@@ -1088,7 +1096,7 @@ html.flow-open, html.flow-open body{overflow:hidden}
             <button class="faq__q" type="button" aria-expanded="false" aria-controls="faq-a-4">
               <span>How do I get paid?</span><svg class="faq__icon" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10.0007 3.3335V16.6668M16.6673 10.0002H3.33398" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
-            <div class="faq__a" id="faq-a-4"><div><p>Straight to your local bank account.</p></div></div>
+            <div class="faq__a" id="faq-a-4"><div><p>Straight to your local bank account. Your bank or currency conversion may charge a small fee.</p></div></div>
           </div>
           <div class="faq__item" data-open="false">
             <button class="faq__q" type="button" aria-expanded="false" aria-controls="faq-a-5">
@@ -1100,7 +1108,7 @@ html.flow-open, html.flow-open body{overflow:hidden}
             <button class="faq__q" type="button" aria-expanded="false" aria-controls="faq-a-6">
               <span>How do I know Magasaka is legit?</span><svg class="faq__icon" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10.0007 3.3335V16.6668M16.6673 10.0002H3.33398" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
-            <div class="faq__a" id="faq-a-6"><div><p>Magasaka is a registered US company, and you never pay to join or apply. If anyone asks you for money to get a Magasaka job, it’s not us.</p></div></div>
+            <div class="faq__a" id="faq-a-6"><div><p>Magasaka is a registered company in the Philippines and the US, and you never pay to join or apply. If anyone asks you for money to get a Magasaka job, it’s not us.</p></div></div>
           </div>
           <div class="faq__item" data-open="false">
             <button class="faq__q" type="button" aria-expanded="false" aria-controls="faq-a-7">
