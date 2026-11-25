@@ -2341,7 +2341,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     search.addEventListener('click', () => { if (results.hidden){ resultsOpen = true; renderResults(); } });
     // a click anywhere outside the search, its list and the browse toggle closes the list
     document.addEventListener('click', e => {
-      if (flow.hidden || results.hidden) return;
+      if (flow.hidden || results.hidden || !e.target.isConnected) return;   // a picked row is re-rendered away before this runs
       if (e.target.closest('.flow__pill, .flow__results, #flowBrowse, .flow__chips')) return;
       resultsOpen = false; setBrowse(false); hideResults();
     });
