@@ -3,7 +3,7 @@ Magasaka waitlist - full quality
 magasaka-waitlist.html   the active page, including the new logo loader
 frames/hd/              616 frames at 2560x1440 (laptops, desktops, tablets)
 frames/sd/              616 frames at 1280x720 (phones)
-video/1.mp4             section video
+video/remote-work-*.mp4  film-frame loop (1080p, 720p) + poster jpg
 images/roles/           role photos
 images/app-1..4.png      app screenshots
 

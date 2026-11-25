@@ -36,7 +36,7 @@ Open <http://localhost:4173/magasaka-waitlist.html>. Refresh the page to replay 
 - `magasaka-waitlist-fullquality/frames/hd/`: 616 hero frames at 2560 × 1440.
 - `magasaka-waitlist-fullquality/frames/sd/`: 616 hero frames at 1280 × 720 for phones.
 - `magasaka-waitlist-fullquality/images/`: app screenshots and role photos.
-- `magasaka-waitlist-fullquality/video/1.mp4`: section video.
+- `magasaka-waitlist-fullquality/video/remote-work-1080.mp4`, `remote-work-720.mp4`, `remote-work-poster.jpg`: looping film-frame video (720p is served at 900px wide and below).
 - `design-assets/hero-stills/`: supplied hero stills, previously in `A-E/`.
 - `design-assets/hero-clips/`: supplied source clips, previously in `Clips/`.
 - `design-assets/page-references/`: supplied page reference images and video, previously in `Page/`.
