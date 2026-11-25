@@ -1299,12 +1299,12 @@ html.flow-open, html.flow-open body{overflow:hidden}
         </div>
       </div>
       <div class="flow__share">
-        <h2 id="flowHi">Kasama ka na sa ani,
-Marc.</h2>
+        <h2 id="flowHi">Kasama ka na,
+Marc!</h2>
         <div class="flow__sharein">
           <div class="flow__sharehead">
-            <p>Share para mauna kang ma-invite.</p>
-            <p>Invites go out in batches before launch. The more friends who join with your link, the sooner you get in.</p>
+            <p>Sa pag-join mo, tumulong ka nang iangat ang bawat ordinaryong Pilipino.</p>
+            <p>Invites go out in batches. Share your link and jump the line.</p>
           </div>
           <div class="flow__link">
             <input id="flowLink" readonly aria-label="Your share link">
@@ -2270,7 +2270,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
         if (i){ const dot = document.createElement('i'); dot.setAttribute('aria-hidden','true'); picks.appendChild(dot); }
         const s = document.createElement('span'); s.textContent = p; picks.appendChild(s);
       });
-      $('#flowHi').textContent = 'Kasama ka na sa ani,\n' + state.name + '.';
+      $('#flowHi').textContent = 'Kasama ka na,\n' + state.name + '!';
       $('#flowLink').value = shareUrl();
       $('#flowFriends').textContent = '0';
       wireShare();
