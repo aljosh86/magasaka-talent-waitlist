@@ -2765,7 +2765,10 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       const backShade = document.createElement('div'); backShade.className = 'mf__shade'; back.appendChild(backShade);
       panel.appendChild(back);
       // on the middle third: the shadows the flaps throw on it as they stand up near each fold
-      let castTop = null, castBot = null;
+      let castTop = null, castBot = null, castOnBack = null;
+      // the folded bottom third lies over the middle, so the top flap's shadow falls on ITS back, by the top fold
+      // (the back face is turned over, so its own top edge is that fold)
+      if (i === 2){ castOnBack = document.createElement('div'); castOnBack.className = 'mf__cast mf__cast--top'; back.appendChild(castOnBack); }
       if (i === 1){
         castTop = document.createElement('div'); castTop.className = 'mf__cast mf__cast--top'; face.appendChild(castTop);
         castBot = document.createElement('div'); castBot.className = 'mf__cast mf__cast--bot'; face.appendChild(castBot);
@@ -2781,7 +2784,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
         e.style.cssText = 'top:0;height:' + h + 'px;left:' + (x - half) + 'px;width:' + PAPER + 'px;transform:rotateY(90deg)';
         panel.appendChild(e);
       });
-      return {panel, shade, backShade, castTop, castBot};
+      return {panel, shade, backShade, castTop, castBot, castOnBack};
     }
 
     function unzoom(){ scroller.scrollTo(0, 0); }   // back to the top of the letter
@@ -2861,7 +2864,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
         // back of the top flap darkens as it stands up; its front comes over dark and brightens as it lies flat
         top.backShade.animate([{opacity:0},{offset:.48, opacity:.55},{opacity:.55}], {duration:1050, delay:520, easing:'ease-in', fill:'both'}),
         top.shade.animate([{opacity:.6},{offset:.5, opacity:.6},{offset:.78, opacity:.18},{opacity:0}], {duration:1050, delay:520, easing:'ease-out', fill:'both'}),
-        mid.castTop.animate([{opacity:0},{offset:.18, opacity:.25},{offset:.42, opacity:.9},{offset:.62, opacity:.55},{offset:.85, opacity:.1},{opacity:0}], {duration:1050, delay:520, easing:'ease-in-out', fill:'both'}),
+        bot.castOnBack.animate([{opacity:0},{offset:.18, opacity:.25},{offset:.42, opacity:.9},{offset:.62, opacity:.55},{offset:.85, opacity:.1},{opacity:0}], {duration:1050, delay:520, easing:'ease-in-out', fill:'both'}),
         // the middle third sits in the shade of the flaps until they are open
         mid.shade.animate([{opacity:.28},{offset:.45, opacity:.18},{offset:.8, opacity:.06},{opacity:0}], {duration:1650, delay:520, easing:'ease-out', fill:'both'}),
         bot.panel.animate([{transform:'rotateX(180deg)'},{transform:'rotateX(0deg)'}], {duration:1050, delay:1120, easing:swing, fill:'both'}),
