@@ -156,7 +156,8 @@ html.is-loading .grain{z-index:91}
 .problem{position:relative;display:flex;flex-direction:column;align-items:center;gap:45px;text-align:center;max-width:700px}
 .problem__bg{position:absolute;left:13.6%;right:13.46%;top:19.43%;bottom:19.22%;width:auto;height:auto;pointer-events:none}
 .problem__lines{display:flex;flex-direction:column;align-items:center;gap:clamp(32px,4vw,60px);width:100%}
-.problem .problem__punch{margin:0;text-transform:uppercase;font-weight:600;font-size:clamp(48px,6.6vw,108px);line-height:1.02;letter-spacing:-.025em;color:#ef3e42;white-space:normal;width:min(92vw,1100px);text-box:trim-both cap alphabetic}
+.problem .problem__punch{margin:0;text-transform:uppercase;font-weight:600;font-size:clamp(48px,6.6vw,108px);line-height:1.02;letter-spacing:-.025em;color:#ef3e42;white-space:normal;width:min(92vw,1100px);margin-inline:calc((100% - min(92vw,1100px)) / 2);text-box:trim-both cap alphabetic}
+/* wider than its 700px column: the equal negative side margins keep it centred instead of spilling right */
 /* step-through: the parts share one spot and take turns as you scroll */
 .problem--steps .problem__lines{display:grid;place-items:center}
 .problem--steps .problem__lines>*{grid-area:1/1;opacity:0;transform:translateY(28px);pointer-events:none;
