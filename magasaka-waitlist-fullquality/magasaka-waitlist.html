@@ -973,11 +973,12 @@ html.mf-open{overscroll-behavior:none}
 .mf__photo{display:block;flex:none;width:100%;height:auto;-webkit-user-drag:none;user-select:none}
 .mf__close{background:rgba(246,243,234,.85);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
 .mf__close:hover{background:#f6f3ea}
-.mf__hint{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);padding:8px 14px;border-radius:100px;pointer-events:none;
-  background:rgba(20,20,20,.62);color:#fff;font:400 13px/1 var(--font);letter-spacing:-.01em;opacity:0}
-.mf__hint.is-on{animation:mf-hint 3.2s ease forwards}
-@keyframes mf-hint{0%{opacity:0;transform:translate(-50%,6px)}10%,82%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
-.mf__hint{white-space:nowrap}
+/* scroll cue: a small mouse, bottom-right, wheel rolling, gone after a few seconds */
+.mf__hint{position:absolute;right:18px;bottom:18px;z-index:2;display:grid;place-items:center;width:44px;height:52px;border-radius:22px;pointer-events:none;
+  background:rgba(20,20,20,.55);color:#fff;opacity:0}
+.mf__hint.is-on{animation:mf-hint 4s ease forwards}
+.mf__hint.is-on .mf__wheel{animation:scroll-wheel 1.6s cubic-bezier(.22,1,.36,1) infinite}
+@keyframes mf-hint{0%{opacity:0;transform:translateY(6px)}10%,85%{opacity:1;transform:none}100%{opacity:0}}
 @media (max-width:640px){.mf__stage{width:min(calc(100vw - 24px),calc((100svh - 24px) * .707))}}
 /* the back of the folded sheet matches the light grey-white of the handwritten pages */
 .mf__face{background-color:#efefee}
@@ -2745,7 +2746,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
         </div>
       </div>
       <button class="mf__close" type="button" aria-label="Close the manifesto" data-mf-close><svg width="16" height="16" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M16.5 5.5L5.50074 16.4993M16.4993 16.5L5.5 5.50078" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
-      <span class="mf__hint" aria-hidden="true">Scroll to read</span>
+      <span class="mf__hint" aria-hidden="true"><svg width="20" height="30" viewBox="0 0 24 36" fill="none" focusable="false"><rect x="2" y="2" width="20" height="32" rx="10" stroke="currentColor" stroke-width="1.8"/><path class="mf__wheel" d="M12 9v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
     </div>
   </div>
   <!-- the photographed letter, as text, for screen readers and search -->
@@ -2840,8 +2841,8 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     // hold the page still while the letter is open; only the letter itself scrolls
     const KEYS = new Set([' ', 'PageDown', 'PageUp', 'ArrowDown', 'ArrowUp', 'Home', 'End']);
     const inLetter = e => scroller.contains(e.target);
-    const stopWheel = e => { if (!inLetter(e)) e.preventDefault(); };
-    const stopKeys = e => { if (KEYS.has(e.key) && !scroller.contains(document.activeElement)) e.preventDefault(); };
+    const stopWheel = e => { if (busy || !inLetter(e)) e.preventDefault(); };   // while it unfolds, not even the letter scrolls
+    const stopKeys = e => { if (KEYS.has(e.key) && (busy || !scroller.contains(document.activeElement))) e.preventDefault(); };
     let pinY = 0;
     const pin = () => { if (Math.abs(scrollY - pinY) > 1) scrollTo(0, pinY); };
     function lockPage(){
@@ -2988,6 +2989,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     async function open(){
       if (!box.hidden || busy) return;
       lastFocus = document.activeElement;
+      busy = true;   // from the first frame: nothing scrolls until the letter has opened
       unzoom();
       if (!reduce) sheet.style.visibility = 'hidden';   // keep the open letter out of sight until the fold has played
       box.hidden = false; document.documentElement.classList.add('mf-open'); lockPage();
@@ -2998,6 +3000,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       }
       else { try { await Promise.all([document.fonts.load('22px "Magasaka Hand"', 'Aa'), document.fonts.load('22px "Magasaka Hand"', '.,')]); } catch(e){} }
       if (reduce){
+        busy = false;
         sheet.style.visibility = '';
         sheet.animate([{opacity:0},{opacity:1}], {duration:250});
         scroller.focus({preventScroll:true}); showHint();
@@ -3010,6 +3013,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       busy = true;
       if (!reduce && await unfoldGL().catch(() => false)){
         if (box.hidden) return;
+        scroller.scrollTop = 0;
         sheet.style.visibility = '';
         const fade = sheet.animate([{opacity:0},{opacity:1}], {duration:260, easing:'ease-out', fill:'both'});
         await fade.finished; fade.cancel();
