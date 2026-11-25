@@ -1049,6 +1049,29 @@ html.mf-open{overscroll-behavior:none}
   .band__foot{grid-template-columns:1fr 1fr;row-gap:22px;margin-top:0;font-size:14px}
   .band__foot .socials{grid-column:1 / -1;grid-row:1;justify-self:center;order:0;margin:0}
 }
+/* closing call (ref: big two-line headline, wide gap, one dark-green bar: email | arrow) */
+.band__inner{gap:clamp(40px,5vw,72px)}
+.band h2{font-size:clamp(48px,7.6vw,124px);line-height:1.04;letter-spacing:-.035em;font-weight:500}
+.band__copy{gap:clamp(18px,2vw,28px)}
+.band__right{width:auto}
+.band .signup{width:clamp(300px,26vw,400px);height:auto;padding:0;gap:0;border-radius:12px;background:#2e4a2c;
+  box-shadow:0 10px 30px -12px rgba(0,0,0,.45);transition:background .2s}
+.band .signup:hover,.band .signup:focus-within{background:#355634}
+.band .signup input{height:58px;padding:0 6px 0 22px;border-radius:12px 0 0 12px;background:none;color:#e9f3df;font:400 17px/1 var(--font);letter-spacing:-.01em}
+.band .signup input::placeholder{color:rgba(233,243,223,.82)}
+.band .signup input:focus{background:none}
+.band .signup button{display:flex;align-items:center;gap:18px;height:58px;padding:0 22px 0 4px;border-radius:0 12px 12px 0;background:none;color:#e9f3df}
+.band .signup button:hover{background:none}
+.band .signup button svg{display:block;transition:transform .25s cubic-bezier(.22,1,.36,1)}
+.band .signup button:hover svg,.band .signup button:focus-visible svg{transform:translateX(3px)}
+.signup__bar{display:block;width:1px;height:20px;background:rgba(233,243,223,.4)}
+@media (max-width:640px){
+  .band h2{font-size:clamp(40px,12.4vw,54px);line-height:1.04}
+  .band .signup{width:100%;max-width:340px;margin-inline:auto;height:auto;padding:0;background:#2e4a2c}
+  .band .signup input{height:54px;font-size:16px;padding-left:20px;color:#e9f3df}
+  .band .signup input::placeholder{color:rgba(233,243,223,.82)}
+  .band .signup button{height:54px;padding:0 20px 0 4px;background:none;color:#e9f3df}
+}
 </style>
 </head>
 <body>
@@ -1386,7 +1409,7 @@ html.mf-open{overscroll-behavior:none}
       <div class="band__right">
         <form class="signup" id="signup" novalidate>
           <input type="email" name="email" placeholder="Your email" aria-label="Your email" autocomplete="email" required>
-          <button type="submit">Join the waitlist</button>
+          <button type="submit" aria-label="Join the waitlist"><span class="signup__bar" aria-hidden="true"></span><svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         </form>
       </div>
     </div>
