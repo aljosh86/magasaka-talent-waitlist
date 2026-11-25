@@ -102,8 +102,9 @@ html.is-loading .grain{z-index:91}
 .opening h1{margin:0;font-weight:500;font-size:clamp(40px,4.11vw,62px);line-height:1.2;color:var(--field-white);text-box:trim-both cap alphabetic;width:9.84em;max-width:100%}
 
 .opening p{margin:0;width:auto;white-space:nowrap;max-width:100%;font-weight:400;font-size:clamp(18px,1.46vw,22px);line-height:1.2;color:rgba(237,236,232,.8);text-box:trim-both cap alphabetic}
-.scrollcue{position:absolute;right:clamp(20px,3.31vw,50px);bottom:calc(env(safe-area-inset-bottom,0px) + 50px);
-  display:flex;align-items:center;gap:10px;height:36px;color:var(--field-white);
+/* icon only, sitting just right of the centred 390px sign-up pill and lined up with its middle */
+.scrollcue{position:absolute;left:calc(50% + 195px + 16px);bottom:calc(env(safe-area-inset-bottom,0px) + 48px);
+  display:flex;align-items:center;height:36px;color:var(--field-white);
   font:400 16px/1 var(--font);letter-spacing:-.01em;pointer-events:none;will-change:opacity}
 .scrollcue svg{display:block;flex:none;width:24px;height:36px}
 .scrollcue__wheel{animation:scroll-wheel 1.8s cubic-bezier(.22,1,.36,1) infinite;animation-play-state:paused}
@@ -115,6 +116,8 @@ html.is-loading .grain{z-index:91}
 }
 @media (max-width:640px){.opening{bottom:calc(env(safe-area-inset-bottom,0px) + 180px);gap:24px}}
 @media (prefers-reduced-motion: reduce){.scrollcue{display:none}.scrollcue__wheel{animation:none}}
+/* the pill widens into the email form; get the cue out of its way */
+body:has(.pill:not([data-state="idle"])) .scrollcue{opacity:0 !important;transition:opacity .2s}
 /* ---------- Persistent signup pill (Figma: 360px, glass tray, 49px controls) ---------- */
 .pill{position:fixed;z-index:45;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 40px);width:min(390px,calc(100% - 32px));transform:translate(-50%,16px);opacity:0;pointer-events:none;
   display:flex;gap:4px;padding:4px;border-radius:100px;background:rgba(237,236,232,.2);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);transition:opacity .5s,transform .5s,width .28s cubic-bezier(.22,1,.36,1)}
@@ -416,7 +419,7 @@ html.is-loading .grain{z-index:91}
 @media (prefers-reduced-motion: reduce){.reveal,.reveal-stagger>*{opacity:1;transform:none;transition:none}}
 
 /* Vertical trim on all text (matches Figma text-box-trim: cap height to baseline) */
-.beat__head,.beat__sub,.opening h1,.opening p,.pill__join span,.scrollcue__label,.menu a span,.chcard__label,.chcard__foot h3,.chcard__foot p,.eyebrow,.h-36,.h-30,.muted-17,.quad__title,.problem__lead,.problem__aside,.problem__body,.snapline,.roles__head h2,.roles__head p,.faq__head h2,.faq__q span,.faq__a p,.concept__head h2,.concept__intro,.band h2,.band__sub,.rcard__cap span,.rcard__cap strong{display:block;text-box:trim-both cap alphabetic}
+.beat__head,.beat__sub,.opening h1,.opening p,.pill__join span,.menu a span,.chcard__label,.chcard__foot h3,.chcard__foot p,.eyebrow,.h-36,.h-30,.muted-17,.quad__title,.problem__lead,.problem__aside,.problem__body,.snapline,.roles__head h2,.roles__head p,.faq__head h2,.faq__q span,.faq__a p,.concept__head h2,.concept__intro,.band h2,.band__sub,.rcard__cap span,.rcard__cap strong{display:block;text-box:trim-both cap alphabetic}
 .menu a{padding:17px 16px}
 
 
@@ -434,7 +437,7 @@ html.is-loading .grain{z-index:91}
   .opening h1{font-size:33px;width:auto;max-width:334px}
   .opening p{font-size:15px;width:300px;max-width:100%}
   .opening .actions{margin:0}
-  .scrollcue{right:20px;bottom:calc(env(safe-area-inset-bottom,0px) + 121px);font-size:15px}
+  .scrollcue{left:auto;right:20px;bottom:calc(env(safe-area-inset-bottom,0px) + 121px)}  /* no room beside the pill: sit above it */
   .scrollcue svg{width:22px;height:34px}
   .pill{width:350px;bottom:calc(env(safe-area-inset-bottom,0px) + 40px)}
   .pill__join{font-size:14px}
@@ -860,7 +863,6 @@ html.flow-open, html.flow-open body{overflow:hidden}
           <rect x="2" y="2" width="20" height="32" rx="10" stroke="currentColor" stroke-width="1.8"/>
           <path class="scrollcue__wheel" d="M12 9v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
         </svg>
-        <span class="scrollcue__label">Scroll</span>
       </div>
 
       <div tabindex="0" role="button" aria-expanded="false" class="beat beat--nowrap" data-in="0.08" data-out="0.165" data-open="false">
