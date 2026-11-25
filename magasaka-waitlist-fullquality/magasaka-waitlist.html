@@ -1258,6 +1258,13 @@ html.mf-open{overscroll-behavior:none}
 }
 .mf-open .juan-say,body:has(#flow:not([hidden])) .juan-say{display:none}
 @media (prefers-reduced-motion: reduce){.mj__look{transition:none}.juan-say.is-in,.juan-say.is-out{animation:none}}
+/* Mang Juan's icon: a dark green gradient */
+.juan,.ask__avatar{background:radial-gradient(circle at 32% 26%,#4f7a36 0%,#2f4f22 55%,#1c3314 100%)}
+.juan{box-shadow:0 10px 24px -10px rgba(10,30,5,.7),inset 0 0 0 1px rgba(255,255,255,.12)}
+@media (max-width:640px){
+  .juan{background:rgba(237,236,232,.2)}
+  .juan .mj{background:radial-gradient(circle at 32% 26%,#4f7a36 0%,#2f4f22 55%,#1c3314 100%)}
+}
 </style>
 </head>
 <body>
