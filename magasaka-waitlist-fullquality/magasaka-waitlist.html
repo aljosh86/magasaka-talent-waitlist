@@ -880,8 +880,7 @@ html.flow-open, html.flow-open body{overflow:hidden}
 .signup__err{margin:8px 0 0;font-size:14px;letter-spacing:-.01em;color:#ff9a9c}
 
 /* ---------- Manifesto: a tri-folded letter that opens in 3D ---------- */
-/* the hand: Caveat, served from our own fonts/ folder (SIL OFL, see fonts/LICENSE-Caveat.txt) */
-@font-face{font-family:'Magasaka Hand';font-style:normal;font-weight:400 700;font-display:swap;src:url(fonts/caveat-latin.woff2) format('woff2')}
+
 html.mf-open,html.mf-open body{overflow:hidden}
 .mf{position:fixed;inset:0;z-index:120;display:grid;place-items:center;padding:24px}
 .mf[hidden]{display:none}
@@ -903,11 +902,7 @@ html.mf-open,html.mf-open body{overflow:hidden}
   -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 40px,#000 calc(100% - 56px),transparent 100%);
           mask-image:linear-gradient(180deg,transparent 0,#000 40px,#000 calc(100% - 56px),transparent 100%)}
 .mf__scroll:focus{outline:none}
-.mf__w{opacity:0;filter:blur(1.5px);transition:opacity .5s ease,filter .6s ease;transition-delay:var(--d,0ms)}
-.mf__sheet.is-written .mf__w{opacity:1;filter:none}
-.mf__sheet .mf__rule{opacity:0;transition:opacity .6s ease;transition-delay:var(--d,0ms)}
-.mf__sheet.is-written .mf__rule{opacity:.35}
-@media (prefers-reduced-motion: reduce){.mf__w,.mf__sheet .mf__rule{transition:none}}   /* focus lands on the letter so arrow keys scroll it; no ring needed */
+   /* focus lands on the letter so arrow keys scroll it; no ring needed */
 .mf__scroll::-webkit-scrollbar{width:6px}
 .mf__scroll::-webkit-scrollbar-track{background:transparent}
 .mf__scroll::-webkit-scrollbar-thumb{background:rgba(39,48,73,.16);border-radius:6px}
@@ -943,6 +938,23 @@ html.mf-open,html.mf-open body{overflow:hidden}
   .mf__letter .mf__open{font-size:30px}
   .mf__letter .mf__turn{font-size:25px}
 }
+
+/* photo letter: the stage takes the photo's proportions; tap to zoom */
+.mf__stage{width:min(560px,calc(100vw - 32px),calc((100svh - 48px) * .664));height:auto;aspect-ratio:1360/2048}
+.mf__sheet{background:#2a2119;border-radius:6px}
+.mf__sheet::after{display:none}
+.mf__sheet .mf__scroll{padding:0;overflow:hidden;-webkit-mask-image:none;mask-image:none;scrollbar-width:none}
+.mf__sheet .mf__scroll::-webkit-scrollbar{display:none}
+.mf__photo{display:block;width:100%;height:auto;cursor:zoom-in;-webkit-user-drag:none;user-select:none}
+.mf__sheet.is-zoomed .mf__scroll{overflow:auto}
+.mf__sheet.is-zoomed .mf__photo{width:240%;max-width:none;cursor:zoom-out}
+.mf__close{background:rgba(246,243,234,.85);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.mf__close:hover{background:#f6f3ea}
+.mf__hint{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);padding:8px 14px;border-radius:100px;pointer-events:none;
+  background:rgba(20,20,20,.62);color:#fff;font:400 13px/1 var(--font);letter-spacing:-.01em;opacity:0}
+.mf__hint.is-on{animation:mf-hint 3.2s ease forwards}
+@keyframes mf-hint{0%{opacity:0;transform:translate(-50%,6px)}12%,75%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
+@media (max-width:640px){.mf__stage{width:min(calc(100vw - 24px),calc((100svh - 24px) * .664))}}
 </style>
 </head>
 <body>
@@ -2598,69 +2610,49 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
   })();
 </script>
 
-<div class="mf" id="manifesto" hidden role="dialog" aria-modal="true" aria-labelledby="mfTitle">
+<div class="mf" id="manifesto" hidden role="dialog" aria-modal="true" aria-label="Magasaka Manifesto">
   <div class="mf__backdrop" data-mf-close></div>
   <div class="mf__stage">
     <div class="mf__sheet" id="mfSheet">
-      <button class="mf__close" type="button" aria-label="Close the manifesto" data-mf-close><svg width="16" height="16" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M16.5 5.5L5.50074 16.4993M16.4993 16.5L5.5 5.50078" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
       <div class="mf__scroll" tabindex="-1">
-        <h2 class="mf__title" id="mfTitle">Magasaka Manifesto</h2>
-        <div class="mf__letter">
-          <p class="mf__open">My parents are farmers.</p>
-          <p>I grew up knowing how hard it can be to earn a living in the Philippines. As I grew older, I made myself a promise: I would find a way to help build a better tomorrow for Filipinos.</p>
-          <p class="mf__turn">Magasaka grew from that promise. Today, we carry it together.</p>
-          <p>We want the work Filipinos do for the world to help them build a better life at home.</p>
-          <p>Filipino talent can compete with the best in the world. Opportunities should reflect people’s ability and the trust they earn through their work. Those beginning their careers need a real chance to prove themselves, too.</p>
-          <p>Good work deserves fair compensation. Its rewards should stay with the people who earn them, giving them more freedom to care for themselves and build the life they want.</p>
-          <p>People should have room to plan beyond the next payment. As Magasaka grows, we will work to help talent build savings, understand their tax responsibilities, and care for their health.</p>
-          <p>Businesses place real trust in the people they hire. They need capable partners who understand their goals and follow through on work that matters to them.</p>
-          <p>That trust depends on both sides keeping their commitments. We stand for clear expectations, accountability, and respect for each other’s time. Everyone deserves protection in their work and a fair hearing when things go wrong. Privacy and dignity are part of that responsibility.</p>
-          <p>We believe Filipino talent and businesses can help each other grow. As a business succeeds, the people whose work helped it get there should have room to grow with it.</p>
-          <hr class="mf__rule">
-          <p class="mf__turn">For me, that responsibility reaches back to the farms.</p>
-          <p>In the future, we will share a portion of what Magasaka earns to support farmers and the wider Philippine agricultural sector. We will hold ourselves to this promise, alongside our commitments to talent and businesses, as Magasaka grows.</p>
-          <p class="mf__close-line">Families like mine are part of why Magasaka exists. I want them to share in what it makes possible.</p>
-        </div>
+        <img class="mf__photo" src="images/manifesto-letter.jpg" width="1360" height="2048" alt="" decoding="async">
       </div>
+      <button class="mf__close" type="button" aria-label="Close the manifesto" data-mf-close><svg width="16" height="16" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M16.5 5.5L5.50074 16.4993M16.4993 16.5L5.5 5.50078" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+      <span class="mf__hint" aria-hidden="true">Tap to zoom</span>
     </div>
   </div>
+  <!-- the photographed letter, as text, for screen readers and search -->
+  <div class="sr-only">
+    <h2>Magasaka Manifesto</h2>
+    <p>
+      
+        Magasaka Manifesto
+        
+          My parents are farmers.</p>
+    <p>I grew up knowing how hard it can be to earn a living in the Philippines. As I grew older, I made myself a promise: I would find a way to help build a better tomorrow for Filipinos.</p>
+    <p>Magasaka grew from that promise. Today, we carry it together.</p>
+    <p>We want the work Filipinos do for the world to help them build a better life at home.</p>
+    <p>Filipino talent can compete with the best in the world. Opportunities should reflect people’s ability and the trust they earn through their work. Those beginning their careers need a real chance to prove themselves, too.</p>
+    <p>Good work deserves fair compensation. Its rewards should stay with the people who earn them, giving them more freedom to care for themselves and build the life they want.</p>
+    <p>People should have room to plan beyond the next payment. As Magasaka grows, we will work to help talent build savings, understand their tax responsibilities, and care for their health.</p>
+    <p>Businesses place real trust in the people they hire. They need capable partners who understand their goals and follow through on work that matters to them.</p>
+    <p>That trust depends on both sides keeping their commitments. We stand for clear expectations, accountability, and respect for each other’s time. Everyone deserves protection in their work and a fair hearing when things go wrong. Privacy and dignity are part of that responsibility.</p>
+    <p>We believe Filipino talent and businesses can help each other grow. As a business succeeds, the people whose work helped it get there should have room to grow with it.</p>
+    <p>For me, that responsibility reaches back to the farms.</p>
+    <p>In the future, we will share a portion of what Magasaka earns to support farmers and the wider Philippine agricultural sector. We will hold ourselves to this promise, alongside our commitments to talent and businesses, as Magasaka grows.</p>
+    <p>Families like mine are part of why Magasaka exists. I want them to share in what it makes possible.</p>
+  </div>
 </div>
-
 <script>
-  // --- Manifesto: open as a tri-folded letter that unfolds (top flap, then bottom flap), then reads as one sheet.
-  // The flaps are three strips cut from a copy of the real page, so the text you see unfolding is the text you read.
+  // --- Manifesto: a photographed, tri-folded letter that lifts in and unfolds (top flap, then bottom flap).
+  // The flaps are strips of the same photo, so what unfolds is the letter you then read. Tap/click to zoom in.
   (() => {
     const box = document.getElementById('manifesto');
     if (!box) return;
     const stage = box.querySelector('.mf__stage'), sheet = document.getElementById('mfSheet');
+    const scroller = sheet.querySelector('.mf__scroll'), photo = sheet.querySelector('.mf__photo'), hint = sheet.querySelector('.mf__hint');
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     let fold = null, busy = false, lastFocus = null;
-
-    // wrap every word once, so the paper can start blank and the words can be "written" in order
-    const writable = [...sheet.querySelectorAll('.mf__title, .mf__letter p, .mf__rule')];
-    const words = [];
-    writable.forEach(el => {
-      if (el.matches('.mf__rule')){ words.push(el); return; }
-      const parts = el.textContent.split(/(\s+)/);
-      el.textContent = '';
-      parts.forEach(t => {
-        if (!t) return;
-        if (/^\s+$/.test(t)){ el.appendChild(document.createTextNode(t)); return; }
-        const w = document.createElement('span'); w.className = 'mf__w'; w.textContent = t; el.appendChild(w); words.push(w);
-      });
-    });
-    // a steady hand: ~16 ms a word, with a beat after each paragraph; words far below the fold land together
-    function write(){
-      let t = 0, prev = null;
-      words.forEach(w => {
-        const block = w.closest('p, h2, hr') || w;
-        if (prev && block !== prev) t += 140;
-        prev = block;
-        w.style.setProperty('--d', Math.min(t, 3200) + 'ms');
-        t += 16;
-      });
-      sheet.classList.remove('is-written'); void sheet.offsetWidth; sheet.classList.add('is-written');
-    }
     const ease = 'cubic-bezier(.22,1,.36,1)';
 
     function strip(i, h){
@@ -2669,7 +2661,8 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       panel.style.top = (i * h) + 'px'; panel.style.height = h + 'px';
       const face = document.createElement('div'); face.className = 'mf__face';
       const copy = sheet.cloneNode(true);
-      copy.removeAttribute('id'); copy.querySelectorAll('[id]').forEach(n => n.removeAttribute('id'));
+      copy.removeAttribute('id'); copy.classList.remove('is-zoomed');
+      copy.querySelectorAll('.mf__close, .mf__hint').forEach(n => n.remove());
       copy.style.top = (-i * h) + 'px'; copy.style.height = (h * 3) + 'px';
       face.appendChild(copy);
       const shade = document.createElement('div'); shade.className = 'mf__shade'; face.appendChild(shade);
@@ -2678,62 +2671,77 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       return {panel, shade};
     }
 
-    function open(){
+    function unzoom(){ sheet.classList.remove('is-zoomed'); scroller.scrollTo(0, 0); }
+    function showHint(){
+      hint.classList.remove('is-on'); void hint.offsetWidth; hint.classList.add('is-on');
+    }
+
+    async function open(){
       if (!box.hidden || busy) return;
       lastFocus = document.activeElement;
+      unzoom();
       box.hidden = false; document.documentElement.classList.add('mf-open');
-      sheet.querySelector('.mf__scroll').scrollTop = 0;
-      sheet.classList.remove('is-written');
       requestAnimationFrame(() => box.classList.add('is-open'));
+      try { await photo.decode(); } catch(e){}
       if (reduce){
-        sheet.classList.add('is-written');
         sheet.animate([{opacity:0},{opacity:1}], {duration:250});
-        box.querySelector('.mf__scroll').focus({preventScroll:true});
+        scroller.focus({preventScroll:true}); showHint();
         return;
       }
       busy = true;
       const h = stage.clientHeight / 3;
       fold = document.createElement('div'); fold.className = 'mf__fold';
       const top = strip(0, h), mid = strip(1, h), bot = strip(2, h);
-      // folded: the bottom third tucked up behind the front, the top third folded down over it
-      top.panel.style.transformOrigin = '50% 100%'; top.panel.style.zIndex = 3;
-      bot.panel.style.transformOrigin = '50% 0';   bot.panel.style.zIndex = 2;
-      mid.panel.style.zIndex = 1;
+      top.panel.style.transformOrigin = '50% 100%';
+      bot.panel.style.transformOrigin = '50% 0';
       fold.append(mid.panel, bot.panel, top.panel);
       stage.appendChild(fold);
       sheet.style.visibility = 'hidden';
-
-      const anims = [];
-      // the folded letter arrives: a third of the height, lifting toward you
-      anims.push(fold.animate([
-        {transform:'translateY(60px) rotateX(18deg) scale(.86)', opacity:0},
-        {transform:'translateY(0) rotateX(0) scale(1)', opacity:1}], {duration:520, easing:ease, fill:'both'}));
-      // top flap opens up, then the bottom flap swings down
-      anims.push(top.panel.animate([{transform:'translateZ(2px) rotateX(-179deg)'},{transform:'translateZ(0) rotateX(0deg)'}], {duration:820, delay:380, easing:'cubic-bezier(.45,0,.2,1)', fill:'both'}));
-      anims.push(top.shade.animate([{opacity:.18},{opacity:0}], {duration:820, delay:380, fill:'both'}));
-      anims.push(bot.panel.animate([{transform:'translateZ(1px) rotateX(179deg)'},{transform:'translateZ(0) rotateX(0deg)'}], {duration:820, delay:980, easing:'cubic-bezier(.45,0,.2,1)', fill:'both'}));
-      anims.push(bot.shade.animate([{opacity:.22},{opacity:0}], {duration:820, delay:980, fill:'both'}));
-      Promise.all(anims.map(a => a.finished)).then(() => {
+      const anims = [
+        fold.animate([{transform:'translateY(60px) rotateX(18deg) scale(.86)', opacity:0},{transform:'translateY(0) rotateX(0) scale(1)', opacity:1}], {duration:520, easing:ease, fill:'both'}),
+        top.panel.animate([{transform:'translateZ(2px) rotateX(-179deg)'},{transform:'translateZ(0) rotateX(0deg)'}], {duration:820, delay:380, easing:'cubic-bezier(.45,0,.2,1)', fill:'both'}),
+        top.shade.animate([{opacity:.3},{opacity:0}], {duration:820, delay:380, fill:'both'}),
+        bot.panel.animate([{transform:'translateZ(1px) rotateX(179deg)'},{transform:'translateZ(0) rotateX(0deg)'}], {duration:820, delay:980, easing:'cubic-bezier(.45,0,.2,1)', fill:'both'}),
+        bot.shade.animate([{opacity:.35},{opacity:0}], {duration:820, delay:980, fill:'both'})
+      ];
+      Promise.all(anims.map(x => x.finished)).then(() => {
         sheet.style.visibility = ''; fold.remove(); fold = null; busy = false;
-        write();
-        box.querySelector('.mf__scroll').focus({preventScroll:true});
+        scroller.focus({preventScroll:true}); showHint();
       });
     }
 
-    function close(then){
+    function close(){
       if (box.hidden) return;
       if (fold){ fold.remove(); fold = null; sheet.style.visibility = ''; busy = false; }
       box.classList.remove('is-open');
-      const a = sheet.animate([{opacity:1, transform:'none'},{opacity:0, transform:'translateY(24px) scale(.97)'}], {duration: reduce ? 1 : 260, easing:'ease', fill:'forwards'});
-      a.finished.then(() => {
-        a.cancel(); box.hidden = true; document.documentElement.classList.remove('mf-open');
-        if (then) then(); else if (lastFocus) lastFocus.focus({preventScroll:true});
+      const x = sheet.animate([{opacity:1, transform:'none'},{opacity:0, transform:'translateY(24px) scale(.97)'}], {duration: reduce ? 1 : 260, easing:'ease', fill:'forwards'});
+      x.finished.then(() => {
+        x.cancel(); box.hidden = true; document.documentElement.classList.remove('mf-open'); unzoom();
+        if (lastFocus) lastFocus.focus({preventScroll:true});
       });
     }
 
-    document.querySelectorAll('a[href="#manifesto"]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); open(); }));
-    box.querySelectorAll('[data-mf-close]').forEach(b => b.addEventListener('click', () => close()));
-    addEventListener('keydown', e => { if (e.key === 'Escape' && !box.hidden){ e.stopPropagation(); close(); } }, true);
+    // tap/click the letter to read it up close; tap again to see the whole page
+    photo.addEventListener('click', e => {
+      if (sheet.classList.contains('is-zoomed')){ unzoom(); return; }
+      const r = photo.getBoundingClientRect();
+      const fx = (e.clientX - r.left) / r.width, fy = (e.clientY - r.top) / r.height;
+      sheet.classList.add('is-zoomed'); hint.classList.remove('is-on');
+      requestAnimationFrame(() => {
+        scroller.scrollLeft = fx * scroller.scrollWidth - scroller.clientWidth / 2;
+        scroller.scrollTop = fy * scroller.scrollHeight - scroller.clientHeight / 2;
+      });
+    });
+
+    document.querySelectorAll('a[href="#manifesto"]').forEach(l => l.addEventListener('click', e => { e.preventDefault(); open(); }));
+    box.querySelectorAll('[data-mf-close]').forEach(btn => btn.addEventListener('click', close));
+    addEventListener('keydown', e => {
+      if (e.key !== 'Escape' || box.hidden) return;
+      e.stopPropagation();
+      if (sheet.classList.contains('is-zoomed')) unzoom(); else close();
+    }, true);
+    // fetch the photo early when someone is likely to open it
+    document.querySelectorAll('a[href="#manifesto"]').forEach(l => l.addEventListener('pointerenter', () => { photo.loading = 'eager'; }, {once:true}));
     window.__mgManifesto = open;
   })();
 </script>
