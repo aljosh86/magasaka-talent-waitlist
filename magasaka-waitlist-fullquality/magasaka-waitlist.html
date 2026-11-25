@@ -658,7 +658,7 @@ html.flow-open, html.flow-open body{overflow:hidden}
 .flow__top.is-done .flow__bars{opacity:0}
 /* on the card screen the step label gives way to a Back button beside the close button */
 .flow__top.is-done .flow__step{display:none}
-.flow__top:not(.is-done) .flow__edit{display:none}
+.flow__top[data-step="0"] .flow__edit{display:none}   /* nothing to go back to from the name */
 
 .flow__screen{display:none;min-height:calc(100vh - 80px);align-items:center;justify-content:center;padding:20px clamp(20px,2.65vw,40px) 60px}
 .flow__screen.is-on{display:flex}
@@ -719,7 +719,10 @@ html.flow-open, html.flow-open body{overflow:hidden}
 .flow__row:hover,.flow__row.is-active{background:rgba(81,124,53,.1)}
 .flow__row--add{font-weight:400;font-size:14px;color:#818181;cursor:pointer}
 .flow__row--empty{cursor:default;padding:11px 16px;font-weight:400;font-size:13px;color:#818181}
-.flow__meta{display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;
+/* when all 3 are picked the list is just a quiet line of text, no box */
+.flow__results.is-note{background:none;border:0;border-radius:0;overflow:visible}
+.flow__results.is-note .flow__row--empty,.flow__results.is-note .flow__row--empty:hover{padding:0 4px;font-size:13px;color:#9a9a96;background:none}
+.flow__meta{display:flex;align-items:center;justify-content:flex-end;gap:16px;width:100%;
   font-size:14.5px;letter-spacing:-.01em}
 .flow__meta button{padding:0;border:0;background:none;color:#2d6b45;text-decoration:underline;cursor:pointer;font:inherit}
 .flow__meta span{color:#818181}
@@ -1289,7 +1292,6 @@ html.flow-open, html.flow-open body{overflow:hidden}
         <div class="flow__pill"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M15.584 15.5834L19.2507 19.25" stroke="currentColor" stroke-width="1.375" stroke-linecap="round" stroke-linejoin="round"/><path d="M17.4167 10.0833C17.4167 6.03324 14.1334 2.75 10.0833 2.75C6.03324 2.75 2.75 6.03324 2.75 10.0833C2.75 14.1334 6.03324 17.4167 10.0833 17.4167C14.1334 17.4167 17.4167 14.1334 17.4167 10.0833Z" stroke="currentColor" stroke-width="1.375" stroke-linecap="round" stroke-linejoin="round"/></svg><input id="flowSearch" type="text" placeholder="Search any skill or niche" aria-label="Search skills"></div>
         <div class="flow__results" id="flowResults" hidden></div>
         <div class="flow__meta">
-          <button type="button" id="flowBrowse">Browse all categories</button>
           <span id="flowPicked">0 of 3 picked</span>
         </div>
         <button class="flow__btn" id="flowCardBtn" type="button" disabled>Get my card</button>
@@ -2188,7 +2190,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     const stepLabel = $('.flow__step'), top = $('.flow__top');
     const nameInput = $('#flowName'), nameBtn = $('#flowNameBtn');
     const search = $('#flowSearch'), chipWrap = $('#flowChips'), results = $('#flowResults');
-    const meta = $('#flowPicked'), browse = $('#flowBrowse'), cardBtn = $('#flowCardBtn');
+    const meta = $('#flowPicked'), cardBtn = $('#flowCardBtn');
 
     let state = {email:'', name:'', title:'', picks:[], ref:'', no:0};
     try { const raw = localStorage.getItem(STORE); if (raw) state = Object.assign(state, JSON.parse(raw)); } catch(e){}
@@ -2198,11 +2200,13 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     function hash(str){ let h = 2166136261; for (let i=0;i<str.length;i++){ h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return Math.abs(h); }
     const shareUrl = () => location.origin + location.pathname + '?ref=' + state.ref;
 
+    let flowStep = 0;
     function show(i){
       screens.forEach((s,n) => s.classList.toggle('is-on', n === i));
       bars.forEach((b,n) => b.classList.toggle('is-on', n <= i));
       stepLabel.textContent = 'Step ' + Math.min(i + 2, 3) + ' of 3';
       top.classList.toggle('is-done', i === 2);
+      top.dataset.step = i; flowStep = i;
       flow.scrollTop = 0;
     }
     function open(step){
@@ -2306,7 +2310,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       const full = state.picks.length >= 3;
       if (full){
         if (!resultsOpen && !q){ hideResults(); return; }
-        results.hidden = false; results.appendChild(row('You have picked 3. Remove one to change it.', '', 'flow__row--empty')); return;
+        results.hidden = false; results.classList.add('is-note'); results.appendChild(row('You have picked 3. Remove one to change it.', '', 'flow__row--empty')); return;
       }
       let list;
       if (!q){
@@ -2319,6 +2323,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
           .sort((a,b) => (a.name.toLowerCase().startsWith(q) ? 0 : 1) - (b.name.toLowerCase().startsWith(q) ? 0 : 1));
       }
       results.hidden = false;
+      results.classList.remove('is-note');
       results.classList.toggle('is-list', !q);          // stagger the rows in only when a list opens, not per keystroke
       list.slice(0, !q ? list.length : 6).forEach((s, i) => {
         const r = row(s.name, s.cat);
@@ -2338,7 +2343,6 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     }
     function setBrowse(v){
       browsing = v;
-      browse.textContent = v ? 'Close all categories' : 'Browse all categories';
     }
     search.addEventListener('input', () => { resultsOpen = true; setBrowse(false); renderResults(); });
     search.addEventListener('focus', () => { resultsOpen = true; renderResults(); });
@@ -2352,7 +2356,6 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     search.addEventListener('keydown', e => {
       if (e.key === 'Enter'){ e.preventDefault(); const first = results.querySelector('.flow__row'); if (first) first.click(); }
     });
-    browse.addEventListener('click', () => { setBrowse(!browsing); search.value = ''; renderResults(); });
     cardBtn.addEventListener('click', () => { if (state.title && state.picks.length) buildCard(); });
 
     // --- step 4: the card and the share link
@@ -2515,7 +2518,8 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       startFlow(state.name ? 1 : 0);
     };
     // a way back into the steps from the card
-    $('#flowEdit').addEventListener('click', () => startFlow(1));   // back to the title and skills
+    // Back: card -> title & skills, skills -> name
+    $('#flowEdit').addEventListener('click', () => startFlow(flowStep === 2 ? 1 : 0));
     renderChips();
   })();
 </script>
