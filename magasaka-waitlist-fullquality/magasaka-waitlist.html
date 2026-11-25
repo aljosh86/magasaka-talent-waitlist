@@ -302,6 +302,9 @@ body:has(.pill:not([data-state="idle"])) .scrollcue{opacity:0 !important;transit
 /* ---------- FAQ (Figma 24:505) ---------- */
 .faq{display:flex;align-items:flex-start;justify-content:space-between;gap:clamp(40px,9vw,136px);width:100%;flex-wrap:wrap}
 @media (min-width:641px){.faq{margin-inline:calc(clamp(20px,5.3vw,80px) - clamp(20px,7.68vw,116px));width:auto;align-self:stretch}}
+.faq__head{flex:1 1 320px;display:flex;flex-direction:column;gap:30px}
+.faq__head h2{margin:0;font-weight:500;font-size:clamp(26px,2.75vw,36px);line-height:1.4;color:var(--ink);max-width:374px}
+.faq__list{flex:1 1 480px;max-width:575px;display:flex;flex-direction:column}
 /* desktop: one centred column, heading over the list (the left column was empty once the photo went) */
 @media (min-width:641px){
   .faq{flex-direction:column;align-items:center;flex-wrap:nowrap;gap:56px}
@@ -310,9 +313,6 @@ body:has(.pill:not([data-state="idle"])) .scrollcue{opacity:0 !important;transit
   .faq__head h2 br{display:none}
   .faq__list{flex:none;width:100%;max-width:720px}
 }
-.faq__head{flex:1 1 320px;display:flex;flex-direction:column;gap:30px}
-.faq__head h2{margin:0;font-weight:500;font-size:clamp(26px,2.75vw,36px);line-height:1.4;color:var(--ink);max-width:374px}
-.faq__list{flex:1 1 480px;max-width:575px;display:flex;flex-direction:column}
 .faq__item{border-bottom:1px solid #dcdbd7}
 .faq__item:first-child{border-top:0}
 .faq__q{width:100%;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:22px 0;background:none;border:0;cursor:pointer;text-align:left;
@@ -1071,7 +1071,7 @@ html.flow-open, html.flow-open body{overflow:hidden}
 
       <section class="faq reveal" aria-label="Questions before you join">
         <div class="faq__head">
-          <h2>Questions<br>before you join?</h2>
+          <h2>Questions <br>before you join?</h2>
         </div>
         <div class="faq__list">
           <div class="faq__item" data-open="true">
