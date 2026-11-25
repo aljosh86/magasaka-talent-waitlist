@@ -1227,6 +1227,13 @@ html.mf-open{overscroll-behavior:none}
 .ask__msg--bot{background:rgba(255,255,255,.92);box-shadow:0 1px 2px rgba(20,20,20,.06)}
 .ask__chips button{background:rgba(255,255,255,.92)}
 .ask__form input{background:rgba(255,255,255,.96)}
+/* Mang Juan's button in Magasaka green */
+.juan{background:var(--logo-green);box-shadow:0 10px 24px -10px rgba(20,40,10,.6),inset 0 0 0 1px rgba(255,255,255,.14)}
+.ask__avatar{background:var(--logo-green)}
+@media (max-width:640px){
+  .juan{background:rgba(237,236,232,.2);box-shadow:none}
+  .juan .mj{background:var(--logo-green)}
+}
 </style>
 </head>
 <body>
@@ -1731,10 +1738,10 @@ Marc!</h2>
   </div>
 </nav>
 
-<button class="juan" id="askBtn" type="button" aria-label="Ask Mang Juan" aria-expanded="false" aria-controls="ask"><svg class="mj" viewBox="0 0 56 56" aria-hidden="true"><g class="mj__hat"><path d="M10.5 29.5 28 15.5l17.5 14c-5.3 2-11.1 3-17.5 3s-12.2-1-17.5-3z" fill="#dca15d"/><path d="M28 15.5v17M28 15.5l-8 16.4M28 15.5l8 16.4M28 15.5 14.5 30.9M28 15.5l13.5 15.4" fill="none" stroke="#b07a3a" stroke-width="1.1" stroke-linecap="round"/><path d="M10.5 29.5c5.3 2 11.1 3 17.5 3s12.2-1 17.5-3" fill="none" stroke="#9c6a30" stroke-width="1.6" stroke-linecap="round"/><circle cx="28" cy="15.6" r="1.4" fill="#9c6a30"/></g><g class="mj__eyes" fill="#2b2a25"><circle cx="23.2" cy="37.5" r="2.3"/><circle cx="32.8" cy="37.5" r="2.3"/></g></svg></button>
+<button class="juan" id="askBtn" type="button" aria-label="Ask Mang Juan" aria-expanded="false" aria-controls="ask"><svg class="mj" viewBox="0 0 56 56" aria-hidden="true"><g class="mj__hat"><path d="M10.5 29.5 28 15.5l17.5 14c-5.3 2-11.1 3-17.5 3s-12.2-1-17.5-3z" fill="#dca15d"/><path d="M28 15.5v17M28 15.5l-8 16.4M28 15.5l8 16.4M28 15.5 14.5 30.9M28 15.5l13.5 15.4" fill="none" stroke="#b07a3a" stroke-width="1.1" stroke-linecap="round"/><path d="M10.5 29.5c5.3 2 11.1 3 17.5 3s12.2-1 17.5-3" fill="none" stroke="#9c6a30" stroke-width="1.6" stroke-linecap="round"/><circle cx="28" cy="15.6" r="1.4" fill="#9c6a30"/></g><g class="mj__eyes" fill="#f4f2ea"><circle cx="23.2" cy="37.5" r="2.3"/><circle cx="32.8" cy="37.5" r="2.3"/></g></svg></button>
 <section class="ask" id="ask" hidden role="dialog" aria-label="Ask Mang Juan">
   <header class="ask__head">
-    <span class="ask__avatar"><svg class="mj" viewBox="0 0 56 56" aria-hidden="true"><g class="mj__hat"><path d="M10.5 29.5 28 15.5l17.5 14c-5.3 2-11.1 3-17.5 3s-12.2-1-17.5-3z" fill="#dca15d"/><path d="M28 15.5v17M28 15.5l-8 16.4M28 15.5l8 16.4M28 15.5 14.5 30.9M28 15.5l13.5 15.4" fill="none" stroke="#b07a3a" stroke-width="1.1" stroke-linecap="round"/><path d="M10.5 29.5c5.3 2 11.1 3 17.5 3s12.2-1 17.5-3" fill="none" stroke="#9c6a30" stroke-width="1.6" stroke-linecap="round"/><circle cx="28" cy="15.6" r="1.4" fill="#9c6a30"/></g><g class="mj__eyes" fill="#2b2a25"><circle cx="23.2" cy="37.5" r="2.3"/><circle cx="32.8" cy="37.5" r="2.3"/></g></svg></span>
+    <span class="ask__avatar"><svg class="mj" viewBox="0 0 56 56" aria-hidden="true"><g class="mj__hat"><path d="M10.5 29.5 28 15.5l17.5 14c-5.3 2-11.1 3-17.5 3s-12.2-1-17.5-3z" fill="#dca15d"/><path d="M28 15.5v17M28 15.5l-8 16.4M28 15.5l8 16.4M28 15.5 14.5 30.9M28 15.5l13.5 15.4" fill="none" stroke="#b07a3a" stroke-width="1.1" stroke-linecap="round"/><path d="M10.5 29.5c5.3 2 11.1 3 17.5 3s12.2-1 17.5-3" fill="none" stroke="#9c6a30" stroke-width="1.6" stroke-linecap="round"/><circle cx="28" cy="15.6" r="1.4" fill="#9c6a30"/></g><g class="mj__eyes" fill="#f4f2ea"><circle cx="23.2" cy="37.5" r="2.3"/><circle cx="32.8" cy="37.5" r="2.3"/></g></svg></span>
     <strong class="ask__who">Mang Juan</strong>
     <button class="ask__close" type="button" aria-label="Close" data-ask-close><svg width="16" height="16" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M16.5 5.5L5.5 16.5M16.5 16.5L5.5 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
   </header>
@@ -3422,6 +3429,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       await new Promise(res => setTimeout(res, wait));
       dots.remove();
       add(reply, 'bot');
+      if (window.__mgJuanSound) window.__mgJuanSound('reply');
       history.push({role:'assistant', content: reply});
       busy = false;
     }
@@ -3438,11 +3446,30 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       if (matchMedia('(hover: hover)').matches) setTimeout(() => input.focus({preventScroll:true}), 60);
     }
     function close(){ box.hidden = true; btn.setAttribute('aria-expanded', 'false'); }
+    // soft sounds, synthesised on the spot; only ever after someone has tapped him
+    let ac = null;
+    const tone = (freq, at, len, vol, type, drop) => {
+      const o = ac.createOscillator(), g = ac.createGain(), t = ac.currentTime + at;
+      o.type = type; o.frequency.setValueAtTime(freq, t);
+      if (drop) o.frequency.exponentialRampToValueAtTime(freq * drop, t + len);
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + .008); g.gain.exponentialRampToValueAtTime(.0001, t + len);
+      o.connect(g).connect(ac.destination); o.start(t); o.stop(t + len + .02);
+    };
+    const sound = kind => {
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      try {
+        ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+        if (ac.state === 'suspended') ac.resume();
+        if (kind === 'poke'){ tone(520, 0, .12, .05, 'sine', .55); tone(1040, 0, .05, .012, 'triangle', .6); }
+        else { tone(880, 0, .35, .022, 'sine'); tone(1320, .09, .45, .016, 'sine'); }
+      } catch(e){}
+    };
+    window.__mgJuanSound = sound;
     // he bobs his hat when poked, and blinks every few seconds
     const mj = btn.querySelector('.mj');
     const play = cls => { mj.classList.remove(cls); void mj.getBoundingClientRect(); mj.classList.add(cls); };
     mj.addEventListener('animationend', e => { if (e.target.closest('.mj__hat') || !mj.classList.contains('is-poke')) mj.classList.remove('is-poke', 'is-blink'); });
-    btn.addEventListener('pointerdown', () => play('is-poke'));
+    btn.addEventListener('pointerdown', () => { play('is-poke'); sound('poke'); });
     (function blink(){ setTimeout(() => { if (!document.hidden && !mj.classList.contains('is-poke')) play('is-blink'); blink(); }, 3200 + Math.random() * 3800); })();
     btn.addEventListener('click', e => { e.stopPropagation(); box.hidden ? open() : close(); });
     box.querySelector('[data-ask-close]').addEventListener('click', () => { close(); btn.focus(); });
