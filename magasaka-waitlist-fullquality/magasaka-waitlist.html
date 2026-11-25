@@ -1094,6 +1094,67 @@ html.mf-open{overscroll-behavior:none}
   .band .signup input,.band .signup button{color:var(--ink)}
   .band .signup input::placeholder{color:rgba(20,20,20,.72)}
 }
+/* ---------- Ask Mang Juan: a "?" beside the menu opens a small chat above the pill ---------- */
+.pill__ask{flex:none;width:49px;height:49px;border:0;padding:0;border-radius:100px;background:var(--field-white);color:var(--ink);display:grid;place-items:center;cursor:pointer;transition:background .2s}
+.pill__ask:hover,.pill__ask[aria-expanded="true"]{background:#fff}
+.pill--dark .pill__ask{background:var(--ink);color:var(--field-white)}
+.pill--dark .pill__ask:hover{background:#000}
+.pill[data-state="form"] .pill__ask{display:none}
+.pill:not([data-state="form"]){width:min(440px,calc(100% - 32px))}
+.ask{position:fixed;z-index:46;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 40px + 57px + 12px);width:min(460px,calc(100vw - 24px));
+  height:min(560px,calc(100svh - 150px));display:flex;flex-direction:column;border-radius:28px;background:#f6f5f2;color:var(--ink);
+  box-shadow:0 30px 70px -28px rgba(0,0,0,.55),0 0 0 1px rgba(20,20,20,.06);transform:translateX(-50%);transform-origin:50% 100%;overflow:hidden}
+.ask[hidden]{display:none}
+.ask:not([hidden]){animation:ask-in .42s cubic-bezier(.22,1,.36,1)}
+@keyframes ask-in{from{opacity:0;transform:translate(-50%,14px) scale(.97)}to{opacity:1;transform:translateX(-50%)}}
+.ask__head{display:flex;align-items:center;gap:12px;padding:18px 18px 14px}
+.ask__avatar{flex:none;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--logo-green);color:var(--field-white);font:600 13px/1 var(--font);letter-spacing:.02em}
+.ask__who{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.ask__who strong{font:500 17px/1.1 var(--font);letter-spacing:-.01em}
+.ask__who span{font-size:13px;line-height:1.2;color:#7a7a74}
+.ask__close{flex:none;width:36px;height:36px;border:0;border-radius:50%;background:none;color:var(--ink);display:grid;place-items:center;cursor:pointer;transition:background .2s}
+.ask__close:hover{background:rgba(20,20,20,.06)}
+.ask__log{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:6px 18px 12px;display:flex;flex-direction:column;gap:10px;scrollbar-width:thin}
+.ask__msg{max-width:86%;padding:11px 15px;border-radius:18px;font-size:15px;line-height:1.45;letter-spacing:-.005em;animation:ask-msg .32s cubic-bezier(.22,1,.36,1) both}
+.ask__msg--bot{align-self:flex-start;background:#fff;border-bottom-left-radius:6px;box-shadow:0 1px 0 rgba(20,20,20,.05)}
+.ask__msg--me{align-self:flex-end;background:var(--ink);color:var(--field-white);border-bottom-right-radius:6px}
+.ask__typing{display:inline-flex;gap:4px;padding:15px 16px}
+.ask__typing i{width:6px;height:6px;border-radius:50%;background:#a5a59f;animation:ask-dot 1s infinite ease-in-out}
+.ask__typing i:nth-child(2){animation-delay:.15s}
+.ask__typing i:nth-child(3){animation-delay:.3s}
+@keyframes ask-dot{0%,80%,100%{opacity:.3;transform:none}40%{opacity:1;transform:translateY(-3px)}}
+@keyframes ask-msg{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.ask__chips{display:flex;gap:8px;padding:2px 18px 12px;overflow-x:auto;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 85%,transparent);mask-image:linear-gradient(90deg,#000 85%,transparent)}
+.ask__chips::-webkit-scrollbar{display:none}
+.ask__chips button{flex:none;height:38px;padding:0 15px;border:0;border-radius:100px;background:#fff;color:var(--ink);font:400 14px/1 var(--font);cursor:pointer;box-shadow:0 0 0 1px rgba(20,20,20,.07);transition:background .2s}
+.ask__chips button:hover{background:#ecebe7}
+.ask__form{display:flex;gap:8px;padding:0 14px 14px}
+.ask__form input{flex:1;min-width:0;height:50px;padding:0 18px;border:1.5px solid rgba(20,20,20,.14);border-radius:100px;background:#fff;color:var(--ink);font:400 15px/1 var(--font);transition:border-color .2s}
+.ask__form input:focus{outline:none;border-color:rgba(20,20,20,.45)}
+.ask__form button{flex:none;width:50px;height:50px;border:0;border-radius:50%;background:var(--ink);color:var(--field-white);display:grid;place-items:center;cursor:pointer;transition:transform .2s,background .2s}
+.ask__form button:hover{background:#000}
+.ask__form button:active{transform:scale(.94)}
+@media (max-width:640px){
+  .pill:not([data-state="form"]){width:min(390px,calc(100% - 32px))}
+  .pill__ask svg{width:20px;height:20px}
+  .ask{width:calc(100vw - 20px);height:min(560px,calc(100svh - 140px));border-radius:24px}
+  .ask__form input{font-size:16px}
+}
+@media (prefers-reduced-motion: reduce){.ask:not([hidden]),.ask__msg{animation:none}}
+
+/* phone footer: everything centred, one line of links under the socials, copyright last */
+@media (max-width:640px){
+  .band__foot{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;column-gap:22px;row-gap:20px;text-align:center}
+  .band__foot .socials{order:0;flex-basis:100%;justify-content:center;margin:0 0 4px}
+  .band__legal{display:contents}
+  .band__foot .band__links{order:1;gap:22px}
+  .band__foot > a{order:1;justify-self:auto}
+  .band__legal > span:first-child{order:2;flex-basis:100%;font-size:13px;color:rgba(237,236,232,.6)}
+}
+.band__links{display:flex;align-items:center;gap:22px}
+.band__links a{opacity:.8;text-decoration:none;transition:opacity .2s}
+.band__links a:hover{opacity:1}
+@media (min-width:641px){.band__links{display:contents}}
 </style>
 </head>
 <body>
@@ -1360,7 +1421,7 @@ html.mf-open{overscroll-behavior:none}
         </div>
       </section>
 
-      <section class="faq reveal" aria-label="Questions before you join">
+      <section class="faq reveal" id="faq" aria-label="Questions before you join">
         <div class="faq__head">
           <h2>Questions <br>before you join?</h2>
         </div>
@@ -1436,7 +1497,7 @@ html.mf-open{overscroll-behavior:none}
       </div>
     </div>
     <div class="band__foot">
-      <span class="band__legal"><span>Magasaka © 2026</span><a href="terms.html">Terms</a><a href="privacy.html">Privacy</a></span>
+      <span class="band__legal"><span>Magasaka © 2026</span><span class="band__links"><a href="terms.html">Terms</a><a href="privacy.html">Privacy</a></span></span>
       <nav class="socials" aria-label="Magasaka on social">
         <a href="#" aria-label="Magasaka on X"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 21L10.5484 13.4516M13.4516 10.5484L21 21H16L10.5484 13.4516L3 3H8L13.4516 10.5484ZM21 3L13.4516 10.5484" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         <a href="#" aria-label="Magasaka on Instagram"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 12C3 7.75736 3 5.63604 4.31802 4.31802C5.63604 3 7.75736 3 12 3C16.2426 3 18.364 3 19.682 4.31802C21 5.63604 21 7.75736 21 12C21 16.2426 21 18.364 19.682 19.682C18.364 21 16.2426 21 12 21C7.75736 21 5.63604 21 4.31802 19.682C3 18.364 3 16.2426 3 12Z" stroke="currentColor" stroke-width="1.5"/><path d="M16 12C16 14.2091 14.2091 16 12 16C9.79086 16 8 14.2091 8 12C8 9.79086 9.79086 8 12 8C14.2091 8 16 9.79086 16 12Z" stroke="currentColor" stroke-width="1.5"/><path d="M17.375 6.75H17.25M17.5 6.75C17.5 6.88808 17.388 7 17.25 7C17.1119 7 17 6.88808 17 6.75C17 6.61193 17.1119 6.5 17.25 6.5C17.388 6.5 17.5 6.61193 17.5 6.75Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
@@ -1592,11 +1653,34 @@ Marc!</h2>
     </form>
   </div>
   <button class="pill__menu" id="menuBtn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="menu"><svg class="ic ic--menu" width="24" height="24" aria-hidden="true" focusable="false" fill="none"><path d="M4 5H20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M4 12H20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M4 19H20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><svg class="ic ic--close" width="24" height="24" aria-hidden="true" focusable="false" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+  <button class="pill__ask" id="askBtn" type="button" aria-label="Ask Mang Juan" aria-expanded="false" aria-controls="ask"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M8.2 8.4a2.9 2.9 0 1 1 4.1 2.6c-.8.4-1.3 1-1.3 1.9v.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="11" cy="16.6" r="1.1" fill="currentColor"/></svg></button>
   <div class="menu" id="menu" hidden>
     <a href="#top" data-menu="home"><span>Home</span></a>
-    <a href="#manifesto"><span>Manifesto</span></a>
+    <a href="#manifesto"><span>Our Manifesto</span></a>
+    <a href="#faq" data-menu="faq"><span>FAQs</span></a>
   </div>
 </nav>
+
+<section class="ask" id="ask" hidden role="dialog" aria-label="Ask Mang Juan">
+  <header class="ask__head">
+    <span class="ask__avatar" aria-hidden="true">MJ</span>
+    <div class="ask__who"><strong>Ask Mang Juan</strong><span>Questions about Magasaka and the waitlist</span></div>
+    <button class="ask__close" type="button" aria-label="Close" data-ask-close><svg width="16" height="16" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M16.5 5.5L5.5 16.5M16.5 16.5L5.5 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+  </header>
+  <div class="ask__log" id="askLog" aria-live="polite"></div>
+  <div class="ask__chips" id="askChips">
+    <button type="button">When do you launch?</button>
+    <button type="button">Is it free?</button>
+    <button type="button">How do I get paid?</button>
+    <button type="button">What are Seeds?</button>
+    <button type="button">Is Magasaka legit?</button>
+  </div>
+  <form class="ask__form" id="askForm" autocomplete="off">
+    <input id="askInput" type="text" placeholder="Ask anything about Magasaka" aria-label="Your question" maxlength="300">
+    <button type="submit" aria-label="Send"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </form>
+</section>
+
 
 <script>
 
@@ -1896,7 +1980,15 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
   menu.addEventListener('click', e => {
     const a = e.target.closest('a'); if (!a) return;
     closeMenu();
-    if (a.dataset.menu === 'home'){ e.preventDefault(); scrollTo({top:0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'}); }
+    const smooth = matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+    if (a.dataset.menu === 'home'){ e.preventDefault(); window.__mgNavUntil = performance.now() + 3000; scrollTo({top:0, behavior:smooth}); }
+    if (a.dataset.menu === 'faq'){
+      e.preventDefault();
+      const faq = document.getElementById('faq');
+      // a jump from the menu passes straight through the held sections on the way
+      window.__mgNavUntil = performance.now() + 4000;
+      if (faq) scrollTo({top: faq.getBoundingClientRect().top + scrollY - 40, behavior:smooth});
+    }
   });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && !menu.hidden){ closeMenu(); menuBtn.focus(); } });
   document.addEventListener('click', e => { if (!menu.hidden && !e.target.closest('#pill')) closeMenu(); });
@@ -2231,7 +2323,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     try { read = sessionStorage.getItem('mg-problem-read') === '1'; } catch(e){}
     const markRead = () => { if (read) return; read = true; gate = null; try { sessionStorage.setItem('mg-problem-read', '1'); } catch(e){} };
     // stop the scroll itself at the gate (no snap-back jitter); scrolling up is never held
-    const atGate = () => gate !== null && scrollY >= gate - 1 && document.getElementById('manifesto')?.hidden !== false && document.getElementById('flow')?.hidden !== false;   // never inside the letter or signup
+    const atGate = () => gate !== null && performance.now() >= (window.__mgNavUntil || 0) && scrollY >= gate - 1 && document.getElementById('manifesto')?.hidden !== false && document.getElementById('flow')?.hidden !== false;   // never inside the letter or signup
     addEventListener('wheel', e => { if (e.deltaY > 0 && atGate()) e.preventDefault(); }, {passive:false});
     let touchY = 0;
     addEventListener('touchstart', e => { touchY = e.touches[0].clientY; }, {passive:true});
@@ -2256,7 +2348,8 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       // a fast flick can jump past a boundary in one frame: if the part on screen hasn't finished, stay on it
       const stageTop = r.top + scrollY;   // page position of the stage, taken before any pull-back below moves scrollY
       const holdLimit = i => Math.floor(stageTop - rest - lead + weights.slice(0, i + 1).reduce((a, b) => a + b, 0) / total * (span + lead)) - 2;
-      if (!read && current >= 0 && k > current && performance.now() < doneAt[current]){
+      const nav = performance.now() < (window.__mgNavUntil || 0);
+      if (!read && !nav && current >= 0 && k > current && performance.now() < doneAt[current]){
         scrollTo(0, holdLimit(current)); k = current; u = 1;
       }
       if (k !== current){
@@ -2278,7 +2371,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       });
       // hold the reader at the end of this part's turn until it has finished writing
       if (k === punchIndex && doneAt[k] && performance.now() >= doneAt[k]) markRead();
-      if (!read && begun && performance.now() < doneAt[k]){
+      if (!read && !nav && begun && performance.now() < doneAt[k]){
         gate = holdLimit(k);   // where the next part would start
         if (scrollY > gate) scrollTo(0, gate);   // a scrollbar drag or a jump still gets pulled back
         clearTimeout(draw.release); draw.release = setTimeout(() => { gate = null; }, doneAt[k] - performance.now());
@@ -3197,6 +3290,92 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     // fetch the photo early when someone is likely to open it
     document.querySelectorAll('a[href="#manifesto"]').forEach(l => l.addEventListener('pointerenter', () => { photo.loading = 'eager'; loadThree().catch(() => {}); }, {once:true}));
     window.__mgManifesto = open;
+  })();
+</script>
+<script>
+  // --- Ask Mang Juan. Answers come from what the page already says (FAQ, the three changes, roles).
+  // NOTE for the dev: set ASK_ENDPOINT to a server route that calls an AI model (keep the API key on the
+  // server) and returns {reply:"..."}; until then the local answers below are used.
+  (() => {
+    const ASK_ENDPOINT = '';
+    const btn = document.getElementById('askBtn'), box = document.getElementById('ask');
+    if (!btn || !box) return;
+    const log = document.getElementById('askLog'), form = document.getElementById('askForm'), input = document.getElementById('askInput');
+    const chips = document.getElementById('askChips');
+    const history = [];
+    const A = [
+      [/^(hi|hello|hey|yo|kumusta|kamusta|musta|good (morning|afternoon|evening)|magandang)/, "Kumusta! Ask me about the launch, fees, getting paid, Seeds or the kinds of work on Magasaka."],
+      [/thank|salamat/, "Walang anuman! Anything else you'd like to know?"],
+      [/seed/, "Seeds are what you use to apply to jobs. You get free Seeds every week based on your rank, and you can't buy them. If a client never replies, you get your Seeds back."],
+      [/founding|badge|perk|reward/, "The first 10,000 verified profiles become Founding Members, with a permanent badge and bonus Seeds. Joining the waitlist is the first step."],
+      [/legit|trust|scam|totoo|registered|company|real\b/, "Magasaka is a registered company in the Philippines and the US, and you never pay to join or apply. If anyone asks you for money to get a Magasaka job, it's not us."],
+      [/doesn.?t pay|not pay|hindi magbayad|protect|escrow|fund|milestone|guarantee/, "Clients fund the contract before you start, so your pay is protected from day one. We release it to you once the client approves the work. That works for milestones and pay periods too."],
+      [/make money|earn money|business model|0 ?%|commission|platform fee|service fee|cut|kaltas/, "Talent pays 0%. Clients pay a service fee on top of your rate, so you keep everything the contract says."],
+      [/free|cost|price|magkano|subscription|pay to (join|apply)|libre/, "Yes, it's free. You never pay to join or apply."],
+      [/get paid|payout|payment|bank|gcash|withdraw|sweldo|sahod|receive|fee/, "Straight to your local bank account. Your bank or currency conversion may charge a small fee."],
+      [/launch|kailan|when|release|available|live/, "We're aiming for early 2027. Waitlist members hear first, and the first 10,000 verified profiles become Founding Members, with a permanent badge and bonus Seeds."],
+      [/new|beginner|no experience|baguhan|entry|first time|walang experience|student/, "Yes, you can join. Your level comes from your real years of experience, and Entry is a real level with its own minimum rate."],
+      [/bait|scope|fake job|workload|posting/, "No bait-and-switch jobs. Pay and workload are checked before a job is posted."],
+      [/client|hire|employer|hiring/, "Clients pay a service fee on top of the talent's rate, and fund each contract before work starts. Right now, the waitlist is for talent."],
+      [/role|job|skill|work|category|virtual assistant|\bva\b|editor|developer|designer|writer|marketing|bookkeep|support|trabaho/, "Your kind of work belongs here: from support and operations to creative, marketing and tech. Think virtual assistants, video editors, full stack developers, social media managers, customer support, project managers, bookkeepers, copywriters and more."],
+      [/manifesto|why|mission|bakit|story|about|what is magasaka|ano ang magasaka/, "Magasaka is a freelance marketplace being built to connect Filipino talent with clients around the world, with fair pay and room to grow. The full story is in Our Manifesto, in the menu."],
+      [/join|sign ?up|register|waitlist|sumali|how do i/, "Tap “Join the waitlist” below and enter your email, then add your name, your title and up to three skills. You'll get a Founding Member card you can share."],
+    ];
+    const local = q => {
+      const t = q.toLowerCase();
+      for (const [re, a] of A) if (re.test(t)) return a;
+      return "I'm not sure about that one yet. I can help with the launch, fees, getting paid, Seeds, roles, or joining the waitlist. The FAQs near the bottom of the page cover the rest.";
+    };
+    function add(text, who){
+      const m = document.createElement('div');
+      m.className = 'ask__msg ask__msg--' + who; m.textContent = text;
+      log.appendChild(m); log.scrollTop = log.scrollHeight; return m;
+    }
+    let busy = false;
+    async function answer(q){
+      busy = true;
+      const dots = document.createElement('div');
+      dots.className = 'ask__msg ask__msg--bot ask__typing'; dots.innerHTML = '<i></i><i></i><i></i>';
+      log.appendChild(dots); log.scrollTop = log.scrollHeight;
+      let reply = '';
+      const started = performance.now();
+      if (ASK_ENDPOINT){
+        try {
+          const r = await fetch(ASK_ENDPOINT, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({messages: history})});
+          if (r.ok) reply = String((await r.json()).reply || '').trim();
+        } catch(e){}
+      }
+      if (!reply) reply = local(q);
+      // a short, human pause before answering
+      const wait = Math.max(0, 550 + Math.min(700, reply.length * 4) - (performance.now() - started));
+      await new Promise(res => setTimeout(res, wait));
+      dots.remove();
+      add(reply, 'bot');
+      history.push({role:'assistant', content: reply});
+      busy = false;
+    }
+    function ask(q){
+      q = q.trim(); if (!q || busy) return;
+      add(q, 'me'); history.push({role:'user', content: q});
+      input.value = '';
+      answer(q);
+    }
+    let greeted = false;
+    function open(){
+      const menu = document.getElementById('menu');
+      if (menu && !menu.hidden) document.getElementById('menuBtn').click();
+      box.hidden = false; btn.setAttribute('aria-expanded', 'true');
+      if (!greeted){ greeted = true; add("Kumusta! Ako si Mang Juan. Ask me anything about Magasaka: the launch, fees, getting paid, Seeds, or what kind of work fits here.", 'bot'); }
+      if (matchMedia('(hover: hover)').matches) setTimeout(() => input.focus({preventScroll:true}), 60);
+    }
+    function close(){ box.hidden = true; btn.setAttribute('aria-expanded', 'false'); }
+    btn.addEventListener('click', e => { e.stopPropagation(); box.hidden ? open() : close(); });
+    box.querySelector('[data-ask-close]').addEventListener('click', () => { close(); btn.focus(); });
+    form.addEventListener('submit', e => { e.preventDefault(); ask(input.value); });
+    chips.addEventListener('click', e => { const b = e.target.closest('button'); if (b) ask(b.textContent); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && !box.hidden){ close(); btn.focus(); } });
+    document.addEventListener('click', e => { if (!box.hidden && !e.target.closest('#ask, #askBtn')) close(); });
+    document.getElementById('menuBtn')?.addEventListener('click', () => { if (!box.hidden) close(); });
   })();
 </script>
 </body>
