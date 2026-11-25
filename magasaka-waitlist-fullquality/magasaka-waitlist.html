@@ -141,7 +141,8 @@ body:has(.pill:not([data-state="idle"])) .scrollcue{opacity:0 !important;transit
 .pill--dark .pill__join:hover,.pill--dark .pill__menu:hover{background:#000}
 /* menu: a frosted panel the width of the pill, rising out of it; items centred; the menu icon turns into an x */
 .menu{position:absolute;left:0;right:0;bottom:calc(100% + 10px);padding:8px;border-radius:26px;color:var(--ink);
-  background:rgba(214,213,209,.74);backdrop-filter:blur(18px) saturate(1.15);-webkit-backdrop-filter:blur(18px) saturate(1.15);
+  /* near-solid: a blur nested inside the pill (which has its own) cannot reach the page, so a see-through panel let text show through */
+  background:rgba(218,217,213,.97);
   box-shadow:0 22px 50px -22px rgba(0,0,0,.5),inset 0 0 0 1px rgba(255,255,255,.35);display:flex;flex-direction:column;transform-origin:50% 100%}
 .menu[hidden]{display:none}
 .menu:not([hidden]){animation:menu-in .38s cubic-bezier(.22,1,.36,1)}
