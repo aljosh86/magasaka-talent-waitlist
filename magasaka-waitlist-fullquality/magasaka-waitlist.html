@@ -711,9 +711,20 @@ html.flow-open, html.flow-open body{overflow:hidden}
 .wcard.is-tilt{transition:transform .12s linear,box-shadow .4s ease;
   transform:perspective(1100px) rotateX(var(--rx)) rotateY(var(--ry)) scale(1.025);
   box-shadow:0 44px 80px -34px rgba(20,20,20,.6)}
-/* the sheen tracks the pointer across the face */
-.wcard__gloss{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .35s ease;
-  background:radial-gradient(42% 42% at var(--mx) var(--my),rgba(255,255,255,.17),rgba(255,255,255,0) 70%)}
+/* the light on the face. Instead of repainting a gradient at a new position every frame (which stepped and
+   banded), a fixed, oversized glow is slid around with transform, which the GPU does smoothly. It blends
+   soft-light so it lifts the photo's own highlights rather than laying a grey film on top. A faint diagonal
+   band (::after) travels the other way, like light catching a glossy card. */
+.wcard__gloss{position:absolute;inset:-60%;pointer-events:none;opacity:0;transition:opacity .45s ease;
+  background:radial-gradient(closest-side,rgba(255,255,255,.55),rgba(255,255,255,.18) 45%,rgba(255,255,255,0) 100%);
+  mix-blend-mode:soft-light;will-change:transform;
+  transform:translate3d(calc(var(--px,0) * 46%),calc(var(--py,0) * 46%),0)}
+/* the band hangs off the veil, not the gloss, so its blend reaches the photo (a child of the gloss would only
+   blend inside the gloss's own isolated layer) */
+.wcard__veil::after{content:"";position:absolute;inset:-40%;pointer-events:none;opacity:0;transition:opacity .45s ease;
+  background:linear-gradient(115deg,rgba(255,255,255,0) 44%,rgba(255,255,255,.16) 50%,rgba(255,255,255,0) 56%);
+  mix-blend-mode:overlay;will-change:transform;transform:translate3d(calc(var(--px,0) * -50%),calc(var(--py,0) * -24%),0)}
+.wcard.is-live .wcard__veil::after,.wcard.is-tilt .wcard__veil::after{opacity:1}
 .wcard.is-tilt .wcard__gloss{opacity:1}
 @media (prefers-reduced-motion: reduce){.wcard,.wcard.is-tilt{transform:none;transition:none}}
 /* live 3D (set up in JS): one rAF loop eases toward the pointer, so the CSS transition is off. The photo slides
