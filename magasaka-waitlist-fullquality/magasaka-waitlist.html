@@ -238,7 +238,7 @@ body:has(.pill:not([data-state="idle"])) .scrollcue{opacity:0 !important;transit
   .cstage .chcard{position:relative;opacity:1;pointer-events:auto}
   .cstage .chcard .chcard__label,.cstage .chcard .chcard__foot,.cstage .chcard .chcard__mock{opacity:1;transform:none}
 }
-@media (max-width:900px){.cstage{height:auto!important;width:100%}.cstage .changes__row{position:static;height:auto}.cstage .chcard{position:relative;opacity:1;pointer-events:auto}.cdots{display:none}}
+@media (min-width:641px) and (max-width:900px){.cstage{height:auto!important;width:100%}.cstage .changes__row{position:static;height:auto}.cstage .chcard{position:relative;opacity:1;pointer-events:auto}.cdots{display:none}}
 
 /* ---------- concept preview (Figma 57:5715) ---------- */
 .concept{position:relative;width:100vw;margin-inline:calc(50% - 50vw);background:var(--ink);color:var(--field-white);overflow:hidden;padding:80px 0 0}
@@ -572,14 +572,7 @@ body:has(.pill:not([data-state="idle"])) .scrollcue{opacity:0 !important;transit
   .chcard__foot svg.ico{width:23px;height:23px}
   .chcard__foot h3{font-size:16px;line-height:1.3;max-width:281px}
   .chcard__foot p{font-size:15px;line-height:1.35;max-width:310px}
-  /* phone: the cards stack as you scroll. Each one sticks a little lower than the last and slides up
-     over it, on a solid page-coloured sheet with a soft shadow along its top edge */
-  .chcard{position:sticky;top:calc(env(safe-area-inset-top,0px) + 64px);background:var(--field-white);padding-top:18px;margin-top:-18px;
-    border-radius:22px 22px 0 0;box-shadow:0 -14px 30px -20px rgba(20,20,20,.35)}
-  .chcard:first-child{box-shadow:none}
-  .chcard:nth-child(2){top:calc(env(safe-area-inset-top,0px) + 78px)}
-  .chcard:nth-child(3){top:calc(env(safe-area-inset-top,0px) + 92px)}
-  .chcard:nth-child(4){top:calc(env(safe-area-inset-top,0px) + 106px)}
+/* phone: pinned like desktop. The copy stays put and cross-fades; each new card slides in from the     right over the last, which settles back a little */  .cstage{position:relative;width:100%}  .cstage .changes__row{position:sticky;display:block}  .cstage .chcard{position:absolute;left:0;right:0;top:0;pointer-events:none}  .cstage .chcard.is-active{pointer-events:auto}  .cstage .chcard .chcard__label,.cstage .chcard .chcard__foot{opacity:0;transform:translateY(14px);transition:opacity .45s ease,transform .6s cubic-bezier(.22,1,.36,1)}  .cstage .chcard.is-active .chcard__label,.cstage .chcard.is-active .chcard__foot{opacity:1;transform:none}  .cstage .chcard.is-active .chcard__foot{transition-delay:.06s}  .cstage .chcard .chcard__mock{transform:translateX(calc(100% + 40px));transition:transform .8s cubic-bezier(.22,1,.36,1),filter .8s ease;will-change:transform;    box-shadow:0 1px 2px rgba(20,20,20,.06),0 10px 24px -10px rgba(20,20,20,.25),0 28px 50px -24px rgba(20,20,20,.3)}  .cstage .chcard.is-active .chcard__mock{transform:none}  .cstage .chcard.is-past .chcard__mock{transform:translateX(-3%) scale(.92);filter:brightness(.82)}
   /* --- mobile: problem section type. One part shows at a time, so it can be read big */
   .problem__lead{font-size:23px;line-height:1.35;width:100%;max-width:339px}
   .problem__aside{font-size:23px;gap:10px}
@@ -2013,7 +2006,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     addEventListener('resize', () => { layout(); draw(); });
   })();
 
-  // --- "Hindi na dapat ganito.": pinned on wide screens only; stacked everywhere else
+  // --- the change cards: pinned on desktop and phones (stacked on tablets)
   (() => {
     const row = document.querySelector('.changes__row');
     if (!row || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -2028,7 +2021,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       home.insertBefore(row, stage);
       stage.remove(); stage = null;
       dots?.remove(); dots = null;
-      row.style.top = '';
+      row.style.top = ''; row.style.height = '';
       cards.forEach(c => c.classList.remove('is-active', 'is-past'));
       current = -1;
     };
@@ -2046,7 +2039,10 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     };
     const layout = () => {
       if (!stage) return;
-      const panel = 750, top = Math.max(20, (innerHeight - panel) / 2);
+      // desktop panels are a fixed 750px; on a phone the cards are stacked absolutely, so size the row to the tallest
+      const phone = innerWidth <= 640;
+      if (phone){ row.style.height = ''; row.style.height = Math.max(...cards.map(c => c.offsetHeight)) + 'px'; } else row.style.height = '';
+      const panel = phone ? row.offsetHeight : 750, top = Math.max(20, (innerHeight - panel) / 2);
       stage.style.height = (panel + (cards.length - 1) * Math.round(innerHeight * .8)) + 'px';
       row.style.top = top + 'px';
     };
@@ -2062,10 +2058,12 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       cards.forEach((c, k) => { c.classList.toggle('is-active', k === i); c.classList.toggle('is-past', k < i); });
       [...dots.children].forEach((d, k) => d.classList.toggle('is-on', k === i));
     };
-    const sync = () => { if (innerWidth > WIDE) build(); else teardown(); };
+    // pinned on desktop and on phones; the in-between tablet widths keep the plain stacked list
+    const sync = () => { if (innerWidth > WIDE || innerWidth <= 640) build(); else teardown(); };
     addEventListener('scroll', () => { if (!queued){ queued = true; requestAnimationFrame(draw); } }, {passive:true});
     addEventListener('resize', () => { sync(); layout(); current = -1; draw(); });
     sync();
+    addEventListener('load', () => { layout(); draw(); });   // card heights settle once fonts and images are in
   })();
 
 
