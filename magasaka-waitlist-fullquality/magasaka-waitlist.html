@@ -995,7 +995,7 @@ html.mf-open{overscroll-behavior:none}
 }
 
 .mf__floor{position:absolute;left:3%;right:3%;border-radius:8px;pointer-events:none;transform:translateZ(-2px);
-  box-shadow:0 30px 70px -10px rgba(0,0,0,.55),0 8px 18px rgba(0,0,0,.25)}
+  box-shadow:0 18px 40px -14px rgba(0,0,0,.5),0 4px 10px rgba(0,0,0,.18)}
 .mf__sheet::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
   background:linear-gradient(180deg,transparent calc(33.333% - 2px),rgba(0,0,0,.06) calc(33.333% - 1px),rgba(255,255,255,.5) calc(33.333% + 1px),transparent calc(33.333% + 3px),
     transparent calc(66.666% - 2px),rgba(0,0,0,.06) calc(66.666% - 1px),rgba(255,255,255,.5) calc(66.666% + 1px),transparent calc(66.666% + 3px))}
@@ -2809,11 +2809,16 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
           {offset:.22, transform:'translate3d(0,40px,-120px) rotateX(46deg) rotateZ(-5deg) scale(.9)', opacity:1, easing:'linear'},
           {offset:.64, transform:'translate3d(0,30px,-100px) rotateX(42deg) rotateZ(-3deg) scale(.92)', opacity:1, easing:glide},
           {transform:'translate3d(0,0,0) rotateX(0deg) rotateZ(0deg) scale(1)', opacity:1}], {duration:T, fill:'both'}),
+        // the shadow under the paper only spreads where paper has landed: the middle third first, then upward
+        // as the top flap comes down flat (60-100% of its swing), then downward as the bottom flap does
         floor.animate([
-          {top:h+'px', height:h+'px', opacity:0},
-          {offset:.2, top:h+'px', height:h+'px', opacity:.7},
-          {offset:.68, top:'0px', height:(h*3)+'px', opacity:1},
-          {top:'0px', height:(h*3)+'px', opacity:1}], {duration:T, easing:'ease-in-out', fill:'both'}),
+          {offset:0,    top:h+'px',     height:h+'px',     opacity:0},
+          {offset:.18,  top:h+'px',     height:h+'px',     opacity:.8},
+          {offset:.442, top:h+'px',     height:h+'px',     opacity:.8},
+          {offset:.604, top:'0px',      height:(h*2)+'px', opacity:.85},
+          {offset:.673, top:'0px',      height:(h*2)+'px', opacity:.85},
+          {offset:.835, top:'0px',      height:(h*3)+'px', opacity:.9},
+          {offset:1,    top:'0px',      height:(h*3)+'px', opacity:.9}], {duration:T, easing:'linear', fill:'both'}),
         // the top flap lifts off the paper and falls back open
         top.panel.animate([{transform:'translateZ(2px) rotateX(-180deg)'},{transform:'translateZ(0) rotateX(0deg)'}], {duration:1050, delay:520, easing:swing, fill:'both'}),
         top.shade.animate([{opacity:.45},{offset:.5, opacity:.28},{opacity:0}], {duration:1050, delay:520, easing:'ease-out', fill:'both'}),
