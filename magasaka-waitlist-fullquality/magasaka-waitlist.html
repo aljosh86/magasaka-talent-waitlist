@@ -1094,8 +1094,8 @@ html.mf-open{overscroll-behavior:none}
   .band .signup input,.band .signup button{color:var(--ink)}
   .band .signup input::placeholder{color:rgba(20,20,20,.72)}
 }
-/* ---------- Ask Mang Juan: a "?" beside the menu opens a small chat above the pill ---------- */
-.pill--dark .pill--dark .pill[data-state="form"] .ask{position:fixed;z-index:46;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 40px + 57px + 12px);width:min(460px,calc(100vw - 24px));
+/* ---------- Ask Mang Juan: a chat panel opened from the button at the bottom right ---------- */
+.ask{position:fixed;z-index:46;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 40px + 57px + 12px);width:min(460px,calc(100vw - 24px));
   height:min(560px,calc(100svh - 150px));display:flex;flex-direction:column;border-radius:28px;background:#f6f5f2;color:var(--ink);
   box-shadow:0 30px 70px -28px rgba(0,0,0,.55),0 0 0 1px rgba(20,20,20,.06);transform:translateX(-50%);transform-origin:50% 100%;overflow:hidden}
 .ask[hidden]{display:none}
@@ -1678,10 +1678,10 @@ Marc!</h2>
   </div>
 </nav>
 
-<button class="juan" id="askBtn" type="button" aria-label="Ask Mang Juan" aria-expanded="false" aria-controls="ask"><img src="images/mang-juan.webp" width="56" height="56" alt=""></button>
+<button class="juan" id="askBtn" type="button" aria-label="Ask Mang Juan" aria-expanded="false" aria-controls="ask"><img src="images/mang-juan.svg" width="56" height="56" alt=""></button>
 <section class="ask" id="ask" hidden role="dialog" aria-label="Ask Mang Juan">
   <header class="ask__head">
-    <img class="ask__avatar" src="images/mang-juan.webp" width="36" height="36" alt="">
+    <img class="ask__avatar" src="images/mang-juan.svg" width="36" height="36" alt="">
     <strong class="ask__who">Ask Mang Juan</strong>
     <button class="ask__close" type="button" aria-label="Close" data-ask-close><svg width="16" height="16" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M16.5 5.5L5.5 16.5M16.5 16.5L5.5 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
   </header>
