@@ -3077,6 +3077,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       if (box.hidden) return;
       if (fold){ fold.remove(); fold = null; sheet.style.visibility = ''; busy = false; stage.querySelector('.mf__floor')?.remove(); }
       stage.querySelector('.mf__gl')?.remove();
+      busy = false;   // closing mid-unfold must not leave the letter locked for next time
       box.classList.remove('is-open');
       const x = sheet.animate([{opacity:1, transform:'none'},{opacity:0, transform:'translateY(24px) scale(.97)'}], {duration: reduce ? 1 : 260, easing:'ease', fill:'forwards'});
       x.finished.then(() => {
