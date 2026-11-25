@@ -221,7 +221,8 @@ body:has(.pill:not([data-state="idle"])) .scrollcue{opacity:0 !important;transit
 .cstage .chcard.is-active .chcard__label,.cstage .chcard.is-active .chcard__foot{opacity:1;transform:none}
 .cstage .chcard.is-active .chcard__foot{transition-delay:.06s}
 /* the panels stack: the next one slides up over the last, which settles back a little; only the copy cross-fades */
-.cstage .chcard .chcard__mock{transform:translateY(105vh);transition:transform .9s cubic-bezier(.22,1,.36,1),filter .9s ease;will-change:transform}
+.cstage .chcard .chcard__mock{transform:translateY(105vh);transition:transform .9s cubic-bezier(.22,1,.36,1),filter .9s ease;will-change:transform;
+  box-shadow:0 1px 2px rgba(20,20,20,.06),0 12px 28px -10px rgba(20,20,20,.22),0 36px 70px -30px rgba(20,20,20,.28)}  /* soft lift so each panel reads as a card over the one beneath */
 .cstage .chcard.is-active .chcard__mock{transform:none}
 .cstage .chcard.is-past .chcard__mock{transform:scale(.94);filter:brightness(.82)}
 .cdots{position:absolute;left:0;top:calc(50% - 30px);display:flex;flex-direction:column;gap:10px}
@@ -495,7 +496,8 @@ body:has(.pill:not([data-state="idle"])) .scrollcue{opacity:0 !important;transit
 .cstage .chcard.is-active .chcard__label,.cstage .chcard.is-active .chcard__foot{opacity:1;transform:none}
 .cstage .chcard.is-active .chcard__foot{transition-delay:.06s}
 /* the panels stack: the next one slides up over the last, which settles back a little; only the copy cross-fades */
-.cstage .chcard .chcard__mock{transform:translateY(105vh);transition:transform .9s cubic-bezier(.22,1,.36,1),filter .9s ease;will-change:transform}
+.cstage .chcard .chcard__mock{transform:translateY(105vh);transition:transform .9s cubic-bezier(.22,1,.36,1),filter .9s ease;will-change:transform;
+  box-shadow:0 1px 2px rgba(20,20,20,.06),0 12px 28px -10px rgba(20,20,20,.22),0 36px 70px -30px rgba(20,20,20,.28)}  /* soft lift so each panel reads as a card over the one beneath */
 .cstage .chcard.is-active .chcard__mock{transform:none}
 .cstage .chcard.is-past .chcard__mock{transform:scale(.94);filter:brightness(.82)}
 .cdots{position:absolute;left:0;top:calc(50% - 30px);display:flex;flex-direction:column;gap:10px}
