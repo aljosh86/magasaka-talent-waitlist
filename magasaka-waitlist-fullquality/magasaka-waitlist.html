@@ -655,7 +655,10 @@ html.flow-open, html.flow-open body{overflow:hidden}
 .flow__close:hover{background:#f4f3ef;transform:scale(1.04)}
 .flow__step{margin:0;width:154.34px;flex:none;text-align:right;font-weight:500;font-size:18px;letter-spacing:-.01em;color:#818181;
   text-box:trim-both cap alphabetic}
-.flow__top.is-done .flow__bars,.flow__top.is-done .flow__step{opacity:0}
+.flow__top.is-done .flow__bars{opacity:0}
+/* on the card screen the step label gives way to a Back button beside the close button */
+.flow__top.is-done .flow__step{display:none}
+.flow__top:not(.is-done) .flow__edit{display:none}
 
 .flow__screen{display:none;min-height:calc(100vh - 80px);align-items:center;justify-content:center;padding:20px clamp(20px,2.65vw,40px) 60px}
 .flow__screen.is-on{display:flex}
@@ -797,7 +800,7 @@ html.flow-open, html.flow-open body{overflow:hidden}
   background:#fff;color:#1a1b18;font:400 15px/1 var(--font);letter-spacing:-.01em;text-decoration:none;cursor:pointer}
 .flow__socials a:hover,.flow__socials button:hover{background:#f4f3ef}
 .flow__count{margin:0;font-size:22px;letter-spacing:-.01em;color:#818181}
-.flow__edit{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;margin:0;padding:10px 16px 10px 12px;border:0;border-radius:100px;
+.flow__edit{flex:none;display:inline-flex;align-items:center;gap:6px;height:44px;margin:0;padding:0 18px 0 14px;border:0;border-radius:100px;
   background:#fff;cursor:pointer;font:400 15px/1 var(--font);letter-spacing:-.01em;color:#1a1b18}
 .flow__edit:hover{background:#f4f3ef}
 .flow__count b{font-weight:400;color:#1a1b18}
@@ -864,7 +867,7 @@ html.flow-open, html.flow-open body{overflow:hidden}
   .flow__socials{gap:10px}
   .flow__socials a,.flow__socials button{width:40px;height:40px;padding:0}
   .flow__count{font-size:15px}
-  .flow__edit{margin:0;font-size:14px}
+  .flow__edit{height:36px;padding:0 14px 0 10px;font-size:14px}
 }
 
 .signup__err{margin:8px 0 0;font-size:14px;letter-spacing:-.01em;color:#ff9a9c}
@@ -1249,6 +1252,7 @@ html.flow-open, html.flow-open body{overflow:hidden}
     <div class="flow__bars" aria-hidden="true"><span class="is-on"></span><span></span><span></span></div>
     <div class="flow__right">
       <p class="flow__step">Step 2 of 3</p>
+      <button class="flow__edit" id="flowEdit" type="button"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3.5L5.5 8L10 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Back</button>
       <button class="flow__close" id="flowClose" type="button" aria-label="Back to the page">
         <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M16.5 5.5L5.50074 16.4993M16.4993 16.5L5.5 5.50078" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
@@ -1351,7 +1355,6 @@ Marc!</h2>
             <a id="shLinkedIn" href="#" target="_blank" rel="noopener" aria-label="Share on LinkedIn" title="LinkedIn"><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 3.3a2.1 2.1 0 1 1 0 4.2 2.1 2.1 0 0 1 0-4.2zM3.2 9h3.6v12H3.2zM9.1 9h3.5v1.7c.5-.9 1.7-2 3.5-2 3.7 0 4.4 2.5 4.4 5.7V21h-3.7v-5.9c0-1.4 0-3.2-1.9-3.2s-2.2 1.5-2.2 3.1v6H9.1z"/></svg></a>
             <button id="flowSave" type="button" aria-label="Save card image" title="Save image"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M4.5 15H13.5" stroke="#4A4B46" stroke-width="1.5" stroke-linecap="round"/><path d="M9 12V3" stroke="#4A4B46" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 9L9 12L6 9" stroke="#4A4B46" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
           </div>
-          <button class="flow__edit" id="flowEdit" type="button"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3.5L5.5 8L10 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Back</button>
         </div>
       </div>
     </div>
