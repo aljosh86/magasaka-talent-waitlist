@@ -95,17 +95,22 @@ html.is-loading .grain{z-index:91}
 .opening h1{margin:0;font-weight:500;font-size:clamp(40px,4.11vw,62px);line-height:1.2;color:var(--field-white);text-box:trim-both cap alphabetic;width:9.84em;max-width:100%}
 
 .opening p{margin:0;width:auto;white-space:nowrap;max-width:100%;font-weight:400;font-size:clamp(18px,1.46vw,22px);line-height:1.2;color:rgba(237,236,232,.8);text-box:trim-both cap alphabetic}
-.scrollcue.scrollcue--inline{display:none}
-.scrollcue.scrollcue--skip{left:auto;right:clamp(20px,3.31vw,50px);bottom:calc(env(safe-area-inset-bottom,0px) + 50px);transform:none;width:auto;border:0;cursor:pointer;transition:opacity .3s,background .2s}
-.scrollcue.scrollcue--skip:hover{background:rgba(237,236,232,.3)}
-.scrollcue.scrollcue--skip.is-off{opacity:0;pointer-events:none}
-.scrollcue.scrollcue--skip svg{animation:none}
-.scrollcue{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 127px);transform:translateX(-50%);display:flex;align-items:center;gap:4px;height:36px;padding:0 15px;border-radius:100px;
-  background:rgba(237,236,232,.2);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);color:var(--field-white);font:400 14px/1 var(--font);letter-spacing:.02em;will-change:opacity}
-.scrollcue svg{display:block;animation:cue-bob 1.6s cubic-bezier(.45,0,.55,1) infinite}
-@keyframes cue-bob{0%,100%{transform:translateY(-2px)}50%{transform:translateY(2px)}}
-@media (max-width:640px){.opening{bottom:calc(env(safe-area-inset-bottom,0px) + 180px);gap:24px}.scrollcue{bottom:calc(env(safe-area-inset-bottom,0px) + 110px)}}
-@media (prefers-reduced-motion: reduce){.scrollcue{display:none}.scrollcue svg{animation:none}}
+.scrollcue{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 121px);transform:translateX(-50%);
+  display:inline-flex;align-items:center;justify-content:center;gap:16px;min-height:48px;padding:5px 5px 5px 18px;
+  border:1px solid rgba(237,236,232,.32);border-radius:100px;background:rgba(26,25,20,.8);color:var(--field-white);
+  font:500 14px/1.2 var(--font);letter-spacing:-.01em;white-space:nowrap;cursor:pointer;touch-action:manipulation;
+  transition:background .2s,border-color .2s;will-change:opacity}
+.scrollcue__icon{display:grid;place-items:center;flex:0 0 36px;width:36px;height:36px;
+  border-radius:50%;background:var(--field-white);color:var(--ink);overflow:hidden}
+.scrollcue svg{display:block;width:18px;height:18px;transition:transform .25s cubic-bezier(.16,1,.3,1)}
+@media (hover:hover){
+  .scrollcue:hover{background:var(--paddy);border-color:var(--field-white)}
+  .scrollcue:hover svg{transform:translateY(3px)}
+}
+.scrollcue:focus-visible{outline:2px solid var(--field-white);outline-offset:5px}
+.scrollcue:active .scrollcue__icon{background:var(--sand)}
+@media (max-width:640px){.opening{bottom:calc(env(safe-area-inset-bottom,0px) + 180px);gap:24px}}
+@media (prefers-reduced-motion: reduce){.scrollcue{display:none}.scrollcue svg{transition:none}}
 /* ---------- Persistent signup pill (Figma: 360px, glass tray, 49px controls) ---------- */
 .pill{position:fixed;z-index:45;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 40px);width:min(390px,calc(100% - 32px));transform:translate(-50%,16px);opacity:0;pointer-events:none;
   display:flex;gap:4px;padding:4px;border-radius:100px;background:rgba(237,236,232,.2);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);transition:opacity .5s,transform .5s,width .28s cubic-bezier(.22,1,.36,1)}
@@ -132,8 +137,6 @@ html.is-loading .grain{z-index:91}
 .menu[hidden]{display:none}
 .menu a{font:500 16px/1 var(--font);color:inherit;text-decoration:none;padding:14px 16px;border-radius:18px}
 .menu a:hover{background:rgba(20,20,20,.06)}
-.skiplink{position:fixed;left:16px;top:16px;z-index:70;transform:translateY(-200%);background:var(--field-white);color:var(--ink);font:500 15px/1 var(--font);padding:12px 16px;border-radius:100px;text-decoration:none}
-.skiplink:focus{transform:none}
 
 
 /* ---------- shared type ---------- */
@@ -403,9 +406,8 @@ html.is-loading .grain{z-index:91}
 @media (prefers-reduced-motion: reduce){.reveal,.reveal-stagger>*{opacity:1;transform:none;transition:none}}
 
 /* Vertical trim on all text (matches Figma text-box-trim: cap height to baseline) */
-.beat__head,.beat__sub,.opening h1,.opening p,.pill__join span,.scrollcue__label,.menu a span,.skiplink span,.chcard__label,.chcard__foot h3,.chcard__foot p,.eyebrow,.h-36,.h-30,.muted-17,.quad__title,.problem__lead,.problem__aside,.problem__body,.snapline,.roles__head h2,.roles__head p,.faq__head h2,.faq__q span,.faq__a p,.concept__head h2,.concept__intro,.band h2,.band__sub,.changes__note p,.changes__note a,.rcard__cap span,.rcard__cap strong{display:block;text-box:trim-both cap alphabetic}
+.beat__head,.beat__sub,.opening h1,.opening p,.pill__join span,.scrollcue__label,.menu a span,.chcard__label,.chcard__foot h3,.chcard__foot p,.eyebrow,.h-36,.h-30,.muted-17,.quad__title,.problem__lead,.problem__aside,.problem__body,.snapline,.roles__head h2,.roles__head p,.faq__head h2,.faq__q span,.faq__a p,.concept__head h2,.concept__intro,.band h2,.band__sub,.changes__note p,.changes__note a,.rcard__cap span,.rcard__cap strong{display:block;text-box:trim-both cap alphabetic}
 .menu a{padding:17px 16px}
-.skiplink{padding:15px 16px}
 
 
 @media (max-width:640px){
@@ -422,11 +424,6 @@ html.is-loading .grain{z-index:91}
   .opening h1{font-size:33px;width:auto;max-width:334px}
   .opening p{font-size:15px;width:300px;max-width:100%}
   .opening .actions{margin:0}
-  .scrollcue{gap:4px;height:36px;padding:0 15px;font-size:13px}
-  .scrollcue svg{width:14px;height:14px}
-  .scrollcue:not(.scrollcue--skip){left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 40px + 49px + 8px + 25px)}
-  #skipchip{display:none}
-  .scrollcue.scrollcue--inline{display:inline-flex;position:static;transform:none;margin-top:0;align-self:flex-start}
   .pill{width:350px;bottom:calc(env(safe-area-inset-bottom,0px) + 40px)}
   .pill__join{font-size:14px}
   .pill__form{padding:3px}
@@ -814,7 +811,6 @@ html.flow-open, html.flow-open body{overflow:hidden}
 <div class="grain" id="grain"></div>
 
 <header class="nav">
-  <a class="skiplink" href="#after-hero" data-skip><span>Skip hero story</span></a>
   <a class="nav__logo" href="#top" aria-label="Magasaka home"><svg aria-hidden="true" focusable="false" viewBox="0 0 155 20" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g clip-path="url(#clip0_6_249)">
 <path d="M4.84719 4.17437V20C2.009 18.8865 0 16.1241 0 12.8903V0H0.677564C2.98034 0 4.84956 1.86923 4.84956 4.17437H4.84719Z" fill="#EDECE8"/>
@@ -849,13 +845,15 @@ html.flow-open, html.flow-open body{overflow:hidden}
       <div class="opening" id="opening">
         <h1>Filipino talent can compete with the best in the world.</h1>
         <p>A freelance marketplace that finally treats you like one.</p>
-        <button class="scrollcue scrollcue--skip scrollcue--inline" type="button" data-skip><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M12 8.33331L7.99996 12.3333L4 8.33331" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 3.66672L7.99996 7.66669L4 3.66669" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="scrollcue__label">Skip hero story</span></button>
       </div>
-      <button class="scrollcue scrollcue--skip" id="skipchip" type="button" data-skip><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M12 8.33331L7.99996 12.3333L4 8.33331" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 3.66672L7.99996 7.66669L4 3.66669" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="scrollcue__label">Skip hero story</span></button>
-      <div class="scrollcue" id="scrollcue" aria-hidden="true"><svg width="16" height="16" aria-hidden="true" focusable="false" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M10.3332 12.6863L9.2289 13.7905C8.65924 14.3747 7.96124 14.6657 7.99977 14.6667V8.00006M7.99977 14.6667C7.99977 14.6667 7.34024 14.3747 6.77057 13.7905L5.6665 12.6864" stroke="#EDECE8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M10 3.33331C10 4.43788 9.10457 5.33331 8 5.33331C6.89543 5.33331 6 4.43788 6 3.33331C6 2.22874 6.89543 1.33331 8 1.33331C9.10457 1.33331 10 2.22874 10 3.33331Z" fill="#EDECE8"/>
-</svg><span class="scrollcue__label">SCROLL</span></div>
+      <button class="scrollcue" id="scrollcue" type="button">
+        <span class="scrollcue__label">Scroll to explore</span>
+        <span class="scrollcue__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" focusable="false">
+            <path d="M12 4v16m-6-6 6 6 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </button>
 
       <div tabindex="0" role="button" aria-expanded="false" class="beat beat--nowrap" data-in="0.08" data-out="0.165" data-open="false">
         <div class="beat__col">
@@ -1267,7 +1265,6 @@ Marc.</h2>
   <button class="pill__menu" id="menuBtn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="menu"><svg class="ic ic--menu" width="24" height="24" aria-hidden="true" focusable="false" fill="none"><path d="M4 5H20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M4 12H20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M4 19H20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><svg class="ic ic--close" width="24" height="24" aria-hidden="true" focusable="false" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
   <div class="menu" id="menu" hidden>
     <a href="#waitlist" data-role="client"><span>I'm hiring</span></a>
-    <a href="#waitlist" data-skip><span>Skip hero story</span></a>
   </div>
 </nav>
 
@@ -1485,31 +1482,22 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     el.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse' && el.dataset.pinned !== 'true') setOpen(el, false); });
   });
 
-  const skipTo = e => {
-    e.preventDefault(); closeMenu();
-    const target = hero.offsetTop + hero.offsetHeight;
-    const start = scrollY, dist = target - start;
-    const land = () => document.getElementById('after-hero')?.focus({preventScroll:true});
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches || Math.abs(dist) < 40){ scrollTo(0, target); land(); return; }
-    const dur = Math.min(2200, Math.max(1100, Math.abs(dist) * 0.22));
-    const t0 = performance.now();
-    const ease = x => x < .5 ? 4*x*x*x : 1 - Math.pow(-2*x + 2, 3)/2;
-    const run = now => { const p = Math.min(1, (now - t0) / dur); scrollTo(0, start + dist * ease(p)); if (p < 1) requestAnimationFrame(run); else land(); };
-    requestAnimationFrame(run);
-  };
-  document.querySelectorAll('[data-skip]').forEach(a => a.addEventListener('click', skipTo));
+  // Start the first story moment when the opening scroll control is activated.
+  scrollcue.addEventListener('click', () => {
+    const distance = Math.max(0, hero.offsetHeight - stage.clientHeight);
+    scrollTo({top:hero.offsetTop + distance * .11,
+      behavior:matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth'});
+  });
   const menuBtn = document.getElementById('menuBtn'), menu = document.getElementById('menu');
   function closeMenu(){ menu.hidden = true; menuBtn.setAttribute('aria-expanded','false'); }
   menuBtn.addEventListener('click', () => { const open = menu.hidden; menu.hidden = !open; menuBtn.setAttribute('aria-expanded', String(open)); if (open) menu.querySelector('a').focus(); });
-  menu.addEventListener('click', e => { if (e.target.closest('a:not([data-skip])')) closeMenu(); });
+  menu.addEventListener('click', e => { if (e.target.closest('a')) closeMenu(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && !menu.hidden){ closeMenu(); menuBtn.focus(); } });
   document.addEventListener('click', e => { if (!menu.hidden && !e.target.closest('#pill')) closeMenu(); });
 
   // the pill flips to dark whenever it sits over the light section rather than over footage
   function updatePillTheme(){
     const r = pill.getBoundingClientRect();
-    const chip = document.getElementById('skipchip');
-    if (chip) chip.classList.toggle('is-off', hero.getBoundingClientRect().bottom < innerHeight * .9);
     const under = document.elementsFromPoint(r.left + r.width/2, r.top + r.height/2).find(e => !pill.contains(e));
     pill.classList.toggle('pill--dark', !!under && !!under.closest('.after') && !under.closest('.filmblock'));
     // the logo flips to ink over light sections. the nav slides out of view on scroll-down,
