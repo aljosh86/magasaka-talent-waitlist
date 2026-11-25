@@ -1887,7 +1887,10 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
   if (reduce) order.push(STATIC_FRAME); else {
     const seen = new Uint8Array(N), add = i => { if (i < N && !seen[i]) { seen[i] = 1; order.push(i); } };
     for (let i = 0; i < 24; i++) add(i);
-    for (const step of [32, 16, 8, 4, 2, 1]) for (let i = 0; i < N; i += step) add(i);
+    // phones skip every other frame (half the download, still smooth on a small screen); on Save-Data, every fourth
+    const saveData = !!(navigator.connection && navigator.connection.saveData);
+    const finest = TIER === 'sd' ? (saveData ? 4 : 2) : 1;
+    for (const step of [32, 16, 8, 4, 2, 1]) if (step >= finest) for (let i = 0; i < N; i += step) add(i);
   }
   let firstReady;
   const framesReady = new Promise(r => firstReady = r);
