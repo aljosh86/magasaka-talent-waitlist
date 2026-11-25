@@ -585,7 +585,11 @@ body:has(.pill:not([data-state="idle"])) .scrollcue{opacity:0 !important;transit
   .cstage .chcard{gap:24px}
   .cstage .chcard__mock{width:calc(100% + 20px);height:min(460px,56svh);border-radius:18px 0 0 18px}
   .cstage .chcard__mock img{border-radius:0}
-  .cstage .chcard__mock img.chcard__full{object-position:46% 50%}
+  /* the app screen sits at a different x in each artwork (22%, 15%, 23% of the width), so each panel gets
+     its own crop to land the screen's left edge the same ~28px inside the panel */
+  .cstage .chcard:nth-child(1) .chcard__mock img.chcard__full{object-position:49% 50%}
+  .cstage .chcard:nth-child(2) .chcard__mock img.chcard__full{object-position:29% 50%}
+  .cstage .chcard:nth-child(3) .chcard__mock img.chcard__full{object-position:50% 50%}
   /* --- mobile: problem section type. One part shows at a time, so it can be read big */
   .problem__lead{font-size:23px;line-height:1.35;width:100%;max-width:339px}
   .problem__aside{font-size:23px;gap:10px}
