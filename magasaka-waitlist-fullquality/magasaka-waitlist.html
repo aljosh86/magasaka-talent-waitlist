@@ -1624,8 +1624,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     document.documentElement.classList.add('is-ready');
     onScroll();
     // arriving with a hash (e.g. manifesto.html -> #waitlist): the intro pinned us to the top, so go there now
-    if (location.hash === '#manifesto' && window.__mgManifesto) setTimeout(window.__mgManifesto, 300);
-    else if (location.hash.length > 1){ const t = document.getElementById(location.hash.slice(1)); if (t) t.scrollIntoView(); }
+    if (location.hash.length > 1 && location.hash !== '#manifesto'){ const t = document.getElementById(location.hash.slice(1)); if (t) t.scrollIntoView(); }
   }
   // A missing or stalled image must never leave the page locked behind the intro.
   const introFallback = setTimeout(finishIntro, 12000);
@@ -2664,7 +2663,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       panel.style.top = (i * h) + 'px'; panel.style.height = h + 'px';
       const face = document.createElement('div'); face.className = 'mf__face';
       const copy = sheet.cloneNode(true);
-      copy.removeAttribute('id');
+      copy.removeAttribute('id'); copy.style.visibility = '';   // the real sheet is hidden while it folds; its strips are not
       copy.querySelectorAll('.mf__close, .mf__hint').forEach(n => n.remove());
       copy.style.top = (-i * h) + 'px'; copy.style.height = (h * 3) + 'px';
       face.appendChild(copy);
@@ -2683,10 +2682,12 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       if (!box.hidden || busy) return;
       lastFocus = document.activeElement;
       unzoom();
+      if (!reduce) sheet.style.visibility = 'hidden';   // keep the open letter out of sight until the fold has played
       box.hidden = false; document.documentElement.classList.add('mf-open');
       requestAnimationFrame(() => box.classList.add('is-open'));
       try { await photo.decode(); } catch(e){}
       if (reduce){
+        sheet.style.visibility = '';
         sheet.animate([{opacity:0},{opacity:1}], {duration:250});
         scroller.focus({preventScroll:true}); showHint();
         return;
