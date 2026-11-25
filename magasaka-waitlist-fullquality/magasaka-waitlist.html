@@ -397,6 +397,7 @@ body:has(.pill:not([data-state="idle"])) .scrollcue{opacity:0 !important;transit
 .filmblock__scrim{position:absolute;inset:0;background:rgba(0,0,0,.08);background-image:linear-gradient(to top,rgba(20,20,20,.6) 0,rgba(20,20,20,0) 60%)}
 .filmblock__text{position:absolute;left:50%;bottom:23%;transform:translate(-50%,50%);width:100%;padding:0 24px;
   display:flex;flex-direction:column;align-items:center;gap:30px;text-align:center}
+.filmblock .br-phone{display:none}
 .filmblock h2{margin:0;font-weight:500;font-size:clamp(26px,3.2vw,52px);white-space:nowrap;line-height:1.2;color:var(--field-white);text-box:trim-both cap alphabetic}
 .filmblock__link{font-weight:400;font-size:clamp(15px,1.7vw,18px);line-height:1.2;color:rgba(237,236,232,.8);
   text-decoration:underline dotted;text-underline-offset:6px;text-decoration-thickness:2px;text-decoration-skip-ink:none;transition:color .2s}
@@ -452,13 +453,17 @@ body:has(.pill:not([data-state="idle"])) .scrollcue{opacity:0 !important;transit
   .after__inner{gap:120px;max-width:353px}
 
   /* manifesto film block */
-  /* phone: a tall portrait card filling the column, so it holds the screen instead of floating in empty space;
-     the headline sits low on the gradient, two lines, clear of the woman at her laptop */
-  .filmblock{width:100%;aspect-ratio:4/5;border-radius:20px}
-  .filmblock__scrim{background:none;background-image:linear-gradient(to top,rgba(20,20,20,.75) 0,rgba(20,20,20,.35) 30%,rgba(20,20,20,0) 55%)}
-  .filmblock__text{bottom:26px;transform:translate(-50%,0);gap:14px;padding:0 18px}
-  .filmblock h2{font-size:clamp(20px,5.9vw,24px);white-space:nowrap;line-height:1.25}
-  .filmblock__link{font-size:14px}
+  /* phone: the film opens up to fill the whole screen, edge to edge, like the hero. It starts as a
+     rounded card and grows to full bleed as it pins; the headline sits bottom-left, clear of the pill */
+  .filmblock{width:100vw;max-width:none;margin-inline:calc(50% - 50vw);height:100vh;height:100svh;aspect-ratio:auto;border-radius:20px}
+  .filmstage .filmblock{margin-inline:calc(50% - 50vw)}
+  .filmblock video{object-position:14% 50%}
+  .filmblock__scrim{background:none;background-image:linear-gradient(to top,rgba(20,20,20,.8) 0,rgba(20,20,20,.45) 28%,rgba(20,20,20,0) 50%)}
+  .filmblock__text{bottom:calc(env(safe-area-inset-bottom,0px) + 130px);transform:translate(-50%,0);align-items:flex-start;text-align:left;gap:16px;padding:0 24px}
+  .filmblock h2{font-size:clamp(24px,7.4vw,30px);white-space:nowrap;line-height:1.2}
+  .filmblock .br-phone{display:inline}
+  .filmblock .br-wide{display:none}   /* phone: Para sa mas magandang / bukas ng bawat Pilipino. */
+  .filmblock__link{font-size:15px}
 
   /* the problem */
   .problem{gap:25px;max-width:none}
@@ -910,7 +915,7 @@ html.flow-open, html.flow-open body{overflow:hidden}
         </video>
         <div class="filmblock__scrim"></div>
         <div class="filmblock__text">
-          <h2>Para sa mas magandang bukas <br>ng bawat Pilipino.</h2>
+          <h2>Para sa mas magandang <br class="br-phone">bukas <br class="br-wide">ng bawat Pilipino.</h2>
           <a class="filmblock__link" href="#manifesto">Magasaka Manifesto →</a>
         </div>
       </div>
@@ -1946,8 +1951,8 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       if (!stage) return;
       stage.style.height = 'auto';
       const h = block.offsetHeight;
-      stage.style.height = (h + Math.round(innerHeight * (innerWidth <= 640 ? .3 : .75))) + 'px';
-      block.style.top = restTop(h) + 'px';
+      stage.style.height = (h + Math.round(innerHeight * (innerWidth <= 640 ? .6 : .75))) + 'px';
+      block.style.top = (innerWidth <= 640 ? 0 : restTop(h)) + 'px';   // phone: full-screen, pinned flush to the top
       // leave room below for the part of the scaled-up frame that hangs past its layout box
       const big = innerWidth <= 640 ? 1 : Math.min(document.documentElement.clientWidth * .92 / block.offsetWidth, innerHeight * .9 / block.offsetHeight);
       stage.style.marginBottom = Math.max(0, Math.round((big - 1.2) * h / 2)) + 'px';
@@ -1956,7 +1961,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       queued = false;
       if (reduce){ block.style.transform = ''; copy.style.transform = ''; return; }
       const r = block.getBoundingClientRect();
-      const rest = restTop(r.height);
+      const rest = innerWidth <= 640 ? 0 : restTop(r.height);
       const from = innerHeight * .95;
       const p = Math.min(1, Math.max(0, (from - r.top) / Math.max(1, from - rest)));
       const eased = p * p * (3 - 2 * p);
@@ -1964,7 +1969,8 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       const big = Math.max(1.2, Math.min(document.documentElement.clientWidth * .92 / block.offsetWidth, innerHeight * .9 / block.offsetHeight));
       const s = 0.86 + eased * (innerWidth <= 640 ? 0.14 : big - 0.86);
       block.style.transform = `scale(${s.toFixed(4)})`;
-      block.style.borderRadius = s > 1 ? (radius / s).toFixed(2) + 'px' : '';
+      block.style.borderRadius = innerWidth <= 640 ? (radius * (1 - eased)).toFixed(2) + 'px'   // phone: card corners melt away at full bleed
+        : s > 1 ? (radius / s).toFixed(2) + 'px' : '';
       const anchor = innerWidth <= 640 ? 'translate(-50%, 0)' : 'translate(-50%, 50%)';
       copy.style.transform = `${anchor} scale(${(1 / s).toFixed(4)})`;
       // colour follows the frame: muted while it scrolls in, full once it settles, muted again as it scrolls away
