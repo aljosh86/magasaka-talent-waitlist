@@ -35,7 +35,9 @@ a{color:inherit}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
 /* ---------- Intro loader: the logo draws in, then its counter opens into the hero ---------- */
-html.is-loading, html.is-loading body{overflow:hidden}
+/* scrolling is locked in JS while loading, not with overflow:hidden: hiding the scrollbar made the
+   page widen and then snap narrower the moment the intro zoom finished */
+html.is-loading, html.is-loading body{overscroll-behavior:none}
 #loader{--loader-field:#4E7834;--loader-sprout:#E6F2C4;
   position:fixed;inset:0;z-index:90;overflow:hidden;pointer-events:auto}
 #loader svg{width:100%;height:100%;display:block}
@@ -1369,6 +1371,27 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
   // ---- intro loader: use the supplied logo construction and counter-portal animation
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
   scrollTo(0, 0);
+  // hold the page at the top during the intro without hiding the scrollbar (see html.is-loading)
+  const LOCK_KEYS = new Set([' ', 'PageDown', 'PageUp', 'ArrowDown', 'ArrowUp', 'Home', 'End']);
+  const blockScroll = e => { if (e.type !== 'keydown' || LOCK_KEYS.has(e.key)) e.preventDefault(); };
+  const pinTop = () => { if (scrollY) scrollTo(0, 0); };
+  addEventListener('wheel', blockScroll, {passive:false});
+  addEventListener('touchmove', blockScroll, {passive:false});
+  addEventListener('keydown', blockScroll);
+  addEventListener('scroll', pinTop);
+  const unlockScroll = () => {
+    removeEventListener('wheel', blockScroll); removeEventListener('touchmove', blockScroll);
+    removeEventListener('keydown', blockScroll); removeEventListener('scroll', pinTop);
+  };
+  // redraw the hero whenever the canvas's box changes size, not only on window resize
+  if ('ResizeObserver' in window){
+    let lastW = 0, lastH = 0;
+    new ResizeObserver(() => {
+      if (canvas.clientWidth === lastW && canvas.clientHeight === lastH) return;
+      lastW = canvas.clientWidth; lastH = canvas.clientHeight;
+      if (ready.some(Boolean)) size();
+    }).observe(canvas);
+  }
   const loaderEl = document.getElementById('loader'), grain = document.getElementById('grain');
   const world = document.getElementById('ldWorld'), hole = document.getElementById('ldHole');
   const guides = [...loaderEl.querySelectorAll('.guide')];
@@ -1404,7 +1427,8 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     removeEventListener('resize', resizeLogo);
     introAnims.forEach(animation => animation.cancel());
     loaderEl.remove();
-    stage.style.transform = ''; stage.style.filter = '';
+    unlockScroll();
+    stage.style.transform = ''; stage.style.filter = ''; stage.style.willChange = '';
     grain.style.opacity = '0'; setTimeout(() => grain.remove(), 600);
     document.documentElement.classList.remove('is-loading');
     document.documentElement.classList.add('is-ready');
@@ -1439,6 +1463,8 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
         finishIntro();
         return;
       }
+      // keep the hero on its own GPU layer while it scales and un-blurs under the zoom
+      stage.style.willChange = 'transform, filter';
       stage.style.transform = 'scale(1.14)'; stage.style.filter = 'blur(6px)';
       const ease = 'cubic-bezier(.65,0,.35,1)';
       guides.forEach((guide,i) => animateIntro(guide, [{strokeDashoffset:1},{strokeDashoffset:0}],
