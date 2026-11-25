@@ -47,7 +47,7 @@ Only `magasaka-waitlist-fullquality/` is needed to serve the website; `design-as
 
 ## Hero navigation
 
-The opening "Scroll" cue uses a static mouse-outline icon and sits at the lower right, where the former skip control appeared. On phones, it sits above the signup bar to avoid overlap. It is a visual prompt for manual scrolling, with no click-triggered scrolling. The former "Skip hero story" controls remain removed from the hero and menu. In reduced motion, the scroll prompt is hidden alongside the scroll-driven sequence.
+The opening "Scroll" cue sits at the lower right, where the former skip control appeared. Its mouse wheel moves downward and fades in a gentle loop while the outline and label stay fixed. The animation pauses when the cue or browser tab is hidden. On phones, the cue sits above the signup bar to avoid overlap. It is a visual prompt for manual scrolling, with no click-triggered scrolling. The former "Skip hero story" controls remain removed from the hero and menu. In reduced motion, the scroll prompt and its animation are disabled alongside the scroll-driven sequence.
 
 ## Logo loader update
 
