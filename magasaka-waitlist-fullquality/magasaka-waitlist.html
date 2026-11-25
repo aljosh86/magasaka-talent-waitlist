@@ -380,7 +380,8 @@ html.is-loading .grain{z-index:91}
 .filmstage .filmblock{margin-inline:auto}
 .filmstage .filmblock{position:sticky}
 
-.filmblock{position:relative;width:min(900px,100%);aspect-ratio:900/500;transform-origin:50% 50%;will-change:transform;border-radius:24px;overflow:hidden;background:var(--paddy)}
+.filmblock{position:relative;width:min(900px,100%);aspect-ratio:900/500;transform-origin:50% 50%;border-radius:24px;overflow:hidden;background:var(--paddy)}
+/* no will-change here: it freezes the raster at 1x, so the counter-scaled copy goes soft once the frame grows */
 .filmblock video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:12% 50%;display:block}  /* narrow crops keep the woman at her laptop */
 .filmblock__scrim{position:absolute;inset:0;background:rgba(0,0,0,.2);background-image:linear-gradient(to top,rgba(20,20,20,.5) 0,rgba(20,20,20,0) 55%)}
 .filmblock__text{position:absolute;left:50%;bottom:23%;transform:translate(-50%,50%);width:100%;padding:0 24px;
