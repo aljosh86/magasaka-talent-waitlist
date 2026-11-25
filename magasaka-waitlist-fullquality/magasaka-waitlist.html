@@ -387,11 +387,14 @@ html.is-loading .grain{z-index:91}
 
 .filmblock{position:relative;width:min(900px,100%);aspect-ratio:900/500;transform-origin:50% 50%;border-radius:24px;overflow:hidden;background:var(--paddy)}
 /* no will-change here: it freezes the raster at 1x, so the counter-scaled copy goes soft once the frame grows */
-.filmblock video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:12% 50%;display:block}  /* narrow crops keep the woman at her laptop */
-.filmblock__scrim{position:absolute;inset:0;background:rgba(0,0,0,.2);background-image:linear-gradient(to top,rgba(20,20,20,.5) 0,rgba(20,20,20,0) 55%)}
+.filmblock video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:12% 50%;display:block;filter:saturate(1.15) contrast(1.04)}
+/* the filter does two jobs: it lifts the colour, and it keeps Chrome on one render path. Without it the
+   video flipped between the composited path (dull, while the frame scaled) and a hardware overlay
+   (vivid, once scrolled past). object-position: narrow crops keep the woman at her laptop */
+.filmblock__scrim{position:absolute;inset:0;background:rgba(0,0,0,.08);background-image:linear-gradient(to top,rgba(20,20,20,.6) 0,rgba(20,20,20,0) 60%)}
 .filmblock__text{position:absolute;left:50%;bottom:23%;transform:translate(-50%,50%);width:100%;padding:0 24px;
   display:flex;flex-direction:column;align-items:center;gap:30px;text-align:center}
-.filmblock h2{margin:0;font-weight:500;font-size:clamp(20px,2.25vw,34px);white-space:nowrap;line-height:1.2;color:var(--field-white);text-box:trim-both cap alphabetic}
+.filmblock h2{margin:0;font-weight:500;font-size:clamp(26px,3.2vw,52px);white-space:nowrap;line-height:1.2;color:var(--field-white);text-box:trim-both cap alphabetic}
 .filmblock__link{font-weight:400;font-size:clamp(15px,1.7vw,18px);line-height:1.2;color:rgba(237,236,232,.8);
   text-decoration:underline dotted;text-underline-offset:6px;text-decoration-thickness:2px;text-decoration-skip-ink:none;transition:color .2s}
 .filmblock__link:hover{color:var(--field-white)}
@@ -448,7 +451,7 @@ html.is-loading .grain{z-index:91}
   /* manifesto film block */
   .filmblock{width:354px;max-width:100%;aspect-ratio:354/270;border-radius:18px}
   .filmblock__text{bottom:30px;transform:translate(-50%,0);gap:15px;padding:0 16px}
-  .filmblock h2{font-size:24px;white-space:normal;width:265px;max-width:100%;margin-inline:auto}
+  .filmblock h2{font-size:28px;white-space:normal;width:300px;max-width:100%;margin-inline:auto}
   .filmblock h2 br{display:none}
   .filmblock__link{font-size:14px}
 
