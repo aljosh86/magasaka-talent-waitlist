@@ -1173,6 +1173,23 @@ html.mf-open{overscroll-behavior:none}
   .scrollcue{bottom:calc(env(safe-area-inset-bottom,0px) + 175px)}
   .ask{right:10px;bottom:calc(env(safe-area-inset-bottom,0px) + 40px + 57px + 14px + 50px + 10px);width:calc(100vw - 20px);height:min(520px,calc(100svh - 200px))}
 }
+/* Mang Juan, minimal: a white salakot and two eyes on ink. He blinks now and then, and bobs his hat when poked */
+.juan{background:var(--ink);color:#fff;box-shadow:0 10px 24px -10px rgba(0,0,0,.6),inset 0 0 0 1px rgba(255,255,255,.12)}
+.juan .mj{display:block;width:100%;height:100%;overflow:visible}
+.mj__hat,.mj__eyes{transform-box:fill-box;transform-origin:50% 100%}
+.mj__eyes{transform-origin:50% 50%}
+.mj.is-blink .mj__eyes{animation:mj-blink .26s ease}
+.mj.is-poke .mj__hat{animation:mj-hat .75s cubic-bezier(.3,1.6,.5,1)}
+.mj.is-poke .mj__eyes{animation:mj-look .75s cubic-bezier(.3,1.4,.5,1)}
+.juan:hover .mj__hat{transform:translateY(-1.5px) rotate(-6deg);transition:transform .35s cubic-bezier(.3,1.6,.5,1)}
+.mj__hat{transition:transform .35s ease}
+.is-ready .juan:active{transform:scale(.9)}
+@keyframes mj-blink{0%,100%{transform:none}50%{transform:scaleY(.12)}}
+@keyframes mj-hat{0%{transform:none}25%{transform:translateY(-6px) rotate(-14deg)}50%{transform:translateY(-2px) rotate(9deg)}72%{transform:rotate(-4deg)}100%{transform:none}}
+@keyframes mj-look{0%,100%{transform:none}30%{transform:translateY(1.5px) scaleY(.12)}55%{transform:translateX(-1.5px)}80%{transform:translateX(1px)}}
+.ask__avatar{display:block;width:36px;height:36px;border-radius:50%;background:var(--ink);color:#fff}
+.ask__avatar .mj{display:block;width:100%;height:100%}
+@media (prefers-reduced-motion: reduce){.mj *{animation:none !important;transition:none !important}}
 </style>
 </head>
 <body>
@@ -1678,10 +1695,10 @@ Marc!</h2>
   </div>
 </nav>
 
-<button class="juan" id="askBtn" type="button" aria-label="Ask Mang Juan" aria-expanded="false" aria-controls="ask"><img src="images/mang-juan.svg" width="56" height="56" alt=""></button>
+<button class="juan" id="askBtn" type="button" aria-label="Ask Mang Juan" aria-expanded="false" aria-controls="ask"><svg class="mj" viewBox="0 0 56 56" aria-hidden="true"><g class="mj__hat"><path d="M11.5 29.5 28 16.5l16.5 13c-5 1.9-10.5 2.8-16.5 2.8s-11.5-.9-16.5-2.8z" fill="currentColor"/></g><g class="mj__eyes" fill="currentColor"><circle cx="23.2" cy="37.5" r="2.3"/><circle cx="32.8" cy="37.5" r="2.3"/></g></svg></button>
 <section class="ask" id="ask" hidden role="dialog" aria-label="Ask Mang Juan">
   <header class="ask__head">
-    <img class="ask__avatar" src="images/mang-juan.svg" width="36" height="36" alt="">
+    <span class="ask__avatar"><svg class="mj" viewBox="0 0 56 56" aria-hidden="true"><g class="mj__hat"><path d="M11.5 29.5 28 16.5l16.5 13c-5 1.9-10.5 2.8-16.5 2.8s-11.5-.9-16.5-2.8z" fill="currentColor"/></g><g class="mj__eyes" fill="currentColor"><circle cx="23.2" cy="37.5" r="2.3"/><circle cx="32.8" cy="37.5" r="2.3"/></g></svg></span>
     <strong class="ask__who">Ask Mang Juan</strong>
     <button class="ask__close" type="button" aria-label="Close" data-ask-close><svg width="16" height="16" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M16.5 5.5L5.5 16.5M16.5 16.5L5.5 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
   </header>
@@ -3385,6 +3402,12 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       if (matchMedia('(hover: hover)').matches) setTimeout(() => input.focus({preventScroll:true}), 60);
     }
     function close(){ box.hidden = true; btn.setAttribute('aria-expanded', 'false'); }
+    // he bobs his hat when poked, and blinks every few seconds
+    const mj = btn.querySelector('.mj');
+    const play = cls => { mj.classList.remove(cls); void mj.getBoundingClientRect(); mj.classList.add(cls); };
+    mj.addEventListener('animationend', e => { if (e.target.closest('.mj__hat') || !mj.classList.contains('is-poke')) mj.classList.remove('is-poke', 'is-blink'); });
+    btn.addEventListener('pointerdown', () => play('is-poke'));
+    (function blink(){ setTimeout(() => { if (!document.hidden && !mj.classList.contains('is-poke')) play('is-blink'); blink(); }, 3200 + Math.random() * 3800); })();
     btn.addEventListener('click', e => { e.stopPropagation(); box.hidden ? open() : close(); });
     box.querySelector('[data-ask-close]').addEventListener('click', () => { close(); btn.focus(); });
     form.addEventListener('submit', e => { e.preventDefault(); ask(input.value); });
