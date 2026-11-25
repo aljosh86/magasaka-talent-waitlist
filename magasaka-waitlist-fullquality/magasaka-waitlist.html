@@ -1083,6 +1083,17 @@ html.mf-open{overscroll-behavior:none}
   .band__legal > span{flex-basis:100%}
   .band__foot{align-items:end}
 }
+/* the email bar in brand gold (Sand Brown), dark ink on it */
+.band .signup,.band .signup:hover{background:var(--sand)}
+.band .signup:focus-within{background:#e4ad6c}
+.band .signup input,.band .signup button{color:var(--ink)}
+.band .signup input::placeholder{color:rgba(20,20,20,.72)}
+.band .signup__bar{background:rgba(20,20,20,.3)}
+@media (max-width:640px){
+  .band .signup{background:var(--sand)}
+  .band .signup input,.band .signup button{color:var(--ink)}
+  .band .signup input::placeholder{color:rgba(20,20,20,.72)}
+}
 </style>
 </head>
 <body>
