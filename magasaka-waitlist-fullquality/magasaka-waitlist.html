@@ -2215,6 +2215,10 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     const punchIndex = parts.indexOf(punch);
     const writeTime = n => Math.max(0, n - 1) * 90 + 1000;
     let gate = null;   // while a part is still writing: the furthest scroll position allowed
+    // once someone has read through to the punch line, the section never holds them again (this visit)
+    let read = false;
+    try { read = sessionStorage.getItem('mg-problem-read') === '1'; } catch(e){}
+    const markRead = () => { if (read) return; read = true; gate = null; try { sessionStorage.setItem('mg-problem-read', '1'); } catch(e){} };
     // stop the scroll itself at the gate (no snap-back jitter); scrolling up is never held
     const atGate = () => gate !== null && scrollY >= gate - 1 && document.getElementById('manifesto')?.hidden !== false && document.getElementById('flow')?.hidden !== false;   // never inside the letter or signup
     addEventListener('wheel', e => { if (e.deltaY > 0 && atGate()) e.preventDefault(); }, {passive:false});
@@ -2241,7 +2245,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       // a fast flick can jump past a boundary in one frame: if the part on screen hasn't finished, stay on it
       const stageTop = r.top + scrollY;   // page position of the stage, taken before any pull-back below moves scrollY
       const holdLimit = i => Math.floor(stageTop - rest - lead + weights.slice(0, i + 1).reduce((a, b) => a + b, 0) / total * (span + lead)) - 2;
-      if (current >= 0 && k > current && performance.now() < doneAt[current]){
+      if (!read && current >= 0 && k > current && performance.now() < doneAt[current]){
         scrollTo(0, holdLimit(current)); k = current; u = 1;
       }
       if (k !== current){
@@ -2262,7 +2266,8 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
         }
       });
       // hold the reader at the end of this part's turn until it has finished writing
-      if (begun && performance.now() < doneAt[k]){
+      if (k === punchIndex && doneAt[k] && performance.now() >= doneAt[k]) markRead();
+      if (!read && begun && performance.now() < doneAt[k]){
         gate = holdLimit(k);   // where the next part would start
         if (scrollY > gate) scrollTo(0, gate);   // a scrollbar drag or a jump still gets pulled back
         clearTimeout(draw.release); draw.release = setTimeout(() => { gate = null; }, doneAt[k] - performance.now());
