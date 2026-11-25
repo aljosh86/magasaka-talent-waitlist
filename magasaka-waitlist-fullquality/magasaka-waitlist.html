@@ -2136,7 +2136,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     const writeTime = n => Math.max(0, n - 1) * 90 + 1000;
     let gate = null;   // while a part is still writing: the furthest scroll position allowed
     // stop the scroll itself at the gate (no snap-back jitter); scrolling up is never held
-    const atGate = () => gate !== null && scrollY >= gate - 1;
+    const atGate = () => gate !== null && scrollY >= gate - 1 && document.getElementById('manifesto')?.hidden !== false && document.getElementById('flow')?.hidden !== false;   // never inside the letter or signup
     addEventListener('wheel', e => { if (e.deltaY > 0 && atGate()) e.preventDefault(); }, {passive:false});
     let touchY = 0;
     addEventListener('touchstart', e => { touchY = e.touches[0].clientY; }, {passive:true});
