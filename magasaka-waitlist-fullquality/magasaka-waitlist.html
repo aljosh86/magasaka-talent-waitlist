@@ -674,7 +674,11 @@ html.flow-open, html.flow-open body{overflow:hidden}
 .flow__field{display:flex;flex-direction:column;gap:20px;width:100%}
 .flow__label{margin:0;font-size:17px;letter-spacing:-.01em;color:var(--ink);text-box:trim-both cap alphabetic}
 .flow__pill{display:flex;align-items:center;gap:10px;width:100%;height:58px;padding:4px 4px 4px 19px;border-radius:100px;
-  background:#fff;backdrop-filter:blur(2px)}
+  background:#fff;backdrop-filter:blur(2px);
+  transition:opacity .3s ease,height .4s cubic-bezier(.22,1,.36,1),margin .4s cubic-bezier(.22,1,.36,1),padding .4s cubic-bezier(.22,1,.36,1)}
+/* with all 3 skills picked, the search fades out and folds away (it comes back when one is removed) */
+.flow__field.is-full .flow__pill{opacity:0;height:0;padding-block:0;margin-top:-20px;overflow:hidden;pointer-events:none}
+@media (prefers-reduced-motion: reduce){.flow__pill{transition:none}}
 .flow__pill input{flex:1 1 auto;min-width:0;border:0;outline:0;background:none;height:50px;
   font:400 16px/1 var(--font);letter-spacing:-.01em;color:var(--ink)}
 .flow__pill input::placeholder{color:#9a9a97}
@@ -2285,11 +2289,16 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       });
       meta.textContent = state.picks.length + ' of 3 picked';
       cardBtn.disabled = !state.title || state.picks.length === 0;
+      const full = state.picks.length >= 3;
+      search.closest('.flow__field').classList.toggle('is-full', full);
+      search.tabIndex = full ? -1 : 0;
+      if (full && document.activeElement === search) search.blur();
     }
     function addPick(v){
       if (state.picks.length >= 3 || state.picks.includes(v)) return;
       state.picks.push(v); save();
-      search.value = ''; setBrowse(false); renderChips(); renderResults(); search.focus({preventScroll:true});
+      search.value = ''; setBrowse(false); renderChips(); renderResults();
+      if (state.picks.length < 3) search.focus({preventScroll:true});
     }
     function row(name, cat, cls){
       const b = document.createElement('button');
@@ -2308,10 +2317,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       const q = search.value.trim().toLowerCase();
       results.innerHTML = '';
       const full = state.picks.length >= 3;
-      if (full){
-        if (!resultsOpen && !q){ hideResults(); return; }
-        results.hidden = false; results.classList.add('is-note'); results.appendChild(row('You have picked 3. Remove one to change it.', '', 'flow__row--empty')); return;
-      }
+      if (full){ resultsOpen = false; hideResults(); return; }
       let list;
       if (!q){
         // no query: show all when browsing, else the niches that go with the chosen title
