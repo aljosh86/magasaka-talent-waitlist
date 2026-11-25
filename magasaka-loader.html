@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Magasaka — loader</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --field:#4E7834;      /* loader ground, from the logo green */
+  --sprout:#E6F2C4;     /* young-rice wordmark */
+  --ink:#1D3113;
+  --paddy:#537D39;
+  --sky-top:#CFE3B0;
+  --sky-low:#F1F5DF;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+body{margin:0;height:100%;background:var(--sky-low);color:var(--ink);
+  font-family:"Bricolage Grotesque",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;overflow:hidden}
+*{box-sizing:border-box}
+
+/* ---------- hero (placeholder for the scroll video) ---------- */
+.hero{position:fixed;inset:0;overflow:hidden;
+  background:linear-gradient(180deg,var(--sky-top) 0%,var(--sky-low) 55%);
+  transform-origin:50% 50%}
+.hero svg.terraces{position:absolute;left:0;right:0;bottom:0;width:100%;height:38%}
+.hero nav{position:absolute;top:calc(env(safe-area-inset-top,0px) + 24px);left:clamp(20px,4vw,48px);right:clamp(20px,4vw,48px);
+  display:flex;justify-content:space-between;align-items:center}
+.hero nav svg{height:22px;width:auto}
+.hero nav a{color:var(--ink);font-weight:600;font-size:15px;text-decoration:none;padding:8px 2px;border-bottom:1.5px solid currentColor}
+.copy{position:absolute;left:50%;top:clamp(90px,17vh,170px);transform:translateX(-50%);width:min(92vw,720px);text-align:center}
+.copy h1{margin:0;font-weight:700;font-size:clamp(40px,7.2vw,92px);line-height:.98;letter-spacing:-.03em}
+.copy p{margin:20px auto 0;max-width:30em;font-size:clamp(16px,1.6vw,19px);line-height:1.5;color:#3C5530}
+.join{margin:28px auto 0;display:flex;gap:8px;max-width:440px;background:#fff;border-radius:999px;padding:6px;
+  box-shadow:0 1px 0 rgba(29,49,19,.08),0 12px 30px -12px rgba(29,49,19,.35)}
+.join input{flex:1;min-width:0;border:0;background:transparent;font:inherit;font-size:16px;padding:0 16px;color:var(--ink)}
+.join input:focus{outline:none}
+.join button{border:0;border-radius:999px;background:var(--paddy);color:#fff;font:inherit;font-weight:600;font-size:15px;padding:13px 20px;cursor:pointer;white-space:nowrap}
+.join:focus-within{outline:2px solid var(--ink);outline-offset:3px}
+.join button:focus-visible,.replay:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+
+/* ---------- loader ---------- */
+#loader{position:fixed;inset:0;z-index:10;pointer-events:none}
+#loader svg{width:100%;height:100%;display:block}
+.guide{fill:none;stroke:var(--sprout);stroke-width:1;stroke-opacity:.45;vector-effect:non-scaling-stroke;
+  stroke-dasharray:1;stroke-dashoffset:1}
+.letter path{fill:var(--sprout);fill-opacity:0;stroke:var(--sprout);stroke-width:1;vector-effect:non-scaling-stroke;
+  stroke-dasharray:1;stroke-dashoffset:1}
+.mark path{fill:var(--sprout);fill-opacity:0;transform-box:fill-box;transform-origin:50% 100%;transform:scaleY(0)}
+.grain{position:fixed;inset:0;z-index:11;pointer-events:none;opacity:.14;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+
+.replay{position:fixed;z-index:20;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);
+  border:1px solid rgba(29,49,19,.25);background:rgba(255,255,255,.7);backdrop-filter:blur(6px);color:var(--ink);
+  font:inherit;font-size:14px;font-weight:600;padding:9px 14px;border-radius:999px;cursor:pointer;opacity:0;transition:opacity .4s}
+.replay.show{opacity:1}
+@media (max-width:560px){.copy{top:18%}.join{flex-direction:column;border-radius:20px}.join input{padding:12px 14px}}
+</style>
+</head>
+<body>
+
+<main class="hero" id="hero" aria-label="Magasaka waitlist">
+  <nav>
+    <svg viewBox="0 0 651.45 84.42" role="img" aria-label="Magasaka"><g fill="#537D39"><path d="m20.46,17.62v66.8C8.48,79.72,0,68.06,0,54.41V0h2.86c9.72,0,17.61,7.89,17.61,17.62Z"/><path d="m51.26,45.61v38.81h-2.88c-9.72-.02-17.59-7.89-17.59-17.61V15.61c11.98,4.7,20.46,16.36,20.46,30.01Z"/><path d="m82.04,15.61v51.21c0,9.72-7.88,17.61-17.61,17.61h-2.86v-38.81c0-13.65,8.48-25.31,20.46-30.01Z"/><path d="m112.83,0s0,0,0,0v54.41c0,13.65-8.48,25.31-20.47,30.01V17.62c0-9.72,7.88-17.61,17.61-17.62h2.86Z"/><path d="m205.16,15.1c-10.84,0-18.14,7.76-18.44,8.09l-1.22,1.38-1.29-1.36c-.8-.83-8.1-8.11-18.45-8.11-10.92,0-20.43,7.01-23.65,17.41-.72,2.38-1.08,4.84-1.08,7.33v27.51h10.09v-27.51c0-8.08,6.57-14.65,14.65-14.65s14.67,6.57,14.67,14.65v27.51h10.09v-27.51c0-8.08,6.57-14.65,14.65-14.65s14.66,6.57,14.66,14.65v27.51h10.08v-27.51c0-2.46-.36-4.93-1.07-7.32-3.22-10.41-12.74-17.42-23.67-17.42Z"/><path d="m265.42,15.1c-14.59,0-26.48,11.87-26.48,26.47s11.88,26.47,26.48,26.47c6.4,0,13.85-3.58,13.94-3.63l2.41-1.18v4.13h10.12v-25.78c0-14.6-11.87-26.47-26.47-26.47Zm0,42.83c-9.03,0-16.39-7.34-16.39-16.36s7.35-16.37,16.39-16.37,16.35,7.34,16.35,16.37-7.33,16.36-16.35,16.36Z"/><path d="m389.19,15.19c-14.6,0-26.48,11.86-26.48,26.44s11.88,26.48,26.48,26.48c5.9,0,12.75-3.05,14.12-3.68l2.23-.82v3.81h10.1v-25.78c0-14.58-11.87-26.44-26.45-26.44Zm0,42.83c-9.03,0-16.39-7.35-16.39-16.39s7.35-16.35,16.39-16.35,16.35,7.33,16.35,16.35-7.33,16.39-16.35,16.39Z"/><path d="m510.29,15.19c-14.6,0-26.47,11.86-26.47,26.44s11.87,26.48,26.47,26.48c5.91,0,12.77-3.05,14.13-3.68l2.23-.82v3.81h10.1v-25.78c0-14.58-11.87-26.44-26.47-26.44Zm0,42.83c-9.03,0-16.38-7.35-16.38-16.39s7.34-16.35,16.38-16.35,16.36,7.33,16.36,16.35-7.34,16.39-16.36,16.39Z"/><path d="m624.99,15.19c-14.6,0-26.48,11.86-26.48,26.44s11.88,26.48,26.48,26.48c5.9,0,12.75-3.05,14.12-3.68l2.23-.82v3.81h10.1v-25.78c0-14.58-11.87-26.44-26.45-26.44Zm0,42.83c-9.03,0-16.39-7.35-16.39-16.39s7.35-16.35,16.39-16.35,16.35,7.33,16.35,16.35-7.33,16.39-16.35,16.39Z"/><path d="m460.78,36.55h-22.01c-3.48,0-5.31-2.7-5.31-5.36,0-1.38.47-2.66,1.32-3.63,1-1.13,2.38-1.73,3.99-1.73h34.55v-10.08h-34.55c-7.19,0-13.55,5.1-15.11,12.13-1,4.49.34,8.16.96,9.53,2.49,5.6,8.04,9.22,14.15,9.22h22.01c1.62,0,2.99.58,3.97,1.7.87.98,1.36,2.28,1.36,3.65,0,2.68-1.83,5.38-5.33,5.38h-34.55v10.05h34.55c7.22,0,13.56-5.09,15.11-12.11.58-2.71.32-5.11,0-6.64-1.54-7.02-7.9-12.11-15.11-12.11Z"/><path d="m585.63,12.56l-28.29,21.82V0h-10.1v67.36h10.1v-20.21l6.23-4.82.63.06c8.5.62,15.17,7.79,15.17,16.33v8.64h10.1v-8.64c0-9.53-5.16-18.35-13.49-23.02l-2.19-1.26,18.02-13.9-6.18-7.99Z"/><path d="m300.98,41.43c0,14.53,11.82,26.37,26.35,26.37s26.33-11.83,26.33-26.37c0-4.9-1.36-9.67-3.93-13.8l-1.56-2.55h5.49v-9.98h-26.33c-14.53,0-26.35,11.81-26.35,26.33Zm42.72,0c0,9.03-7.34,16.39-16.36,16.39s-16.38-7.35-16.38-16.39,7.34-16.35,16.38-16.35,16.36,7.33,16.36,16.35Z"/><path d="m327.32,74.44c-7.5,0-14.4-2.5-19.94-6.7l-6.15,7.86c7.23,5.54,16.27,8.83,26.09,8.83s18.86-3.29,26.09-8.82l-6.15-7.86c-5.54,4.19-12.45,6.69-19.94,6.69Z"/></g></svg>
+    <a href="#join">Join the waitlist</a>
+  </nav>
+  <div class="copy">
+    <h1>Filipino talent, hired directly.</h1>
+    <p>Magasaka is a freelance marketplace built only for Filipino freelancers and the clients who want to work with them. Join the waitlist to get in first.</p>
+    <form class="join" id="join" onsubmit="event.preventDefault();this.querySelector('button').textContent='You’re on the list';">
+      <label for="email" style="position:absolute;left:-9999px">Email address</label>
+      <input id="email" type="email" required placeholder="you@email.com" autocomplete="email">
+      <button type="submit">Join the waitlist</button>
+    </form>
+  </div>
+  <svg class="terraces" viewBox="0 0 1440 520" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0 150 C 260 90 520 170 760 120 S 1200 70 1440 110 V520 H0Z" fill="#B7D48E"/>
+    <path d="M0 230 C 300 180 560 260 820 210 S 1240 170 1440 200 V520 H0Z" fill="#94BD67"/>
+    <path d="M0 310 C 280 270 600 340 880 300 S 1260 260 1440 290 V520 H0Z" fill="#6F9D47"/>
+    <path d="M0 400 C 320 360 640 420 920 385 S 1280 355 1440 380 V520 H0Z" fill="#537D39"/>
+    <path d="M0 470 C 360 440 700 490 980 460 S 1300 440 1440 455 V520 H0Z" fill="#3E6128"/>
+  </svg>
+</main>
+
+<div id="loader" aria-hidden="true">
+  <svg id="stage">
+    <defs>
+      <mask id="portal" maskUnits="userSpaceOnUse" x="-100000" y="-100000" width="200000" height="200000">
+        <rect x="-100000" y="-100000" width="200000" height="200000" fill="#fff"/>
+        <circle id="hole" cx="327.33" cy="41.43" r="16.6" fill="#000" fill-opacity="0"/>
+      </mask>
+    </defs>
+    <g id="world">
+      <rect x="-100000" y="-100000" width="200000" height="200000" fill="var(--field)" mask="url(#portal)"/>
+      <g id="guides">
+        <!-- metric lines: ascender, x-height, bowl axis, baseline, descender -->
+        <line class="guide" pathLength="1" x1="-40" x2="700" y1="0" y2="0"/>
+        <line class="guide" pathLength="1" x1="-40" x2="700" y1="15.1" y2="15.1"/>
+        <line class="guide" pathLength="1" x1="120" x2="700" y1="41.5" y2="41.5"/>
+        <line class="guide" pathLength="1" x1="-40" x2="700" y1="67.36" y2="67.36"/>
+        <line class="guide" pathLength="1" x1="-40" x2="700" y1="84.42" y2="84.42"/>
+        <!-- stems & bowl centres -->
+        <line class="guide" pathLength="1" x1="56.4" x2="56.4" y1="-30" y2="110"/>
+        <line class="guide" pathLength="1" x1="265.42" x2="265.42" y1="-30" y2="110"/>
+        <line class="guide" pathLength="1" x1="327.33" x2="327.33" y1="-30" y2="110"/>
+        <line class="guide" pathLength="1" x1="389.19" x2="389.19" y1="-30" y2="110"/>
+        <line class="guide" pathLength="1" x1="510.29" x2="510.29" y1="-30" y2="110"/>
+        <line class="guide" pathLength="1" x1="552.3" x2="552.3" y1="-30" y2="110"/>
+        <line class="guide" pathLength="1" x1="624.99" x2="624.99" y1="-30" y2="110"/>
+        <!-- k arm diagonal and bowl circles -->
+        <line class="guide" pathLength="1" x1="520" x2="610" y1="63" y2="-6.4"/>
+        <circle class="guide" pathLength="1" cx="265.42" cy="41.57" r="26.47"/>
+        <circle class="guide" pathLength="1" cx="327.33" cy="41.43" r="26.35"/>
+        <circle class="guide" pathLength="1" cx="510.29" cy="41.63" r="26.47"/>
+              </g>
+      <g class="mark"><path d="m20.46,17.62v66.8C8.48,79.72,0,68.06,0,54.41V0h2.86c9.72,0,17.61,7.89,17.61,17.62Z"/><path d="m51.26,45.61v38.81h-2.88c-9.72-.02-17.59-7.89-17.59-17.61V15.61c11.98,4.7,20.46,16.36,20.46,30.01Z"/><path d="m82.04,15.61v51.21c0,9.72-7.88,17.61-17.61,17.61h-2.86v-38.81c0-13.65,8.48-25.31,20.46-30.01Z"/><path d="m112.83,0s0,0,0,0v54.41c0,13.65-8.48,25.31-20.47,30.01V17.62c0-9.72,7.88-17.61,17.61-17.62h2.86Z"/></g>
+      <g class="letter"><path pathLength="1" d="m205.16,15.1c-10.84,0-18.14,7.76-18.44,8.09l-1.22,1.38-1.29-1.36c-.8-.83-8.1-8.11-18.45-8.11-10.92,0-20.43,7.01-23.65,17.41-.72,2.38-1.08,4.84-1.08,7.33v27.51h10.09v-27.51c0-8.08,6.57-14.65,14.65-14.65s14.67,6.57,14.67,14.65v27.51h10.09v-27.51c0-8.08,6.57-14.65,14.65-14.65s14.66,6.57,14.66,14.65v27.51h10.08v-27.51c0-2.46-.36-4.93-1.07-7.32-3.22-10.41-12.74-17.42-23.67-17.42Z"/></g>
+      <g class="letter"><path pathLength="1" d="m265.42,15.1c-14.59,0-26.48,11.87-26.48,26.47s11.88,26.47,26.48,26.47c6.4,0,13.85-3.58,13.94-3.63l2.41-1.18v4.13h10.12v-25.78c0-14.6-11.87-26.47-26.47-26.47Zm0,42.83c-9.03,0-16.39-7.34-16.39-16.36s7.35-16.37,16.39-16.37,16.35,7.34,16.35,16.37-7.33,16.36-16.35,16.36Z"/></g>
+      <g class="letter"><path pathLength="1" d="m300.98,41.43c0,14.53,11.82,26.37,26.35,26.37s26.33-11.83,26.33-26.37c0-4.9-1.36-9.67-3.93-13.8l-1.56-2.55h5.49v-9.98h-26.33c-14.53,0-26.35,11.81-26.35,26.33Zm42.72,0c0,9.03-7.34,16.39-16.36,16.39s-16.38-7.35-16.38-16.39,7.34-16.35,16.38-16.35,16.36,7.33,16.36,16.35Z"/><path pathLength="1" d="m327.32,74.44c-7.5,0-14.4-2.5-19.94-6.7l-6.15,7.86c7.23,5.54,16.27,8.83,26.09,8.83s18.86-3.29,26.09-8.82l-6.15-7.86c-5.54,4.19-12.45,6.69-19.94,6.69Z"/></g>
+      <g class="letter"><path pathLength="1" d="m389.19,15.19c-14.6,0-26.48,11.86-26.48,26.44s11.88,26.48,26.48,26.48c5.9,0,12.75-3.05,14.12-3.68l2.23-.82v3.81h10.1v-25.78c0-14.58-11.87-26.44-26.45-26.44Zm0,42.83c-9.03,0-16.39-7.35-16.39-16.39s7.35-16.35,16.39-16.35,16.35,7.33,16.35,16.35-7.33,16.39-16.35,16.39Z"/></g>
+      <g class="letter"><path pathLength="1" d="m460.78,36.55h-22.01c-3.48,0-5.31-2.7-5.31-5.36,0-1.38.47-2.66,1.32-3.63,1-1.13,2.38-1.73,3.99-1.73h34.55v-10.08h-34.55c-7.19,0-13.55,5.1-15.11,12.13-1,4.49.34,8.16.96,9.53,2.49,5.6,8.04,9.22,14.15,9.22h22.01c1.62,0,2.99.58,3.97,1.7.87.98,1.36,2.28,1.36,3.65,0,2.68-1.83,5.38-5.33,5.38h-34.55v10.05h34.55c7.22,0,13.56-5.09,15.11-12.11.58-2.71.32-5.11,0-6.64-1.54-7.02-7.9-12.11-15.11-12.11Z"/></g>
+      <g class="letter"><path pathLength="1" d="m510.29,15.19c-14.6,0-26.47,11.86-26.47,26.44s11.87,26.48,26.47,26.48c5.91,0,12.77-3.05,14.13-3.68l2.23-.82v3.81h10.1v-25.78c0-14.58-11.87-26.44-26.47-26.44Zm0,42.83c-9.03,0-16.38-7.35-16.38-16.39s7.34-16.35,16.38-16.35,16.36,7.33,16.36,16.35-7.34,16.39-16.36,16.39Z"/></g>
+      <g class="letter"><path pathLength="1" d="m585.63,12.56l-28.29,21.82V0h-10.1v67.36h10.1v-20.21l6.23-4.82.63.06c8.5.62,15.17,7.79,15.17,16.33v8.64h10.1v-8.64c0-9.53-5.16-18.35-13.49-23.02l-2.19-1.26,18.02-13.9-6.18-7.99Z"/></g>
+      <g class="letter"><path pathLength="1" d="m624.99,15.19c-14.6,0-26.48,11.86-26.48,26.44s11.88,26.48,26.48,26.48c5.9,0,12.75-3.05,14.12-3.68l2.23-.82v3.81h10.1v-25.78c0-14.58-11.87-26.44-26.45-26.44Zm0,42.83c-9.03,0-16.39-7.35-16.39-16.39s7.35-16.35,16.39-16.35,16.35,7.33,16.35,16.35-7.33,16.39-16.35,16.39Z"/></g>
+    </g>
+  </svg>
+</div>
+<div class="grain" id="grain"></div>
+<button class="replay" id="replay" type="button">Replay intro</button>
+
+<script>
+(() => {
+  const ANCHOR = {x:327.33, y:41.43};   // centre of the g's counter: the portal
+  const COUNTER_R = 16.36;
+  const world = document.getElementById('world');
+  const hole = document.getElementById('hole');
+  const loader = document.getElementById('loader');
+  const hero = document.getElementById('hero');
+  const grain = document.getElementById('grain');
+  const replay = document.getElementById('replay');
+  const guides = [...document.querySelectorAll('.guide')];
+  const marks = [...document.querySelectorAll('.mark path')];
+  const letters = [...document.querySelectorAll('.letter')];
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  let anims = [], raf = 0, zooming = false, zoomStart = 0;
+  const T = {guides:0, mark:350, outline:550, fill:1350, clean:1650, zoom:2550, zoomDur:950};
+
+  function baseScale(){
+    const w = innerWidth, h = innerHeight;
+    const target = w < 600 ? w*0.8 : Math.min(w*0.52, 820);
+    return Math.min(target/651.45, (h*0.3)/84.42);
+  }
+  function place(s){
+    world.setAttribute('transform',
+      `translate(${innerWidth/2} ${innerHeight/2}) scale(${s}) translate(${-ANCHOR.x} ${-ANCHOR.y})`);
+  }
+  const A = (el, kf, opt) => { const a = el.animate(kf, {fill:'both', ...opt}); anims.push(a); return a; };
+
+  function reset(){
+    anims.forEach(a => a.cancel()); anims = [];
+    cancelAnimationFrame(raf); zooming = false;
+    loader.style.display = ''; grain.style.opacity = '';
+    hole.setAttribute('fill-opacity', 0);
+    hero.style.transform = 'scale(1.14)'; hero.style.filter = 'blur(6px)';
+    replay.classList.remove('show');
+    place(baseScale());
+  }
+
+  function run(){
+    reset();
+    if (reduce){
+      A(loader, [{opacity:1},{opacity:0}], {duration:500, delay:300});
+      hero.style.transform = ''; hero.style.filter = '';
+      setTimeout(finish, 850); return;
+    }
+    const ease = 'cubic-bezier(.65,0,.35,1)';
+
+    // 1. construction lines draw in
+    guides.forEach((g,i) => A(g, [{strokeDashoffset:1},{strokeDashoffset:0}],
+      {duration:750, delay:T.guides + i*45, easing:ease}));
+
+    // 2. the four stalks sprout from the ground, then each letter traces its outline
+    marks.forEach((m,i) => A(m, [{transform:'scaleY(0)', fillOpacity:.25},{transform:'scaleY(1)', fillOpacity:.25}],
+      {duration:700, delay:T.mark + i*90, easing:'cubic-bezier(.2,.9,.25,1)'}));
+    letters.forEach((l,i) => l.querySelectorAll('path').forEach(p =>
+      A(p, [{strokeDashoffset:1},{strokeDashoffset:0}], {duration:800, delay:T.outline + i*70, easing:ease})));
+
+    // 3. fill left to right: translucent first, then solid; outlines retire
+    const fillKF = [{fillOpacity:0},{fillOpacity:.3, offset:.45},{fillOpacity:1}];
+    marks.forEach((m,i) => A(m, [{fillOpacity:.25},{fillOpacity:1}], {duration:420, delay:T.fill + i*40, composite:'replace'}));
+    letters.forEach((l,i) => l.querySelectorAll('path').forEach(p =>
+      A(p, fillKF, {duration:480, delay:T.fill + 160 + i*70, easing:'ease-out'})));
+    letters.forEach((l,i) => l.querySelectorAll('path').forEach(p =>
+      A(p, [{strokeOpacity:1},{strokeOpacity:0}], {duration:400, delay:T.fill + 400 + i*70})));
+    A(document.getElementById('guides'), [{opacity:1},{opacity:0}], {duration:550, delay:T.clean});
+
+    // 4. zoom through the g's counter
+    setTimeout(() => { zooming = true; zoomStart = performance.now(); raf = requestAnimationFrame(tick); }, T.zoom);
+  }
+
+  function tick(now){
+    const t = Math.min(1, (now - zoomStart)/T.zoomDur);
+    const s0 = baseScale();
+    const sEnd = Math.hypot(innerWidth, innerHeight)/2 / COUNTER_R * 1.15;
+    const e = t*t*t*(t*(t*6-15)+10) * .35 + Math.pow(t,3) * .65;   // slow start, hard finish
+    place(s0 * Math.pow(sEnd/s0, e));
+    // portal opens early so the hero is visible inside the counter while we travel
+    hole.setAttribute('fill-opacity', Math.min(1, t/0.22));
+    const k = Math.min(1, t*1.1);
+    hero.style.transform = `scale(${1.14 - 0.14*k})`;
+    hero.style.filter = `blur(${6*(1-k)}px)`;
+    if (t < 1) raf = requestAnimationFrame(tick); else finish();
+  }
+
+  function finish(){
+    zooming = false;
+    loader.style.display = 'none';
+    grain.style.opacity = '0';
+    hero.style.transform = ''; hero.style.filter = '';
+    setTimeout(() => replay.classList.add('show'), 400);
+  }
+
+  addEventListener('resize', () => { if (!zooming && loader.style.display !== 'none') place(baseScale()); });
+  replay.addEventListener('click', run);
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => requestAnimationFrame(run));
+})();
+</script>
+</body>
+</html>
