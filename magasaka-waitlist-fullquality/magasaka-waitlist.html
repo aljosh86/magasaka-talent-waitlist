@@ -139,11 +139,22 @@ body:has(.pill:not([data-state="idle"])) .scrollcue{opacity:0 !important;transit
 .pill--dark{background:rgba(20,20,20,.1)}
 .pill--dark .pill__join,.pill--dark .pill__menu{background:var(--ink);color:var(--field-white)}
 .pill--dark .pill__join:hover,.pill--dark .pill__menu:hover{background:#000}
-.menu{position:absolute;right:0;bottom:calc(100% + 8px);min-width:200px;padding:6px;border-radius:24px;background:var(--field-white);color:var(--ink);
-  box-shadow:0 16px 40px -16px rgba(0,0,0,.45);display:flex;flex-direction:column}
+/* menu: a frosted panel the width of the pill, rising out of it; items centred; the menu icon turns into an x */
+.menu{position:absolute;left:0;right:0;bottom:calc(100% + 10px);padding:8px;border-radius:26px;color:var(--ink);
+  background:rgba(214,213,209,.74);backdrop-filter:blur(18px) saturate(1.15);-webkit-backdrop-filter:blur(18px) saturate(1.15);
+  box-shadow:0 22px 50px -22px rgba(0,0,0,.5),inset 0 0 0 1px rgba(255,255,255,.35);display:flex;flex-direction:column;transform-origin:50% 100%}
 .menu[hidden]{display:none}
-.menu a{font:500 16px/1 var(--font);color:inherit;text-decoration:none;padding:14px 16px;border-radius:18px}
-.menu a:hover{background:rgba(20,20,20,.06)}
+.menu:not([hidden]){animation:menu-in .38s cubic-bezier(.22,1,.36,1)}
+.menu a{display:block;text-align:center;font:500 18px/1 var(--font);color:inherit;text-decoration:none;padding:18px 16px;border-radius:18px;
+  transition:background .2s;animation:menu-row .42s cubic-bezier(.22,1,.36,1) both}
+.menu a:nth-child(2){animation-delay:.04s}
+.menu a:nth-child(3){animation-delay:.08s}
+.menu a:hover,.menu a:focus-visible{background:rgba(255,255,255,.4)}
+@keyframes menu-in{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes menu-row{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.pill__menu[aria-expanded="true"] .ic--menu{opacity:0;transform:rotate(90deg) scale(.7)}
+.pill__menu[aria-expanded="true"] .ic--close{opacity:1;transform:none}
+@media (prefers-reduced-motion: reduce){.menu:not([hidden]),.menu a{animation:none}}
 
 
 /* ---------- shared type ---------- */
@@ -1479,7 +1490,9 @@ Marc!</h2>
   </div>
   <button class="pill__menu" id="menuBtn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="menu"><svg class="ic ic--menu" width="24" height="24" aria-hidden="true" focusable="false" fill="none"><path d="M4 5H20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M4 12H20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M4 19H20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><svg class="ic ic--close" width="24" height="24" aria-hidden="true" focusable="false" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
   <div class="menu" id="menu" hidden>
-    <a href="#waitlist" data-role="client"><span>I'm hiring</span></a>
+    <a href="#top" data-menu="home"><span>Home</span></a>
+    <a href="#manifesto"><span>Manifesto</span></a>
+    <a href="#waitlist" data-role="client"><span>I'm Hiring</span></a>
   </div>
 </nav>
 
@@ -1767,7 +1780,11 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
   const menuBtn = document.getElementById('menuBtn'), menu = document.getElementById('menu');
   function closeMenu(){ menu.hidden = true; menuBtn.setAttribute('aria-expanded','false'); }
   menuBtn.addEventListener('click', () => { const open = menu.hidden; menu.hidden = !open; menuBtn.setAttribute('aria-expanded', String(open)); if (open) menu.querySelector('a').focus(); });
-  menu.addEventListener('click', e => { if (e.target.closest('a')) closeMenu(); });
+  menu.addEventListener('click', e => {
+    const a = e.target.closest('a'); if (!a) return;
+    closeMenu();
+    if (a.dataset.menu === 'home'){ e.preventDefault(); scrollTo({top:0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'}); }
+  });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && !menu.hidden){ closeMenu(); menuBtn.focus(); } });
   document.addEventListener('click', e => { if (!menu.hidden && !e.target.closest('#pill')) closeMenu(); });
 
