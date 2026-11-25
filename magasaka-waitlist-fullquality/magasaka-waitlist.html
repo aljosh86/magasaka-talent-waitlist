@@ -939,17 +939,14 @@ html.mf-open,html.mf-open body{overflow:hidden}
   .mf__letter .mf__turn{font-size:25px}
 }
 
-/* photo letter: the stage takes the photo's proportions; tap to zoom */
+/* the letter: an A4-proportioned window onto the handwritten page */
 .mf__stage{width:min(600px,calc(100vw - 32px),calc((100svh - 48px) * .707));height:auto;aspect-ratio:1414/2000}
 .mf__sheet{background:#d9d8d4;border-radius:4px}
 .mf__sheet::after{display:none}
-/* two handwritten pages stacked; scroll down to the second */
+/* one long handwritten page (the two pages joined); scroll to read on */
 .mf__sheet .mf__scroll{padding:0;overflow-x:hidden;overflow-y:auto;display:flex;flex-direction:column;gap:10px;-webkit-mask-image:none;mask-image:none;scrollbar-width:none}
 .mf__sheet .mf__scroll::-webkit-scrollbar{display:none}
-.mf__photo{display:block;flex:none;width:100%;height:auto;cursor:zoom-in;-webkit-user-drag:none;user-select:none;box-shadow:0 1px 3px rgba(0,0,0,.12)}
-.mf__sheet.is-zoomed .mf__scroll{overflow:auto}
-.mf__sheet.is-zoomed .mf__photo{width:200%;max-width:none;cursor:zoom-out}
-.mf__sheet.is-zoomed .mf__scroll{align-items:flex-start}
+.mf__photo{display:block;flex:none;width:100%;height:auto;-webkit-user-drag:none;user-select:none}
 .mf__close{background:rgba(246,243,234,.85);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
 .mf__close:hover{background:#f6f3ea}
 .mf__hint{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);padding:8px 14px;border-radius:100px;pointer-events:none;
@@ -2620,11 +2617,10 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
   <div class="mf__stage">
     <div class="mf__sheet" id="mfSheet">
       <div class="mf__scroll" tabindex="-1">
-        <img class="mf__photo" src="images/manifesto-page-1.jpg" width="1414" height="2000" alt="" decoding="async">
-        <img class="mf__photo" src="images/manifesto-page-2.jpg" width="1414" height="2000" alt="" decoding="async" loading="lazy">
+        <img class="mf__photo" src="images/manifesto-letter.jpg" width="1414" height="2990" alt="" decoding="async">
       </div>
       <button class="mf__close" type="button" aria-label="Close the manifesto" data-mf-close><svg width="16" height="16" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M16.5 5.5L5.50074 16.4993M16.4993 16.5L5.5 5.50078" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
-      <span class="mf__hint" aria-hidden="true">Scroll to read · tap to zoom</span>
+      <span class="mf__hint" aria-hidden="true">Scroll to read</span>
     </div>
   </div>
   <!-- the photographed letter, as text, for screen readers and search -->
@@ -2656,7 +2652,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     const box = document.getElementById('manifesto');
     if (!box) return;
     const stage = box.querySelector('.mf__stage'), sheet = document.getElementById('mfSheet');
-    const scroller = sheet.querySelector('.mf__scroll'), pages = [...sheet.querySelectorAll('.mf__photo')], photo = pages[0], hint = sheet.querySelector('.mf__hint');
+    const scroller = sheet.querySelector('.mf__scroll'), photo = sheet.querySelector('.mf__photo'), hint = sheet.querySelector('.mf__hint');
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     let fold = null, busy = false, lastFocus = null;
     const ease = 'cubic-bezier(.22,1,.36,1)';
@@ -2667,7 +2663,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       panel.style.top = (i * h) + 'px'; panel.style.height = h + 'px';
       const face = document.createElement('div'); face.className = 'mf__face';
       const copy = sheet.cloneNode(true);
-      copy.removeAttribute('id'); copy.classList.remove('is-zoomed');
+      copy.removeAttribute('id');
       copy.querySelectorAll('.mf__close, .mf__hint').forEach(n => n.remove());
       copy.style.top = (-i * h) + 'px'; copy.style.height = (h * 3) + 'px';
       face.appendChild(copy);
@@ -2677,7 +2673,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       return {panel, shade};
     }
 
-    function unzoom(){ sheet.classList.remove('is-zoomed'); scroller.scrollTo(0, 0); }
+    function unzoom(){ scroller.scrollTo(0, 0); }   // back to the top of the letter
     function showHint(){
       hint.classList.remove('is-on'); void hint.offsetWidth; hint.classList.add('is-on');
     }
@@ -2727,28 +2723,16 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       });
     }
 
-    // tap/click the letter to read it up close; tap again to see the whole page
-    pages.forEach(pg => pg.addEventListener('click', e => {
-      if (sheet.classList.contains('is-zoomed')){ unzoom(); return; }
-      // aim at the tapped point within the whole two-page column
-      const r = scroller.getBoundingClientRect();
-      const fx = (e.clientX - r.left) / r.width, fy = (e.clientY - r.top + scroller.scrollTop) / scroller.scrollHeight;
-      sheet.classList.add('is-zoomed'); hint.classList.remove('is-on');
-      requestAnimationFrame(() => {
-        scroller.scrollLeft = fx * scroller.scrollWidth - scroller.clientWidth / 2;
-        scroller.scrollTop = fy * scroller.scrollHeight - scroller.clientHeight / 2;
-      });
-    }));
 
     document.querySelectorAll('a[href="#manifesto"]').forEach(l => l.addEventListener('click', e => { e.preventDefault(); open(); }));
     box.querySelectorAll('[data-mf-close]').forEach(btn => btn.addEventListener('click', close));
     addEventListener('keydown', e => {
       if (e.key !== 'Escape' || box.hidden) return;
       e.stopPropagation();
-      if (sheet.classList.contains('is-zoomed')) unzoom(); else close();
+      close();
     }, true);
     // fetch the photo early when someone is likely to open it
-    document.querySelectorAll('a[href="#manifesto"]').forEach(l => l.addEventListener('pointerenter', () => { pages.forEach(pg => pg.loading = 'eager'); }, {once:true}));
+    document.querySelectorAll('a[href="#manifesto"]').forEach(l => l.addEventListener('pointerenter', () => { photo.loading = 'eager'; }, {once:true}));
     window.__mgManifesto = open;
   })();
 </script>
