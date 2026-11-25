@@ -1109,7 +1109,7 @@ html.mf-open{overscroll-behavior:none}
 .ask__close{flex:none;width:36px;height:36px;border:0;border-radius:50%;background:none;color:var(--ink);display:grid;place-items:center;cursor:pointer;transition:background .2s}
 .ask__close:hover{background:rgba(20,20,20,.06)}
 .ask__log{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:6px 18px 12px;display:flex;flex-direction:column;gap:10px;scrollbar-width:thin}
-.ask__msg{max-width:86%;padding:11px 15px;border-radius:18px;font-size:15px;line-height:1.45;letter-spacing:-.005em;animation:ask-msg .32s cubic-bezier(.22,1,.36,1) both}
+.ask__msg{white-space:pre-line;max-width:86%;padding:11px 15px;border-radius:18px;font-size:15px;line-height:1.45;letter-spacing:-.005em;animation:ask-msg .32s cubic-bezier(.22,1,.36,1) both}
 .ask__msg--bot{align-self:flex-start;background:#fff;border-bottom-left-radius:6px;box-shadow:0 1px 0 rgba(20,20,20,.05)}
 .ask__msg--me{align-self:flex-end;background:var(--ink);color:var(--field-white);border-bottom-right-radius:6px}
 .ask__typing{display:inline-flex;gap:4px;padding:15px 16px}
@@ -1234,6 +1234,30 @@ html.mf-open{overscroll-behavior:none}
   .juan{background:rgba(237,236,232,.2);box-shadow:none}
   .juan .mj{background:var(--logo-green)}
 }
+/* Mang Juan's little life: his eyes (and a bit of his hat) turn toward the cursor now and then;
+   he nods off a bit while idle; he says hello in a bubble when the chat is closed */
+.mj__look,.mj__hat-turn{transform-box:view-box;transition:transform .5s cubic-bezier(.22,1,.36,1)}
+.mj.is-thinking .mj__hat{animation:mj-think 1.1s ease-in-out infinite}
+@keyframes mj-think{0%,100%{transform:none}50%{transform:translateY(-1.5px) rotate(-5deg)}}
+.mj.is-nod .mj__hat{animation:mj-nod 1.4s ease-in-out}
+@keyframes mj-nod{0%,100%{transform:none}30%{transform:translateY(1.5px) rotate(3deg)}60%{transform:translateY(-.5px) rotate(-2deg)}}
+.juan-say{position:fixed;z-index:46;right:clamp(16px,2vw,28px);bottom:calc(env(safe-area-inset-bottom,0px) + 40px + 56px + 12px);max-width:min(270px,calc(100vw - 32px));
+  display:flex;align-items:flex-start;gap:4px;padding:12px 8px 12px 16px;border-radius:18px 18px 6px 18px;background:#fff;color:var(--ink);
+  box-shadow:0 14px 34px -14px rgba(0,0,0,.5),0 0 0 1px rgba(20,20,20,.05);transform-origin:100% 100%}
+.juan-say[hidden]{display:none}
+.juan-say.is-in{animation:say-in .45s cubic-bezier(.3,1.4,.5,1) both}
+.juan-say.is-out{animation:say-out .25s ease forwards}
+@keyframes say-in{from{opacity:0;transform:translateY(8px) scale(.9)}to{opacity:1;transform:none}}
+@keyframes say-out{to{opacity:0;transform:translateY(6px) scale(.96)}}
+.juan-say__text{flex:1;padding:0;border:0;background:none;color:inherit;text-align:left;font:400 14.5px/1.4 var(--font);letter-spacing:-.005em;cursor:pointer}
+.juan-say__x{flex:none;width:22px;height:22px;margin-top:-3px;padding:0;border:0;border-radius:50%;background:none;color:#8a8a84;font:400 18px/1 var(--font);cursor:pointer}
+.juan-say__x:hover{background:rgba(20,20,20,.06);color:var(--ink)}
+@media (max-width:640px){
+  .juan-say{right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 40px + 57px + 12px)}
+  body:has(.pill[data-state="form"]) .juan-say,body:has(.pill.pill--away) .juan-say{display:none}
+}
+.mf-open .juan-say,body:has(#flow:not([hidden])) .juan-say{display:none}
+@media (prefers-reduced-motion: reduce){.mj__look{transition:none}.juan-say.is-in,.juan-say.is-out{animation:none}}
 </style>
 </head>
 <body>
@@ -1738,10 +1762,11 @@ Marc!</h2>
   </div>
 </nav>
 
-<button class="juan" id="askBtn" type="button" aria-label="Ask Mang Juan" aria-expanded="false" aria-controls="ask"><svg class="mj" viewBox="0 0 56 56" aria-hidden="true"><g class="mj__hat"><path d="M10.5 29.5 28 15.5l17.5 14c-5.3 2-11.1 3-17.5 3s-12.2-1-17.5-3z" fill="#dca15d"/><path d="M28 15.5v17M28 15.5l-8 16.4M28 15.5l8 16.4M28 15.5 14.5 30.9M28 15.5l13.5 15.4" fill="none" stroke="#b07a3a" stroke-width="1.1" stroke-linecap="round"/><path d="M10.5 29.5c5.3 2 11.1 3 17.5 3s12.2-1 17.5-3" fill="none" stroke="#9c6a30" stroke-width="1.6" stroke-linecap="round"/><circle cx="28" cy="15.6" r="1.4" fill="#9c6a30"/></g><g class="mj__eyes" fill="#f4f2ea"><circle cx="23.2" cy="37.5" r="2.3"/><circle cx="32.8" cy="37.5" r="2.3"/></g></svg></button>
+<button class="juan" id="askBtn" type="button" aria-label="Ask Mang Juan" aria-expanded="false" aria-controls="ask"><svg class="mj" viewBox="0 0 56 56" aria-hidden="true"><g class="mj__hat"><path d="M10.5 29.5 28 15.5l17.5 14c-5.3 2-11.1 3-17.5 3s-12.2-1-17.5-3z" fill="#dca15d"/><path d="M28 15.5v17M28 15.5l-8 16.4M28 15.5l8 16.4M28 15.5 14.5 30.9M28 15.5l13.5 15.4" fill="none" stroke="#b07a3a" stroke-width="1.1" stroke-linecap="round"/><path d="M10.5 29.5c5.3 2 11.1 3 17.5 3s12.2-1 17.5-3" fill="none" stroke="#9c6a30" stroke-width="1.6" stroke-linecap="round"/><circle cx="28" cy="15.6" r="1.4" fill="#9c6a30"/></g><g class="mj__look"><g class="mj__eyes" fill="#f4f2ea"><circle cx="23.2" cy="37.5" r="2.3"/><circle cx="32.8" cy="37.5" r="2.3"/></g></g></svg></button>
+<div class="juan-say" id="juanSay" hidden><button class="juan-say__text" type="button"></button><button class="juan-say__x" type="button" aria-label="Dismiss">×</button></div>
 <section class="ask" id="ask" hidden role="dialog" aria-label="Ask Mang Juan">
   <header class="ask__head">
-    <span class="ask__avatar"><svg class="mj" viewBox="0 0 56 56" aria-hidden="true"><g class="mj__hat"><path d="M10.5 29.5 28 15.5l17.5 14c-5.3 2-11.1 3-17.5 3s-12.2-1-17.5-3z" fill="#dca15d"/><path d="M28 15.5v17M28 15.5l-8 16.4M28 15.5l8 16.4M28 15.5 14.5 30.9M28 15.5l13.5 15.4" fill="none" stroke="#b07a3a" stroke-width="1.1" stroke-linecap="round"/><path d="M10.5 29.5c5.3 2 11.1 3 17.5 3s12.2-1 17.5-3" fill="none" stroke="#9c6a30" stroke-width="1.6" stroke-linecap="round"/><circle cx="28" cy="15.6" r="1.4" fill="#9c6a30"/></g><g class="mj__eyes" fill="#f4f2ea"><circle cx="23.2" cy="37.5" r="2.3"/><circle cx="32.8" cy="37.5" r="2.3"/></g></svg></span>
+    <span class="ask__avatar"><svg class="mj" viewBox="0 0 56 56" aria-hidden="true"><g class="mj__hat"><path d="M10.5 29.5 28 15.5l17.5 14c-5.3 2-11.1 3-17.5 3s-12.2-1-17.5-3z" fill="#dca15d"/><path d="M28 15.5v17M28 15.5l-8 16.4M28 15.5l8 16.4M28 15.5 14.5 30.9M28 15.5l13.5 15.4" fill="none" stroke="#b07a3a" stroke-width="1.1" stroke-linecap="round"/><path d="M10.5 29.5c5.3 2 11.1 3 17.5 3s12.2-1 17.5-3" fill="none" stroke="#9c6a30" stroke-width="1.6" stroke-linecap="round"/><circle cx="28" cy="15.6" r="1.4" fill="#9c6a30"/></g><g class="mj__look"><g class="mj__eyes" fill="#f4f2ea"><circle cx="23.2" cy="37.5" r="2.3"/><circle cx="32.8" cy="37.5" r="2.3"/></g></g></svg></span>
     <strong class="ask__who">Mang Juan</strong>
     <button class="ask__close" type="button" aria-label="Close" data-ask-close><svg width="16" height="16" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M16.5 5.5L5.5 16.5M16.5 16.5L5.5 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
   </header>
@@ -3381,29 +3406,199 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     const log = document.getElementById('askLog'), form = document.getElementById('askForm'), input = document.getElementById('askInput');
     const chips = document.getElementById('askChips');
     const history = [];
-    const A = [
-      [/^(hi|hello|hey|yo|kumusta|kamusta|musta|good (morning|afternoon|evening)|magandang)/, "Kumusta! Ask me about the launch, fees, getting paid, Seeds or the kinds of work on Magasaka."],
-      [/thank|salamat/, "Walang anuman! Anything else you'd like to know?"],
-      [/seed/, "Seeds are what you use to apply to jobs. You get free Seeds every week based on your rank, and you can't buy them. If a client never replies, you get your Seeds back."],
-      [/founding|badge|perk|reward/, "The first 10,000 verified profiles become Founding Members, with a permanent badge and bonus Seeds. Joining the waitlist is the first step."],
-      [/legit|trust|scam|totoo|registered|company|real\b/, "Magasaka is a registered company in the Philippines and the US, and you never pay to join or apply. If anyone asks you for money to get a Magasaka job, it's not us."],
-      [/doesn.?t pay|not pay|hindi magbayad|protect|escrow|fund|milestone|guarantee/, "Clients fund the contract before you start, so your pay is protected from day one. We release it to you once the client approves the work. That works for milestones and pay periods too."],
-      [/make money|earn money|business model|0 ?%|commission|platform fee|service fee|cut|kaltas/, "Talent pays 0%. Clients pay a service fee on top of your rate, so you keep everything the contract says."],
-      [/free|cost|price|magkano|subscription|pay to (join|apply)|libre/, "Yes, it's free. You never pay to join or apply."],
-      [/get paid|payout|payment|bank|gcash|withdraw|sweldo|sahod|receive|fee/, "Straight to your local bank account. Your bank or currency conversion may charge a small fee."],
-      [/launch|kailan|when|release|available|live/, "We're aiming for early 2027. Waitlist members hear first, and the first 10,000 verified profiles become Founding Members, with a permanent badge and bonus Seeds."],
-      [/new|beginner|no experience|baguhan|entry|first time|walang experience|student/, "Yes, you can join. Your level comes from your real years of experience, and Entry is a real level with its own minimum rate."],
-      [/bait|scope|fake job|workload|posting/, "No bait-and-switch jobs. Pay and workload are checked before a job is posted."],
-      [/client|hire|employer|hiring/, "Clients pay a service fee on top of the talent's rate, and fund each contract before work starts. Right now, the waitlist is for talent."],
-      [/role|job|skill|work|category|virtual assistant|\bva\b|editor|developer|designer|writer|marketing|bookkeep|support|trabaho/, "Your kind of work belongs here: from support and operations to creative, marketing and tech. Think virtual assistants, video editors, full stack developers, social media managers, customer support, project managers, bookkeepers, copywriters and more."],
-      [/manifesto|why|mission|bakit|story|about|what is magasaka|ano ang magasaka/, "Magasaka is a freelance marketplace being built to connect Filipino talent with clients around the world, with fair pay and room to grow. The full story is in Our Manifesto, in the menu."],
-      [/join|sign ?up|register|waitlist|sumali|how do i/, "Tap “Join the waitlist” below and enter your email, then add your name, your title and up to three skills. You'll get a Founding Member card you can share."],
+    // Mang Juan: a warm, joking Filipino tatay who knows everything on this page (and nothing he'd have to make up).
+    // Every topic has several answers so he doesn't repeat himself, and each answer suggests what to ask next.
+    const pick = (() => { const last = {}; return (key, list) => {
+      let i = Math.floor(Math.random() * list.length);
+      if (list.length > 1 && i === last[key]) i = (i + 1) % list.length;
+      last[key] = i; return list[i];
+    }; })();
+    const K = [
+      { id:'hello', re:/^(hi|hello|hey|yo|helo|kumusta|kamusta|musta|good (morning|afternoon|evening|day)|magandang (umaga|hapon|gabi)|uy|oi)\b/,
+        a:["Uy, kumusta anak! Ako si Mang Juan. Anong gusto mong malaman tungkol sa Magasaka? Launch, bayad, Seeds, lahat 'yan alam ko.",
+           "Magandang araw! Kakagaling ko lang sa palayan, pero laging may oras para sa'yo. Ano'ng tanong mo?",
+           "Hello hello! Si Mang Juan 'to, ang pinaka-friendly na tatay sa Magasaka. Tanong lang nang tanong, libre 'yan. Parang pagsali, libre rin!"],
+        next:['When do you launch?','Is it free?','What are Seeds?'] },
+      { id:'how', re:/(how are you|kumusta ka|musta ka|okay ka lang|how('?s| is) it going)/,
+        a:["Mabuti naman, anak! Medyo masakit ang likod sa kakatanim, pero masaya. Ikaw, kumusta ang trabaho?",
+           "Ayos lang! Basta may kape at kausap, buo na araw ko. O, ano'ng maitutulong ko?"],
+        next:['What is Magasaka?','How do I join?'] },
+      { id:'who', re:/(who are you|sino ka|what are you|are you (a )?(bot|ai|robot|human|real person)|tao ka ba)/,
+        a:["Ako si Mang Juan, ang tatay-tatayan ninyo dito sa Magasaka. Hindi ako totoong magsasaka, pero alam ko lahat ng nasa page na 'to: launch, bayad, Seeds, roles, pati ang manifesto.",
+           "Isa akong simpleng helper na naka-salakot. Hindi ako tao, pero mas pasensyoso pa ako sa tito mong nagtatanong kung kailan ka mag-aasawa. 😄 Tanong ka lang tungkol sa Magasaka."],
+        next:['What is Magasaka?','Who started Magasaka?'] },
+      { id:'what', re:/(what is magasaka|ano ang magasaka|ano ba ang magasaka|what does magasaka do|tell me about magasaka|explain magasaka|ano 'to|what is this)/,
+        a:["Ang Magasaka ay freelance marketplace na ginagawa para i-connect ang Filipino talent sa mga client sa buong mundo. Ang paniniwala namin: kaya ng Pilipino makipagsabayan sa pinakamagaling. Kaya fair dapat ang trato.",
+           "Simple lang, anak: marketplace para sa Filipino freelancers. May minimum rate bawat job, 0% platform fee sa kita mo, pondo na ang bayad bago ka magsimula, at ang rank mo ay galing lang sa trabahong naihatid mo.",
+           "Isipin mo ang isang palayan na patas ang hatian. 'Yan ang Magasaka: isang freelance marketplace kung saan sa'yo ang buong ani. 0% ang kaltas sa kita mo, at bawal ang trabahong pakulo."],
+        next:['How is it different?','When do you launch?','Is it free?'] },
+      { id:'diff', re:/(different|difference|iba|bakit kayo|why (you|magasaka)|compared|vs\.?|versus|upwork|fiverr|onlinejobs|other platforms?)/,
+        a:["Ito ang mga pagbabago, anak: (1) Walang bait-and-switch, chine-check ang bayad at workload bago i-post. (2) Pondo na ang bayad bago ka magsimula. (3) 0% platform fee sa kita mo. Dagdag pa: minimum rate bawat job at bawal ang libreng 'test' na trabaho.",
+           "Sa malalaking platform, isa ka lang sa libo-libo. Nagbababa ka ng rate para manalo. Dito, may enforced minimum rate, bilang agad ang experience mo, at ang rank mo ay galing lang sa trabahong naihatid mo. Hindi sa padamihan ng proposal.",
+           "Ang pinakamalaking pagkakaiba? Sa'yo ang buong ani. 0% platform fee sa kita mo. Yung client ang may service fee, hindi ikaw. Tapos funded na ang contract bago ka pa magsimula."],
+        next:['How does Magasaka make money?','What if a client doesn’t pay?','What is the minimum rate?'] },
+      { id:'launch', re:/(launch|kailan|\bwhen\b|release|available|\blive\b|bubukas|open na|ready na|timeline|\bdate\b)/,
+        a:["Target namin ay early 2027, anak. Mauunang makaalam ang nasa waitlist. Parang palay, hinihintay natin ang tamang anihan. 🌾",
+           "Early 2027 ang target! Unang masasabihan ang mga nasa waitlist, at ang unang 10,000 na verified profiles ay magiging Founding Members.",
+           "Hindi pa ngayon, pero malapit na: early 2027 ang target. Habang naghihintay, sumali ka na sa waitlist para ikaw ang unang makaalam."],
+        next:['What is a Founding Member?','How do I join?'] },
+      { id:'free', re:/(\bfree\b|libre|\bcost|price|magkano|mahal ba|expensive|subscription|pay to (join|apply)|may bayad|need (to )?pay|babayaran ko)/,
+        a:["Libre, anak! Hindi ka magbabayad para sumali o mag-apply. Kahit piso, wala. Parang hangin sa bukid, libre.",
+           "Wala kang babayaran para sumali o mag-apply. At kung may humingi sa'yo ng pera para makakuha ng Magasaka job, hindi kami 'yon. Ingat!",
+           "Yes, free! Never kang magbabayad para sumali o mag-apply. Pati Seeds na pang-apply, libre bawat linggo."],
+        next:['How does Magasaka make money?','What are Seeds?'] },
+      { id:'money', re:/(make money|earn money|kumikita|paano kayo kumikita|business model|0 ?%|zero percent|commission|platform fee|service fee|\bcut\b|kaltas|kinukuha|take rate)/,
+        a:["Ganito 'yan: 0% ang kinukuha namin sa kita mo. Ang client ang nagbabayad ng service fee na dagdag sa rate mo. Kaya buo sa'yo ang nakasulat sa contract.",
+           "Sa'yo ang buong ani! Walang platform cut sa kita mo. Yung client ang may service fee sa ibabaw ng rate mo. Ang tanging posibleng bawas ay galing sa bangko mo o sa currency conversion.",
+           "Hindi kami kukuha sa bulsa mo, anak. Service fee sa client ang kita namin, nakapatong sa rate mo. Ikaw, buo ang matatanggap mo ayon sa contract."],
+        next:['How do I get paid?','What if a client doesn’t pay?'] },
+      { id:'paid', re:/(get paid|paano (ako )?(mababayaran|makukuha)|payout|payment|bank|gcash|maya|paypal|withdraw|sweldo|sahod|receive|matanggap|currency|dollar|peso)/,
+        a:["Diretso sa local bank account mo, anak. Baka may maliit na fee lang ang bangko mo o ang currency conversion, pero galing 'yon sa kanila, hindi sa amin.",
+           "Sa bangko mo mismo dito sa Pilipinas. Release namin ang bayad pag in-approve na ng client ang trabaho mo.",
+           "Straight sa local bank account mo. Walang kaltas mula sa Magasaka. Pero ang bangko o currency conversion, baka may maliit na singil."],
+        next:['What if a client doesn’t pay?','How does Magasaka make money?'] },
+      { id:'protect', re:/(doesn.?t pay|not pay|hindi (magbayad|nagbayad|bayaran)|di nagbayad|scam(med)? by|tinakbuhan|protect|escrow|fund(ed)?|milestone|guarantee|sigurado|safe ba)/,
+        a:["Walang takbuhan dito, anak! Pinopondohan ng client ang contract bago ka magsimula, kaya protektado ang bayad mo mula unang araw. Ire-release namin pag na-approve na ang trabaho.",
+           "Funded before you start. Pang-milestone man o pay period, nakahanda na ang pera bago ka pa magtrabaho. Hindi mo na kailangang habulin ang client.",
+           "Ito ang paborito ko: nakapondo na ang bayad bago ka mag-umpisa. Parang binhi na nakatanim na bago ang tag-ulan. Sigurado ang ani."],
+        next:['How do I get paid?','What if something goes wrong?'] },
+      { id:'dispute', re:/(dispute|problem with (a )?client|goes wrong|conflict|reklamo|away|unfair|abuse|harass|privacy|dignity|data)/,
+        a:["Naniniwala kami na dapat may proteksyon ang lahat sa trabaho, at patas na pagdinig kapag may problema. Kasama rin sa responsibilidad namin ang privacy at dignidad mo.",
+           "Malinaw na expectations, accountability, at respeto sa oras ng isa't isa. 'Yan ang paninindigan namin. At kapag may mali, dapat may patas na pagdinig para sa parehong panig."],
+        next:['What if a client doesn’t pay?','Read the manifesto'] },
+      { id:'legit', re:/(legit|trust|scam|totoo ba|real ba|registered|company|kumpanya|\bsec\b|reliable|mapagkakatiwalaan)/,
+        a:["Legit 'yan, anak. Rehistradong kumpanya ang Magasaka sa Pilipinas at sa US. At tandaan: hindi ka namin hihingan ng pera para sumali o mag-apply.",
+           "Registered kami sa Philippines at US. Golden rule: kung may humingi sa'yo ng pera para makakuha ng Magasaka job, hindi kami 'yon. Huwag kang papaloko!"],
+        next:['Is it free?','Who started Magasaka?'] },
+      { id:'new', re:/(\bnew\b|beginner|no experience|baguhan|entry|first time|walang experience|student|fresh grad|estudyante|newbie|starting out)/,
+        a:["Oo naman, anak! Ang level mo ay galing sa totoong taon ng experience mo, at ang Entry ay totoong level na may sariling minimum rate. Lahat tayo nagsimula sa punla.",
+           "Pwedeng-pwede! Kailangan din ng tunay na pagkakataon ang mga nagsisimula pa lang. May sariling minimum rate ang Entry level, kaya hindi ka babaratin.",
+           "Welcome ka dito! Bilang agad ang experience mo mula unang araw, at may minimum rate kahit Entry ka pa lang. Ang rank mo ay lalaki sa bawat trabahong maihahatid mo."],
+        next:['What is the minimum rate?','How does rank work?'] },
+      { id:'rate', re:/(minimum rate|min rate|\brates?\b|lowball|barat|bawal (bumaba|baratin)|underpaid|sobrang baba)/,
+        a:["Bawat job ay may enforced minimum rate, anak. Hindi mo na kailangang ibaba ang presyo mo para lang manalo. Bawal ang barat dito!",
+           "May minimum rate ang bawat job, at may sariling minimum rate din ang bawat level, kahit Entry. Kaya patas ang laban."],
+        next:['How does rank work?','No free test work?'] },
+      { id:'test', re:/(\btest\b|free work|libreng trabaho|trial task|sample work|unpaid)/,
+        a:["Bawal na 'yan dito! Wala nang libreng trabaho na nagpapanggap na 'test'. Respetado ang oras mo, anak.",
+           "Your time deserves respect, kaya walang free work na naka-disguise bilang test. Kung trabaho, bayad."],
+        next:['What is the minimum rate?','How does rank work?'] },
+      { id:'rank', re:/(rank|ranking|level|review|rating|get seen|makita|visibility|exposure|experience count)/,
+        a:["Ang rank mo ay lumalaki lang mula sa trabahong naihatid mo, anak. Hindi sa pabilisan ng proposal o pagbaba ng rate. Ang experience mo naman, bilang agad mula day one.",
+           "Dito, ang trabaho mo ang magpapakita sa'yo. Your work gets you seen. Dagdag pa, base sa rank mo ang dami ng libreng Seeds mo bawat linggo."],
+        next:['What are Seeds?','I’m new. Can I join?'] },
+      { id:'seeds', re:/(seed|binhi|punla|apply credits|connects)/,
+        a:["Ang Seeds ay ginagamit mo para mag-apply sa mga job. May libreng Seeds ka bawat linggo base sa rank mo, at hindi ito nabibili. Kung hindi sumagot ang client, babalik ang Seeds mo. Walang sayang na binhi! 🌱",
+           "Seeds = pang-apply. Libre bawat linggo depende sa rank mo, at hindi mabibili, kaya walang pay-to-win. Pag hindi ka sinagot ng client, refund ang Seeds mo.",
+           "Parang binhi 'yan, anak: itinatanim mo sa job na gusto mo. Libre bawat linggo, hindi nabibili, at babalik sa'yo kung hindi sumagot ang client. Bonus Seeds pa sa Founding Members."],
+        next:['What is a Founding Member?','How does rank work?'] },
+      { id:'founding', re:/(founding|badge|perk|reward|bonus|first 10,?000|exclusive|early member|card)/,
+        a:["Ang unang 10,000 verified profiles ay magiging Founding Members. May permanenteng badge at bonus Seeds! Sumali ka na sa waitlist para may pwesto ka.",
+           "Pagkatapos mong sumali sa waitlist, may makukuha kang Founding Member card na may numero mo, title mo, at hanggang tatlong skills. Pwede mong i-share o i-save. Pang-flex sa pamilya! 😄"],
+        next:['How do I join?','When do you launch?'] },
+      { id:'roles', re:/(role|job|skill|work|category|kind of work|anong trabaho|virtual assistant|\bva\b|editor|developer|programmer|designer|writer|copywrit|marketing|social media|bookkeep|accountant|finance|support|customer service|csr|project manager|operations|creative|tech)/,
+        a:["Lahat ng klase ng trabaho, anak: mula support at operations hanggang creative, marketing at tech. Virtual assistant, video editor, full stack developer, social media manager, customer support, project manager, bookkeeper, copywriter, at marami pang iba.",
+           "Your kind of work belongs here! Support, operations, creative, marketing, finance, tech. Kung may skill ka, may lugar ka sa palayan natin.",
+           "VA ka man o developer, editor o bookkeeper, welcome ka. Sa pag-sign up, pipili ka ng isang title at hanggang tatlong skills."],
+        next:['How do I join?','I’m new. Can I join?'] },
+      { id:'join', re:/(\bjoin|sign ?up|register|waitlist|sumali|mag-?sign|paano (sumali|mag-?join)|how do i|\bapply)/,
+        a:["Madali lang! Pindutin ang “Join the waitlist” sa ibaba, ilagay ang email mo, tapos ang pangalan mo, title mo, at hanggang tatlong skills. Boom, may Founding Member card ka na!",
+           "Tatlong hakbang lang, anak: email, pangalan, title at skills. Pagkatapos, may card ka nang may sarili mong numero na pwedeng i-share sa barkada.",
+           "Tara na! I-tap ang “Join the waitlist” sa ibaba ng screen. Mas maaga, mas maganda. Parang pagtatanim, ang maaga ang unang umaani."],
+        next:['What is a Founding Member?','When do you launch?'] },
+      { id:'clients', re:/(client|hire|hiring|employer|business|company na hiring|i want to hire|mag-?hire)/,
+        a:["Para rin sa mga negosyo ang Magasaka, anak. Kailangan nila ng mga partner na maaasahan at tumatapos sa trabaho. Ang client ang may service fee sa ibabaw ng rate, at pinopondohan nila ang contract bago magsimula. Sa ngayon, ang waitlist ay para sa talent.",
+           "Naniniwala kami na kayang magtulungan ng Filipino talent at mga negosyo para lumago. Kapag lumago ang negosyo, dapat may puwang ding lumago ang mga taong tumulong dito."],
+        next:['How does Magasaka make money?','What if a client doesn’t pay?'] },
+      { id:'manifesto', re:/(manifesto|mission|vision|bakit (ginawa|niyo ginawa)|why (did you|magasaka exists)|\bstory|kwento|purpose|belief|paniniwala|values)/,
+        a:["Nagsimula ang Magasaka sa isang pangako: tumulong bumuo ng mas magandang bukas para sa mga Pilipino. Gusto naming makatulong ang trabahong ginagawa ng Pilipino para sa mundo sa pagbuo ng mas magandang buhay dito sa atin.",
+           "Ang paniniwala namin: ang mabuting trabaho ay dapat may patas na bayad, at ang ani ay dapat manatili sa nagtanim. Basahin mo ang buong sulat sa “Our Manifesto” sa menu. Sulat-kamay pa 'yan!",
+           "Para sa mas magandang bukas ng bawat Pilipino. 'Yan ang puso ng Magasaka. Nasa “Our Manifesto” sa menu ang buong kwento."],
+        next:['Who started Magasaka?','Do you help farmers?'] },
+      { id:'founder', re:/(founder|who (started|made|built|owns)|sino (ang )?(gumawa|nagtayo|may-?ari|founder)|marc|ceo|owner)/,
+        a:["Si Marc ang nagsimula nito. Magsasaka ang mga magulang niya, kaya lumaki siyang alam kung gaano kahirap kumita sa Pilipinas. Nangako siya na hahanap ng paraan para makatulong. Doon nanggaling ang Magasaka.",
+           "Galing sa pamilya ng magsasaka ang founder namin na si Marc. Kaya nga “Magasaka”, at kaya ako naka-salakot! 👒 Nasa manifesto ang buong kwento."],
+        next:['Read the manifesto','Do you help farmers?'] },
+      { id:'farmers', re:/(farmer|magsasaka|farm|agricult|sakahan|palay|rice|bukid|give back|charity)/,
+        a:["Oo, anak! Sa hinaharap, magbabahagi ang Magasaka ng bahagi ng kinikita nito para suportahan ang mga magsasaka at ang agricultural sector ng Pilipinas. Pangako 'yan habang lumalaki kami.",
+           "Ang mga pamilyang tulad ng sa founder namin ay bahagi ng dahilan kung bakit may Magasaka. Kaya balak naming magbahagi ng bahagi ng kita para sa mga magsasaka. Para sa'kin 'yan personal, naka-salakot nga ako eh! 😄"],
+        next:['Who started Magasaka?','What else will Magasaka do?'] },
+      { id:'future', re:/(future|plans?|roadmap|savings|ipon|tax|buwis|health|insurance|benefits|hmo|retire)/,
+        a:["Habang lumalaki ang Magasaka, gusto naming tulungan ang talent na makaipon, maintindihan ang tax responsibilities nila, at alagaan ang kalusugan nila. Dapat may puwang kang magplano lampas sa susunod na sahod.",
+           "Hindi lang trabaho ang inaalala namin, anak. Savings, tax, at health. 'Yan ang mga susunod na itatanim natin habang lumalaki ang Magasaka."],
+        next:['Do you help farmers?','When do you launch?'] },
+      { id:'name', re:/(name|pangalan|ibig sabihin|meaning|why (is it )?called|bakit magasaka)/,
+        a:["Pakinggan mo nang mabuti: Ma-ga-sa-ka. Parang “magsasaka”, 'di ba? Galing sa pamilya ng magsasaka ang founder, at ang pangarap ay sa'yo ang buong ani ng trabaho mo. 🌾",
+           "Malapit sa “magsasaka” ang tunog, at hindi 'yan aksidente. Ang ideya: nagtatanim ka ng trabaho, at sa'yo ang buong ani."],
+        next:['Who started Magasaka?','What is Magasaka?'] },
+      { id:'app', re:/(\bapp\b|mobile|android|ios|iphone|download|website|desktop|laptop)/,
+        a:["Wala pa akong maibabalita tungkol diyan, anak. Malalaman mo agad kapag nasa waitlist ka. Doon unang lumalabas ang mga balita bago ang launch sa early 2027."],
+        next:['When do you launch?','How do I join?'] },
+      { id:'countries', re:/(abroad|outside (the )?philippines|ofw|other country|international|worldwide|global|us clients|foreign)/,
+        a:["Ang Magasaka ay para i-connect ang Filipino talent sa mga client sa buong mundo. Ang pangarap: makatulong ang trabahong ginagawa mo para sa mundo sa pagbuo ng magandang buhay dito sa atin."],
+        next:['How do I get paid?','What kind of work?'] },
+      { id:'joke', re:/(joke|biro|banat|patawa|funny|make me laugh|pick ?up line|hugot|knock knock)/,
+        a:["Anong sabi ng palay sa kalabaw? “Bilisan mo naman, anihan na!” Sabi ng kalabaw: “Chill ka lang, slow but sure ako.” 😄 Pasensya na, tatay joke.",
+           "Anong tawag sa freelancer na laging nakangiti? Edi masaya. Kasi 0% ang platform fee! 🤭",
+           "Knock knock. Sino 'yan? Seeds. Seeds sino? Seeds-iguraduhin kong sasali ka sa waitlist! 😄",
+           "Sabi ng kalabaw sa magsasaka: “Huwag mo akong madaliin, slow but sure ako.” Parang pag-ipon. Dahan-dahan pero sigurado. Hehe.",
+           "Hugot ng freelancer: sana ang client ko parang Magasaka, pondo na bago pa ako mag-effort. 😂"],
+        next:['Is it free?','What are Seeds?'] },
+      { id:'sad', re:/(tired|pagod|sad|malungkot|stress|burn ?out|hirap|wala akong (client|trabaho)|rejected|walang sumasagot|depressed|lonely)/,
+        a:["Naku, anak, pahinga ka muna. Kahit ang palay hindi lumalaki nang isang gabi. Tandaan mo: kaya ng Pilipino makipagsabayan sa pinakamagaling. Kasama ka doon.",
+           "Alam ko ang pakiramdam. Oras sa proposals, binababa ang rate, walang sumasagot. Kaya nga ginagawa ang Magasaka. Hindi na dapat ganito. Kapit lang, may darating na tag-ani."],
+        next:['How is it different?','How do I join?'] },
+      { id:'food', re:/(\bkain|\beat\b|food|hungry|gutom|kumain ka na|merienda|lunch|dinner|breakfast|kape|coffee)/,
+        a:["Kumain ka na ba, anak? Ako, kanin at tuyo kanina. Masarap pag sariling ani! Basta huwag kang magtrabaho nang gutom ha.",
+           "Kape muna bago trabaho, 'yan ang sikreto ko. ☕ O, ano pang gusto mong malaman?"],
+        next:['What is Magasaka?','When do you launch?'] },
+      { id:'love', re:/(\blove\b|mahal kita|crush|jowa|single|asawa|girlfriend|boyfriend|i like you)/,
+        a:["Hay naku, pag-ibig! Ang payo ko: hanapin mo 'yung parang Magasaka. Tapat, walang nakatagong singil, at sa'yo ang buong ani. 😄",
+           "Ako? Matagal nang kasal sa palayan, anak. Hehe. Pero mahal ko rin kayong lahat na freelancers!"],
+        next:['Who are you?','Tell me a joke'] },
+      { id:'thanks', re:/(thank|salamat|\bty\b|tnx|thx|appreciate)/,
+        a:["Walang anuman, anak! Balik ka lang anytime. Nandito lang ako sa sulok, naka-salakot. 👒",
+           "Walang anuman! Huwag mong kalimutang sumali sa waitlist ha. Mas maaga, mas maganda.",
+           "Salamat din sa pagtatanong! Ganyan dapat, mausisa. Ingat ka!"],
+        next:['How do I join?','Tell me a joke'] },
+      { id:'bye', re:/^(bye|paalam|sige|see you|ingat|goodnight|good night|gtg|alis na)/,
+        a:["Sige anak, ingat ka! Babalik ako sa palayan. Tawagin mo lang ako ulit pag may tanong ka. 👋",
+           "Paalam muna! Tandaan: early 2027, at sumali ka na sa waitlist. Ingat!"],
+        next:['How do I join?'] },
+      { id:'rude', re:/(stupid|bobo|tanga|gago|useless|walang kwenta|pangit|ugly|shut up|tumahimik)/,
+        a:["Ay, aray ko, anak. 😅 Pero okay lang, matibay ang balat ng magsasaka. Ano ba talaga ang gusto mong malaman? Tutulungan kita.",
+           "Hehe, pasensya na kung hindi ko nasagot nang maayos. Subukan mo ulit, baka sa ibang paraan ng pagtanong, maintindihan ko."],
+        next:['What is Magasaka?','Is it free?'] },
     ];
+    const FALLBACK = [
+      "Hmm, hindi ko pa alam 'yan, anak. Ayokong manghula. Pero pwede mo akong tanungin tungkol sa launch, bayad, Seeds, roles, o sa kwento ng Magasaka.",
+      "Ay, lampas na 'yan sa alam ko. Ang alam ko lang ay ang nasa page na 'to, at ayokong mag-imbento. Subukan mo: “How is it different?” o “What are Seeds?”",
+      "Pasensya na, anak, baka sa ibang tanong kita matulungan. Tungkol sa Magasaka, halos lahat alam ko: bayad, proteksyon, rank, Seeds, Founding Members. Tanong lang!"
+    ];
+    const ALIAS = {'Read the manifesto':'manifesto','No free test work?':'test free work','What else will Magasaka do?':'future plans','Tell me a joke':'joke','What if something goes wrong?':'goes wrong'};
     const local = q => {
-      const t = q.toLowerCase();
-      for (const [re, a] of A) if (re.test(t)) return a;
-      return "I'm not sure about that one yet. I can help with the launch, fees, getting paid, Seeds, roles, or joining the waitlist. The FAQs near the bottom of the page cover the rest.";
+      const t = (ALIAS[q] || q).toLowerCase();
+      // the topics this message touches, in the order they appear in it; answer up to two
+      const hits = K.filter(k => k.re.test(t)).map(k => ({k}));
+      const small = ['hello','thanks','bye','how'], broad = ['clients','roles','join','rank','rate','what','diff'];
+      if (!hits.length) return {text: pick('fallback', FALLBACK), next: ['What is Magasaka?','How is it different?','Tell me a joke']};
+      let use = hits.filter(h => !small.includes(h.k.id));
+      if (!use.length) use = [hits.find(h => h.k.id === 'how') || hits.find(h => h.k.id !== 'hello') || hits[0]];
+      else {
+        // specific topics first; a second answer only when both are specific
+        use.sort((x, y) => broad.includes(x.k.id) - broad.includes(y.k.id));
+        use = use.filter((h, i) => i === 0 || !broad.includes(h.k.id)).slice(0, 2);
+      }
+      const opener = hits.some(h => h.k.id === 'hello') && !small.includes(use[0].k.id) ? 'Uy, kumusta! ' : '';
+      const text = opener + use.map(h => pick(h.k.id, h.k.a)).join('\n\n');
+      return {text, next: use[use.length - 1].k.next};
     };
+    function setChips(list){
+      if (!list || !list.length) return;
+      chips.innerHTML = '';
+      list.forEach(label => { const b = document.createElement('button'); b.type = 'button'; b.textContent = label; chips.appendChild(b); });
+      chips.scrollLeft = 0;
+    }
     function add(text, who){
       const m = document.createElement('div');
       m.className = 'ask__msg ask__msg--' + who; m.textContent = text;
@@ -3423,12 +3618,14 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
           if (r.ok) reply = String((await r.json()).reply || '').trim();
         } catch(e){}
       }
-      if (!reply) reply = local(q);
+      let next = null;
+      if (!reply){ const r = local(q); reply = r.text; next = r.next; }
       // a short, human pause before answering
       const wait = Math.max(0, 550 + Math.min(700, reply.length * 4) - (performance.now() - started));
       await new Promise(res => setTimeout(res, wait));
       dots.remove();
       add(reply, 'bot');
+      setChips(next);
       if (window.__mgJuanSound) window.__mgJuanSound('reply');
       history.push({role:'assistant', content: reply});
       busy = false;
@@ -3478,6 +3675,90 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && !box.hidden){ close(); btn.focus(); } });
     document.addEventListener('click', e => { if (!box.hidden && !e.target.closest('#ask, #askBtn')) close(); });
     document.getElementById('menuBtn')?.addEventListener('click', () => { if (!box.hidden) close(); });
+  })();
+</script>
+<script>
+  // --- Mang Juan's little life: glances at the cursor, nods while idle, and says hello when the chat is closed
+  (() => {
+    const btn = document.getElementById('askBtn'), box = document.getElementById('ask'), say = document.getElementById('juanSay');
+    if (!btn || !box) return;
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const mj = btn.querySelector('.mj'), look = mj.querySelector('.mj__look'), hat = mj.querySelector('.mj__hat');
+    const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+    // glances: now and then (and whenever the cursor comes near), his eyes follow it for a moment
+    if (!reduce && fine){
+      let mx = -1, my = -1, until = 0, raf = 0;
+      const aim = () => {
+        raf = 0;
+        const r = btn.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+        const near = Math.hypot(mx - cx, my - cy) < 260;
+        if (mx < 0 || (!near && performance.now() > until) || !box.hidden){ look.style.transform = ''; return; }
+        const dx = mx - cx, dy = my - cy, d = Math.max(1, Math.hypot(dx, dy));
+        const k = Math.min(1, d / 160);
+        look.style.transform = 'translate(' + (dx / d * 2.4 * k).toFixed(2) + 'px,' + (dy / d * 1.8 * k).toFixed(2) + 'px)';
+      };
+      addEventListener('pointermove', e => { mx = e.clientX; my = e.clientY; if (!raf) raf = requestAnimationFrame(aim); }, {passive:true});
+      (function glance(){
+        setTimeout(() => {
+          if (!document.hidden && Math.random() < .55){ until = performance.now() + 1800 + Math.random() * 1400; aim(); setTimeout(aim, until - performance.now() + 30); }
+          glance();
+        }, 5000 + Math.random() * 6000);
+      })();
+    }
+    // an idle nod every so often
+    if (!reduce) (function nod(){
+      setTimeout(() => {
+        if (!document.hidden && box.hidden && !mj.classList.contains('is-poke')){ mj.classList.remove('is-nod'); void mj.getBoundingClientRect(); mj.classList.add('is-nod'); setTimeout(() => mj.classList.remove('is-nod'), 1500); }
+        nod();
+      }, 14000 + Math.random() * 12000);
+    })();
+
+    // he "types" in the panel avatar while answering
+    const avatar = box.querySelector('.ask__avatar .mj');
+    const log = document.getElementById('askLog');
+    if (avatar && log) new MutationObserver(() => avatar.classList.toggle('is-thinking', !!log.querySelector('.ask__typing'))).observe(log, {childList:true});
+
+    // hello bubbles while the chat is closed: one after a little while, one more when someone reaches the FAQs.
+    // Each shows once per visit, and never once the chat has been opened.
+    if (!say) return;
+    const text = say.querySelector('.juan-say__text');
+    let seen = {}, opened = false, hideT = 0;
+    try { seen = JSON.parse(sessionStorage.getItem('mg-juan-say') || '{}'); opened = !!seen.opened; } catch(e){}
+    const save = () => { try { sessionStorage.setItem('mg-juan-say', JSON.stringify(seen)); } catch(e){} };
+    const hide = () => {
+      if (say.hidden) return;
+      clearTimeout(hideT);
+      say.classList.remove('is-in'); say.classList.add('is-out');
+      setTimeout(() => { say.hidden = true; say.classList.remove('is-out'); }, 260);
+    };
+    const show = (key, lines) => {
+      if (opened || seen[key] || !box.hidden || document.hidden) return false;
+      const pill = document.getElementById('pill');
+      if (pill && (pill.dataset.state === 'form' || pill.classList.contains('pill--away'))) return false;
+      if (document.documentElement.classList.contains('mf-open') || document.getElementById('flow')?.hidden === false) return false;
+      seen[key] = 1; save();
+      text.textContent = lines[Math.floor(Math.random() * lines.length)];
+      say.hidden = false; say.classList.remove('is-out'); say.classList.add('is-in');
+      if (!reduce){ mj.classList.remove('is-poke'); void mj.getBoundingClientRect(); mj.classList.add('is-poke'); }
+      clearTimeout(hideT); hideT = setTimeout(hide, 9000);
+      return true;
+    };
+    const HELLO = ["Uy, kumusta, anak! May tanong ka ba tungkol sa Magasaka? 👒",
+                   "Psst! Ako si Mang Juan. Tanungin mo ako kahit ano tungkol sa Magasaka.",
+                   "Kumain ka na ba? Hehe. Tanong ka lang kung may gusto kang malaman! 🌾"];
+    const FAQ = ["Nasa FAQs ka na pala! Kung may hindi pa nasagot, ako na lang tanungin mo. 😄",
+                 "Daming tanong, 'no? Pindutin mo lang ako, sasagutin ko isa-isa."];
+    const tryHello = () => { if (!show('hello', HELLO)) setTimeout(tryHello, 6000); };
+    setTimeout(tryHello, 14000);
+    const faq = document.getElementById('faq');
+    if (faq && 'IntersectionObserver' in window){
+      const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting) && seen.hello){ if (show('faq', FAQ)) io.disconnect(); } }, {threshold:.35});
+      io.observe(faq);
+    }
+    text.addEventListener('click', e => { e.stopPropagation(); hide(); btn.click(); });
+    say.querySelector('.juan-say__x').addEventListener('click', hide);
+    btn.addEventListener('click', () => { opened = true; seen.opened = 1; save(); hide(); });
   })();
 </script>
 </body>
