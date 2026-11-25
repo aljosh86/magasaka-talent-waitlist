@@ -2396,12 +2396,12 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
           const t = (now - t0) / 1000;
           tx = Math.sin(t * .45) * (fine ? .12 : .2); ty = Math.sin(t * .65) * (fine ? .08 : .13); ts = 1;
         }
-        // low rates = the card lags the pointer a beat and settles slowly, which reads as weight, not twitch
-        const k = 1 - Math.exp(-dt * (active ? 3.2 : 1.6));
+        // moderate rates: the card trails the pointer by a beat (weight) but still answers the hover clearly
+        const k = 1 - Math.exp(-dt * (active ? 6.5 : 2.4));
         cx += (tx - cx) * k; cy += (ty - cy) * k; cs += (ts - cs) * k;
         const st = card.style;
-        st.setProperty('--rx', (cy * -9).toFixed(2) + 'deg');      // gentle: about 4-5 degrees at the edges
-        st.setProperty('--ry', (cx * 11).toFixed(2) + 'deg');
+        st.setProperty('--rx', (cy * -11).toFixed(2) + 'deg');     // gentle: about 5-6 degrees at the edges
+        st.setProperty('--ry', (cx * 13).toFixed(2) + 'deg');
         st.setProperty('--mx', ((cx + .5) * 100).toFixed(1) + '%');
         st.setProperty('--my', ((cy + .5) * 100).toFixed(1) + '%');
         st.setProperty('--px', cx.toFixed(3)); st.setProperty('--py', cy.toFixed(3));
