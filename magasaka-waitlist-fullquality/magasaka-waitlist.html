@@ -735,8 +735,9 @@ html.flow-open, html.flow-open body{overflow:hidden}
 .wcard.is-live .wcard__gloss{opacity:1}
 .wcard.is-live img{transform:translate3d(calc(var(--px,0) * -9px),calc(var(--py,0) * -9px),0) scale(1.05)}
 .wcard img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-/* the photo (rice terraces) fades into deep field green at the bottom, so the name and skills sit on a calm field */
-.wcard__veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,38,24,0) 0%,rgba(20,38,24,0) 34%,rgba(20,38,24,.72) 62%,rgba(20,38,24,.95) 82%,#142618 100%)}
+/* the photo (rice terraces) fades into deep field green at the bottom, so the name and skills sit on a calm field;
+   a lighter band of the same green at the top keeps EARLY ACCESS / NO. readable over the bright terraces */
+.wcard__veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,38,24,.55) 0%,rgba(20,38,24,0) 20%,rgba(20,38,24,0) 34%,rgba(20,38,24,.72) 62%,rgba(20,38,24,.95) 82%,#142618 100%)}
 .wcard__top{position:absolute;left:25px;top:25px;width:calc(100% - 50px);display:flex;align-items:center;justify-content:space-between;
   font-size:20px;letter-spacing:-.01em;color:#fff}
 .wcard__top span{text-box:trim-both cap alphabetic}
@@ -2316,7 +2317,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       try { const ph = $('#cardPhoto'), k = Math.max(W / ph.naturalWidth, H / ph.naturalHeight), pw = ph.naturalWidth * k, phh = ph.naturalHeight * k;
         g.drawImage(ph, (W - pw) / 2, (H - phh) / 2, pw, phh); } catch(e){}   // cover, not stretch
       const grd = g.createLinearGradient(0,0,0,H);
-      grd.addColorStop(0,'rgba(20,38,24,0)'); grd.addColorStop(.34,'rgba(20,38,24,0)'); grd.addColorStop(.62,'rgba(20,38,24,.72)'); grd.addColorStop(.82,'rgba(20,38,24,.95)'); grd.addColorStop(1,'#142618');
+      grd.addColorStop(0,'rgba(20,38,24,.55)'); grd.addColorStop(.2,'rgba(20,38,24,0)'); grd.addColorStop(.34,'rgba(20,38,24,0)'); grd.addColorStop(.62,'rgba(20,38,24,.72)'); grd.addColorStop(.82,'rgba(20,38,24,.95)'); grd.addColorStop(1,'#142618');
       g.fillStyle = grd; g.fillRect(0,0,W,H);
       try { await document.fonts.ready; } catch(e){}
 
