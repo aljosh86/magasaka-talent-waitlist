@@ -2262,6 +2262,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       $('#flowFriends').textContent = '0';
       wireShare();
       show(2);
+      requestAnimationFrame(tidyPickDots);
     }
 
     function wireShare(){
@@ -2279,6 +2280,18 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       catch(e){ const i = $('#flowLink'); i.select(); try { document.execCommand('copy'); } catch(_){} }
       label.textContent = 'Copied'; setTimeout(() => label.textContent = 'Copy', 1600);
     });
+
+    // when the skills wrap, hide the dot that would end a line ("General VA •" / "Project Management")
+    function tidyPickDots(){
+      const picks = $('#cardPicks');
+      [...picks.querySelectorAll('i')].forEach(dot => {
+        dot.style.visibility = '';
+        const prev = dot.previousElementSibling, next = dot.nextElementSibling;
+        // visibility, not display: keeping the dot's space means hiding it can't pull the next skill back up
+        if (prev && next && next.offsetTop > prev.offsetTop + 2) dot.style.visibility = 'hidden';
+      });
+    }
+    addEventListener('resize', () => { if (!flow.hidden) tidyPickDots(); });
 
     // "Save" renders the card to a PNG for IG and FB stories
     $('#flowSave').addEventListener('click', async () => {
