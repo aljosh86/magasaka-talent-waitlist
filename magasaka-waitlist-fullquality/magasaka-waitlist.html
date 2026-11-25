@@ -95,15 +95,12 @@ html.is-loading .grain{z-index:91}
 .opening h1{margin:0;font-weight:500;font-size:clamp(40px,4.11vw,62px);line-height:1.2;color:var(--field-white);text-box:trim-both cap alphabetic;width:9.84em;max-width:100%}
 
 .opening p{margin:0;width:auto;white-space:nowrap;max-width:100%;font-weight:400;font-size:clamp(18px,1.46vw,22px);line-height:1.2;color:rgba(237,236,232,.8);text-box:trim-both cap alphabetic}
-.scrollcue{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 121px);transform:translateX(-50%);
-  display:inline-flex;align-items:center;justify-content:center;gap:16px;min-height:48px;padding:5px 5px 5px 18px;
-  border:1px solid rgba(237,236,232,.32);border-radius:100px;background:rgba(26,25,20,.8);color:var(--field-white);
-  font:500 14px/1.2 var(--font);letter-spacing:-.01em;white-space:nowrap;pointer-events:none;will-change:opacity}
-.scrollcue__icon{display:grid;place-items:center;flex:0 0 36px;width:36px;height:36px;
-  border-radius:50%;background:var(--field-white);color:var(--ink);overflow:hidden}
-.scrollcue svg{display:block;width:18px;height:18px}
-@media (max-width:640px){.opening{bottom:calc(env(safe-area-inset-bottom,0px) + 180px);gap:24px}}
-@media (prefers-reduced-motion: reduce){.scrollcue{display:none}}
+.scrollcue{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 127px);transform:translateX(-50%);display:flex;align-items:center;gap:4px;height:36px;padding:0 15px;border-radius:100px;
+  background:rgba(237,236,232,.2);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);color:var(--field-white);font:400 14px/1 var(--font);letter-spacing:.02em;will-change:opacity}
+.scrollcue svg{display:block;animation:cue-bob 1.6s cubic-bezier(.45,0,.55,1) infinite}
+@keyframes cue-bob{0%,100%{transform:translateY(-2px)}50%{transform:translateY(2px)}}
+@media (max-width:640px){.opening{bottom:calc(env(safe-area-inset-bottom,0px) + 180px);gap:24px}.scrollcue{bottom:calc(env(safe-area-inset-bottom,0px) + 110px)}}
+@media (prefers-reduced-motion: reduce){.scrollcue{display:none}.scrollcue svg{animation:none}}
 /* ---------- Persistent signup pill (Figma: 360px, glass tray, 49px controls) ---------- */
 .pill{position:fixed;z-index:45;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 40px);width:min(390px,calc(100% - 32px));transform:translate(-50%,16px);opacity:0;pointer-events:none;
   display:flex;gap:4px;padding:4px;border-radius:100px;background:rgba(237,236,232,.2);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);transition:opacity .5s,transform .5s,width .28s cubic-bezier(.22,1,.36,1)}
@@ -417,6 +414,9 @@ html.is-loading .grain{z-index:91}
   .opening h1{font-size:33px;width:auto;max-width:334px}
   .opening p{font-size:15px;width:300px;max-width:100%}
   .opening .actions{margin:0}
+  .scrollcue{gap:4px;height:36px;padding:0 15px;font-size:13px}
+  .scrollcue svg{width:14px;height:14px}
+  .scrollcue{bottom:calc(env(safe-area-inset-bottom,0px) + 40px + 49px + 8px + 25px)}
   .pill{width:350px;bottom:calc(env(safe-area-inset-bottom,0px) + 40px)}
   .pill__join{font-size:14px}
   .pill__form{padding:3px}
@@ -839,14 +839,10 @@ html.flow-open, html.flow-open body{overflow:hidden}
         <h1>Filipino talent can compete with the best in the world.</h1>
         <p>A freelance marketplace that finally treats you like one.</p>
       </div>
-      <div class="scrollcue" id="scrollcue">
-        <span class="scrollcue__label">Scroll to explore</span>
-        <span class="scrollcue__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" focusable="false">
-            <path d="M12 4v16m-6-6 6 6 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </span>
-      </div>
+      <div class="scrollcue" id="scrollcue" aria-hidden="true"><svg width="16" height="16" aria-hidden="true" focusable="false" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M10.3332 12.6863L9.2289 13.7905C8.65924 14.3747 7.96124 14.6657 7.99977 14.6667V8.00006M7.99977 14.6667C7.99977 14.6667 7.34024 14.3747 6.77057 13.7905L5.6665 12.6864" stroke="#EDECE8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M10 3.33331C10 4.43788 9.10457 5.33331 8 5.33331C6.89543 5.33331 6 4.43788 6 3.33331C6 2.22874 6.89543 1.33331 8 1.33331C9.10457 1.33331 10 2.22874 10 3.33331Z" fill="#EDECE8"/>
+</svg><span class="scrollcue__label">SCROLL</span></div>
 
       <div tabindex="0" role="button" aria-expanded="false" class="beat beat--nowrap" data-in="0.08" data-out="0.165" data-open="false">
         <div class="beat__col">
