@@ -47,7 +47,7 @@ Only `magasaka-waitlist-fullquality/` is needed to serve the website; `design-as
 
 ## Hero navigation
 
-The original small, translucent "SCROLL" cue and its arrow animation are restored. It is a visual prompt for manual scrolling, with no click-triggered scrolling. The former "Skip hero story" controls remain removed from the hero and menu. In reduced motion, the scroll prompt is hidden alongside the scroll-driven sequence.
+The opening "Scroll" cue uses a static mouse-outline icon and sits at the lower right, where the former skip control appeared. On phones, it sits above the signup bar to avoid overlap. It is a visual prompt for manual scrolling, with no click-triggered scrolling. The former "Skip hero story" controls remain removed from the hero and menu. In reduced motion, the scroll prompt is hidden alongside the scroll-driven sequence.
 
 ## Logo loader update
 
