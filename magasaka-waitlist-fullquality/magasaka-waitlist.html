@@ -452,10 +452,12 @@ body:has(.pill:not([data-state="idle"])) .scrollcue{opacity:0 !important;transit
   .after__inner{gap:120px;max-width:353px}
 
   /* manifesto film block */
-  .filmblock{width:354px;max-width:100%;aspect-ratio:354/270;border-radius:18px}
-  .filmblock__text{bottom:30px;transform:translate(-50%,0);gap:15px;padding:0 16px}
-  .filmblock h2{font-size:28px;white-space:normal;width:300px;max-width:100%;margin-inline:auto}
-  .filmblock h2 br{display:none}
+  /* phone: a tall portrait card filling the column, so it holds the screen instead of floating in empty space;
+     the headline sits low on the gradient, two lines, clear of the woman at her laptop */
+  .filmblock{width:100%;aspect-ratio:4/5;border-radius:20px}
+  .filmblock__scrim{background:none;background-image:linear-gradient(to top,rgba(20,20,20,.75) 0,rgba(20,20,20,.35) 30%,rgba(20,20,20,0) 55%)}
+  .filmblock__text{bottom:26px;transform:translate(-50%,0);gap:14px;padding:0 18px}
+  .filmblock h2{font-size:clamp(20px,5.9vw,24px);white-space:nowrap;line-height:1.25}
   .filmblock__link{font-size:14px}
 
   /* the problem */
