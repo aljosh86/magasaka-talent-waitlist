@@ -13,7 +13,7 @@ const WAITLIST_CAPACITY = 10000;
 const WAITLIST_TITLES = [
     'Virtual Assistant', 'Customer Support Specialist', 'Sales & Lead Generation Specialist',
     'Marketer', 'Designer & Creative', 'Writer & Translator', 'Developer', 'Data & AI Specialist',
-    'Bookkeeper & Accountant', 'E-commerce Specialist', 'HR & Recruiter', 'Engineer & Drafter',
+    'Bookkeeper & Accountant', 'E-commerce Specialist', 'HR & Recruitment Specialist', 'Engineer & Drafter',
     'Healthcare Professional', 'Educator', 'Legal Assistant',
 ];
 
