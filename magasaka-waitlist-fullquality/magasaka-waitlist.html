@@ -1461,6 +1461,14 @@ body:has(.pill.pill--away) .juan-say{display:none}
   text-decoration:none;transform:translateY(-200%);transition:transform .25s ease}
 .skip:focus{transform:none;outline:2px solid var(--field-white);outline-offset:2px}
 </style>
+<style>
+/* phone, card screen: the share buttons spread evenly across the same width as the link box, a size up */
+@media (max-width:640px){
+  .flow__socials{display:flex;justify-content:space-between;gap:0;width:100%}
+  .flow__socials a,.flow__socials button{width:52px;height:52px}
+  .flow__socials svg{transform:scale(1.15)}
+}
+</style>
 <script src="waitlist-config.js"></script>
 <script src="waitlist-client.js"></script>
 </head>
