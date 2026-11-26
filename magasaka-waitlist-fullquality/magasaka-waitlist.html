@@ -1462,8 +1462,19 @@ body:has(.pill.pill--away) .juan-say{display:none}
 .skip:focus{transform:none;outline:2px solid var(--field-white);outline-offset:2px}
 </style>
 <style>
-/* phone, card screen: the share buttons spread evenly across the same width as the link box, a size up */
+/* phone, card screen: one centred column under the card, the same width as the link box, with a calm rhythm:
+   greeting, one line of meaning, the link, the share buttons, then what happens next in a soft panel */
 @media (max-width:640px){
+  .flow__share{gap:0;width:100%;max-width:400px;align-self:center;text-align:center}
+  .flow__share h2{white-space:normal;margin:0;font-size:28px;line-height:1.15;letter-spacing:-.02em}
+  .flow__sharein{gap:0}
+  .flow__sharehead{gap:0;margin-top:10px}
+  .flow__sharehead p:first-child{font-size:16px;font-weight:400;line-height:1.45;color:#6f6f6a;max-width:300px;margin:0 auto;text-box:none}
+  .flow__link{margin-top:24px}
+  .flow__invite{margin:10px 0 0;font-size:13px;color:#8a8a84;text-align:center}
+  .flow__socials{margin-top:20px}
+  .flow__next{margin-top:28px !important;padding:18px 16px !important;border-top:0 !important;border-radius:16px;background:rgba(255,255,255,.55);text-align:left}
+
   .flow__socials{display:flex;justify-content:space-between;gap:0;width:100%}
   .flow__socials a,.flow__socials button{width:52px;height:52px}
   .flow__socials svg{transform:scale(1.15)}
