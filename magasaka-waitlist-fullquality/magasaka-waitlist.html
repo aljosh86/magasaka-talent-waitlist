@@ -1489,9 +1489,12 @@ body:has(.pill.pill--away) .juan-say{display:none}
 /* Inside Magasaka: click an app screen and it grows to fill the screen */
 .concept__shot.is-zoomable{cursor:zoom-in}
 @media (hover:hover){.concept__shot.is-zoomable .shot{transition:opacity .6s ease,transform .7s cubic-bezier(.22,1,.36,1)}.concept__shot.is-zoomable:hover .shot{transform:scale(1.008)}}
-html.szoom-on .pill{opacity:0;transform:translate(-50%,16px);pointer-events:none;transition:opacity .45s ease,transform .6s cubic-bezier(.22,1,.36,1)}
-html.szoom-on .juan,html.szoom-on .juan-say{opacity:0;transform:translateY(16px);pointer-events:none;transition:opacity .45s ease,transform .6s cubic-bezier(.22,1,.36,1)}
-html.szoom-off .pill,html.szoom-off .juan,html.szoom-off .juan-say{transition:opacity .5s ease .15s,transform .7s cubic-bezier(.22,1,.36,1) .15s}
+html.szoom-on .pill{opacity:0;transform:translate(-50%,12px);pointer-events:none;transition:opacity .9s cubic-bezier(.4,0,.2,1),transform 1s cubic-bezier(.22,1,.36,1)}
+html.szoom-on .juan,html.szoom-on .juan-say{opacity:0;transform:translateY(12px);pointer-events:none;transition:opacity .9s cubic-bezier(.4,0,.2,1),transform 1s cubic-bezier(.22,1,.36,1)}
+html.szoom-off .pill,html.szoom-off .juan,html.szoom-off .juan-say{transition:opacity 1s cubic-bezier(.4,0,.2,1) .1s,transform 1.1s cubic-bezier(.22,1,.36,1) .1s}
+/* the frame around the small screen fades away while its picture is enlarged, and back as the picture returns */
+.concept__shot{transition:opacity .7s cubic-bezier(.4,0,.2,1)}
+.concept__shot.is-lifted{opacity:0}
 .szoom{position:fixed;inset:0;z-index:200;display:grid;place-items:center;cursor:zoom-out;visibility:hidden;touch-action:none}
 .szoom.is-open{visibility:visible}
 .szoom__bg{position:absolute;inset:0;background:rgba(12,14,12,.84);opacity:0;will-change:opacity}
@@ -4468,7 +4471,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       const settle = () => { anims.forEach(a => a.cancel()); anims = []; box.classList.add('is-settled'); pan.scrollLeft = off; busy = false; x.focus({preventScroll: true}); };
       if (reduce.matches) { bg.style.opacity = 1; box.classList.add('is-shown'); return settle(); }
       const going = run(base, sm.vis, to, sm.img, to, 780, phone.matches ? 6 : 8, phone.matches ? 10 : 14);
-      layers.forEach(l => l.style.visibility = 'hidden');
+      layers.forEach(l => l.style.visibility = 'hidden'); shot.classList.add('is-lifted');
       fade(1, 520);
       box.classList.add('is-shown');
       going.then(settle);
@@ -4480,7 +4483,8 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     const now = R(frame.getBoundingClientRect());        // where it is now, even if slid sideways on a phone
     const room = pan.scrollWidth - pan.clientWidth, frac = phone.matches && room > 0 ? pan.scrollLeft / room : 0;
     box.classList.remove('is-settled', 'is-shown');
-    document.documentElement.classList.replace('szoom-on', 'szoom-off'); offT = setTimeout(() => document.documentElement.classList.remove('szoom-off'), 900);
+    document.documentElement.classList.replace('szoom-on', 'szoom-off'); offT = setTimeout(() => document.documentElement.classList.remove('szoom-off'), 1300);
+    shot.classList.remove('is-lifted');
     const base = R(frame.getBoundingClientRect());       // leaving the slide resets it; animate from where it was
     if (phone.matches) setShift(Math.round(slideMax() * frac));
     const sm = small();
