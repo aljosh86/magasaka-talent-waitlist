@@ -1343,14 +1343,28 @@ html.mf-open{overscroll-behavior:none}
 <style>
 /* sign-up flow: a soft relief render of the whole Philippines, laid flat on the floor in perspective and turned on a slant
    (shape from Natural Earth, rendered on Higgsfield) */
-.flow::before{content:"";position:fixed;z-index:-1;left:72%;top:26%;width:min(138vh,110vw);aspect-ratio:1200/1607;
-  transform:translate(-50%,-50%) perspective(550px) rotateX(70deg) rotateY(5deg) rotateZ(51deg);
-  background:url(images/ph-map.webp?v=3) center/contain no-repeat;opacity:.16;pointer-events:none}
+.flow__map{position:fixed;z-index:-1;left:72%;top:26%;width:min(138vh,110vw);aspect-ratio:1200/1607;pointer-events:none;
+  transform:translate(-50%,-50%) perspective(550px) rotateX(70deg) rotateY(5deg) rotateZ(51deg);transform-style:preserve-3d}
+.flow__map-img{position:absolute;inset:0;background:url(images/ph-map.webp?v=3) center/contain no-repeat;opacity:.16}
+/* the member's signal on the map: a dot with rings spreading out over the ground */
+.flow__ping{position:absolute;width:0;height:0}
+.flow__ping::before{content:"";position:absolute;left:-9px;top:-9px;width:18px;height:18px;border-radius:50%;background:#4f7a36;
+  box-shadow:0 0 0 4px rgba(255,255,255,.9),0 0 24px 6px rgba(79,122,54,.55);transform:scale(0);transition:transform .6s cubic-bezier(.34,1.56,.64,1)}
+.flow__ping i{position:absolute;left:-9px;top:-9px;width:18px;height:18px;border-radius:50%;border:3px solid #4f7a36;opacity:0}
+.flow__ping.is-live::before{transform:scale(1)}
+.flow__ping.is-live i{animation:ping 2.6s cubic-bezier(.2,.6,.35,1) infinite}
+.flow__ping.is-live i:nth-child(2){animation-delay:.85s}
+.flow__ping.is-live i:nth-child(3){animation-delay:1.7s}
+@keyframes ping{0%{transform:scale(1);opacity:.85}100%{transform:scale(9);opacity:0}}
+@media (prefers-reduced-motion: reduce){.flow__ping.is-live i{animation:none}}
+.flow__label--place{margin-top:6px}
+.flow__label--place span{color:#9a9a96;font-weight:400}
 /* a soft white fade along the bottom of the screen */
 .flow::after{content:"";position:fixed;z-index:-1;left:0;right:0;bottom:0;height:38vh;pointer-events:none;
   background:linear-gradient(to bottom,rgba(255,255,255,0),rgba(255,255,255,.85))}
 @media (max-width:640px){
-  .flow::before{left:50%;top:62%;width:150vw;transform:translate(-50%,-50%) perspective(1300px) rotateX(55deg) rotateZ(80deg);opacity:.45}
+  .flow__map{left:50%;top:62%;width:150vw;transform:translate(-50%,-50%) perspective(1300px) rotateX(55deg) rotateZ(80deg)}
+  .flow__map-img{opacity:.45}
   .flow::after{height:30vh}
 }
 </style>
@@ -1712,6 +1726,7 @@ html.mf-open{overscroll-behavior:none}
 
 
 <div class="flow" id="flow" hidden role="dialog" aria-modal="true" aria-label="Join the Magasaka waitlist">
+  <div class="flow__map" aria-hidden="true"><div class="flow__map-img"></div><span class="flow__ping" id="flowPing" hidden><i></i><i></i><i></i></span></div>
   <div class="flow__top">
     <a class="flow__logo" href="#top" aria-label="Close and go back"><svg aria-hidden="true" focusable="false" viewBox="0 0 155 20" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g clip-path="url(#clip0_6_249)">
@@ -1755,6 +1770,9 @@ html.mf-open{overscroll-behavior:none}
       <div class="flow__field">
         <p class="flow__label">First name</p>
         <div class="flow__pill"><input id="flowName" type="text" autocomplete="given-name" placeholder="Your first name" aria-label="First name" maxlength="100" aria-describedby="flowNameError"></div>
+        <p class="flow__label flow__label--place">Where are you based? <span>(optional)</span></p>
+        <div class="flow__pill"><input id="flowPlace" type="text" list="flowPlaces" autocomplete="off" placeholder="City or province" aria-label="City or province (optional)" maxlength="80"></div>
+        <datalist id="flowPlaces"></datalist>
         <button class="flow__btn" id="flowNameBtn" type="submit" disabled>Continue</button>
         <p class="flow__error" id="flowNameError" role="alert" hidden></p>
       </div>
@@ -2899,6 +2917,26 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       close();
     });
 
+    // --- where they're based: provinces and cities, each with its spot on the map image (x, y as fractions)
+    const PLACES = [["Abra",0.4276,0.2295],["Agusan del Norte",0.7763,0.7006],["Agusan del Sur",0.791,0.7339],["Aklan",0.532,0.5666],["Albay",0.6301,0.4732],["Angeles City",0.4125,0.3654],["Antique",0.4768,0.5505],["Apayao",0.4547,0.1986],["Aurora",0.4978,0.3103],["Bacolod City",0.5878,0.6172],["Baguio City",0.4135,0.2947],["Basilan",0.52,0.8506],["Bataan",0.4,0.3929],["Batanes",0.5121,0.0303],["Batangas",0.448,0.4338],["Benguet",0.4197,0.2868],["Biliran",0.6977,0.5649],["Bohol",0.6802,0.6627],["Bukidnon",0.7354,0.7667],["Bulacan",0.4427,0.3758],["Butuan City",0.7749,0.7135],["Cagayan",0.4894,0.2094],["Cagayan de Oro City",0.7128,0.7407],["Caloocan, Metro Manila",0.4417,0.3938],["Camarines Norte",0.5668,0.4188],["Camarines Sur",0.6156,0.448],["Camiguin",0.7149,0.7006],["Capiz",0.562,0.5774],["Catanduanes",0.6783,0.4392],["Cavite",0.4304,0.4153],["Cebu",0.6397,0.6391],["Cebu City",0.6547,0.6372],["Cotabato",0.7221,0.8073],["Cotabato City",0.6801,0.8099],["Dagupan City",0.3942,0.3156],["Davao City",0.7782,0.8182],["Davao Occidental",0.7792,0.873],["Davao Oriental",0.8294,0.819],["Davao de Oro",0.8073,0.7928],["Davao del Norte",0.7829,0.797],["Davao del Sur",0.7727,0.8591],["Dinagat Islands",0.7792,0.6469],["Eastern Samar",0.7905,0.6132],["General Santos City",0.7454,0.871],["Guimaras",0.5603,0.6229],["Ifugao",0.4581,0.2709],["Iligan City",0.691,0.7517],["Ilocos Norte",0.4212,0.194],["Ilocos Sur",0.4134,0.2622],["Iloilo",0.5588,0.5998],["Iloilo City",0.5552,0.6124],["Isabela",0.5107,0.2611],["Kalinga",0.466,0.2339],["La Union",0.4011,0.2862],["Laguna",0.4649,0.4215],["Lanao del Norte",0.671,0.7632],["Lanao del Sur",0.6866,0.7719],["Lapu-Lapu City",0.6591,0.6374],["Las Piñas, Metro Manila",0.4421,0.4039],["Leyte",0.7267,0.5985],["Lucena City",0.4846,0.4339],["Maguindanao",0.694,0.8236],["Makati, Metro Manila",0.445,0.3987],["Malabon, Metro Manila",0.4398,0.3927],["Mandaluyong, Metro Manila",0.4462,0.3973],["Mandaue City",0.6572,0.6353],["Manila, Metro Manila",0.4416,0.3964],["Marikina, Metro Manila",0.4509,0.3944],["Marinduque",0.5135,0.4649],["Masbate",0.6336,0.5292],["Misamis Occidental",0.6413,0.7474],["Misamis Oriental",0.7347,0.7248],["Mountain Province",0.455,0.2562],["Muntinlupa, Metro Manila",0.4463,0.4058],["Naga City",0.6033,0.4513],["Navotas, Metro Manila",0.4389,0.3938],["Negros Occidental",0.5878,0.631],["Negros Oriental",0.5912,0.6678],["Northern Samar",0.7215,0.5207],["Nueva Ecija",0.4423,0.335],["Nueva Vizcaya",0.4498,0.2965],["Occidental Mindoro",0.4487,0.505],["Olongapo City",0.3899,0.3813],["Oriental Mindoro",0.4688,0.4941],["Ormoc City",0.7039,0.5969],["Palawan",0.2164,0.7087],["Pampanga",0.4169,0.3724],["Pangasinan",0.3942,0.3248],["Parañaque, Metro Manila",0.4436,0.4022],["Pasay, Metro Manila",0.4424,0.3991],["Pasig, Metro Manila",0.4498,0.3978],["Pateros, Metro Manila",0.4485,0.3992],["Puerto Princesa City",0.2721,0.6602],["Quezon",0.5184,0.4369],["Quezon City, Metro Manila",0.4473,0.392],["Quirino",0.491,0.3007],["Rizal",0.4632,0.3915],["Romblon",0.5563,0.5192],["Samar",0.7352,0.5515],["San Juan, Metro Manila",0.4457,0.3961],["Santiago City",0.4798,0.2757],["Sarangani",0.7574,0.8811],["Siquijor",0.6326,0.7003],["Sorsogon",0.6621,0.5005],["South Cotabato",0.7212,0.8614],["Southern Leyte",0.751,0.6503],["Sultan Kudarat",0.69,0.8492],["Sulu",0.4326,0.9046],["Surigao del Norte",0.8055,0.6731],["Surigao del Sur",0.8156,0.721],["Tacloban City",0.7338,0.5844],["Taguig, Metro Manila",0.447,0.4006],["Tarlac",0.4031,0.347],["Tawi-Tawi",0.3572,0.9456],["Valenzuela, Metro Manila",0.4418,0.3907],["Zambales",0.3812,0.3708],["Zamboanga City",0.5197,0.8203],["Zamboanga Sibugay",0.5834,0.7825],["Zamboanga del Norte",0.5691,0.7649],["Zamboanga del Sur",0.6115,0.7751]];
+    const placeInput = $('#flowPlace');
+    const placeList = $('#flowPlaces');
+    PLACES.forEach(([p]) => { const o = document.createElement('option'); o.value = p; placeList.appendChild(o); });
+    { const o = document.createElement('option'); o.value = 'Outside the Philippines'; placeList.appendChild(o); }
+    const findPlace = v => { v = (v || '').trim().toLowerCase(); return PLACES.find(([p]) => p.toLowerCase() === v)
+      || PLACES.find(([p]) => p.toLowerCase().replace(/ city$|, metro manila$/, '') === v.replace(/ city$/, '')); };
+    if (state.location) placeInput.value = state.location;
+    const ping = document.getElementById('flowPing');
+    function showPing(){
+      const hit = findPlace(state.location);
+      if (!ping) return;
+      ping.classList.remove('is-live');
+      if (!hit){ ping.hidden = true; return; }
+      ping.style.left = (hit[1] * 100) + '%'; ping.style.top = (hit[2] * 100) + '%';
+      ping.hidden = false;
+      setTimeout(() => ping.classList.add('is-live'), 700);
+    }
+
     // --- step 2: first name
     nameInput.addEventListener('input', () => { nameBtn.disabled = !nameInput.value.trim(); setError('#flowNameError'); });
     $('#flowNameForm').addEventListener('submit', async e => {
@@ -2909,6 +2947,8 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       const panel = $('#flowNameForm'); setPanelBusy(panel, true); nameBtn.textContent = 'Saving…';
       try {
         const saved = await api.saveName(state.email, v);
+        const hit = findPlace(placeInput.value);
+        state.location = hit ? hit[0] : placeInput.value.trim().slice(0, 80);
         state.name = saved.name; state.no = saved.no; state.ref = saved.ref; save();
         show(1); setTimeout(() => search.focus({preventScroll:true}), 220);
       } catch (error) { setError('#flowNameError', error.message); }
@@ -3060,6 +3100,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       $('#flowLink').value = shareUrl();
       wireShare();
       show(2);
+      showPing();
     }
 
     function wireShare(){

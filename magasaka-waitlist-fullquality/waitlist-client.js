@@ -90,7 +90,7 @@
     apiUrl,
     join: (email, referredBy) => request('join', {email, referredBy}),
     saveName: (email, name) => request('name', {email, name}),
-    complete: ({email, name, title, picks}) => request('complete', {email, name, title, picks}),
+    complete: ({email, name, title, picks, location}) => request('complete', {email, name, title, picks, location: location || ''}),
     shareUrl: ref => {
       const url = new URL(config.publicPageUrl || location.pathname, location.href);
       url.search = ''; url.hash = ''; url.searchParams.set('ref', ref);
