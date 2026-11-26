@@ -1402,10 +1402,13 @@ html.mf-open{overscroll-behavior:none}
   .concept__inner{flex:1;display:flex;flex-direction:column;min-width:0;width:100%}   /* the wide screenshot must not widen the tab row */
   .tabs{width:100%;box-sizing:border-box;min-width:0}
   .concept__head h2{font-size:24px;line-height:1.3}
-  .tabs{margin-top:60px;margin-bottom:40px;padding:0 16px;justify-content:space-between;overflow:visible}   /* tabs stay where they were; only the title moved up */
+  .tabs{margin-top:60px;margin-bottom:32px;padding:0 16px;justify-content:space-between;overflow:visible}   /* tabs stay where they were; only the title moved up */
   /* each tab as wide as its word, the space shared out evenly between them (equal-width tabs left uneven gaps) */
   .tab{flex:0 0 auto;width:auto;max-width:none;min-width:0;height:34px;padding:0 4px;font-size:14px;white-space:nowrap}
-  .concept__shot{margin:auto 0 0 calc(50% - 338.5px + 162px) !important;padding-top:0}
+  /* the app screen follows the tabs closely, and on taller phones grows (bleeding further right) so it still
+     reaches the bottom edge: its height is whatever is left of the screen under the tabs */
+  .concept__shot{margin:0 0 0 calc(50% - 338.5px + 162px) !important;padding-top:0;
+    width:max(677px,calc((100lvh - 252px) * 1.5)) !important}
   .concept__shot img.shot{width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;object-position:left top}
 }
 </style>
