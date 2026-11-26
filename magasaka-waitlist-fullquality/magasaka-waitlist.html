@@ -1400,6 +1400,15 @@ html.mf-open{overscroll-behavior:none}
   .concept__shot img.shot{flex:1;height:100%;aspect-ratio:auto;object-fit:cover;object-position:left top}
 }
 </style>
+<style>
+/* phones: the answer's bottom space used to snap on/off (0 to 22px) while the answer slid open, a sudden white gap.
+   It now stays put inside the folding area, so it opens and closes with the text. No grey tap flash either. */
+@media (max-width:640px){
+  .faq__a p,.faq__item[data-open="true"] .faq__a p{margin-bottom:22px}
+  .faq__a>div{min-height:0}
+}
+.faq__q{-webkit-tap-highlight-color:transparent}
+</style>
 <style>.faq__item.is-instant .faq__a,.faq__item.is-instant .faq__a *,.faq__item.is-instant .faq__icon{transition:none!important}</style>
 <script src="waitlist-config.js"></script>
 <script src="waitlist-client.js"></script>
