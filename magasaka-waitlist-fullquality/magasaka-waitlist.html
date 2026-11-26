@@ -2317,7 +2317,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
   function updatePillTheme(){
     const r = pill.getBoundingClientRect();
     const under = document.elementsFromPoint(r.left + r.width/2, r.top + r.height/2).find(e => !pill.contains(e));
-    pill.classList.toggle('pill--dark', !!under && !!under.closest('.after') && !under.closest('.filmblock'));
+    pill.classList.toggle('pill--dark', !!under && !!under.closest('.after') && !under.closest('.filmblock') && !under.closest('.concept'));   // stays light over the dark 'Inside Magasaka' section
     // the logo flips to ink over light sections. the nav slides out of view on scroll-down,
     // so hit-test its RESTING position (undo the nav's translate) or the probe lands off-screen
     const logo = document.querySelector('.nav__logo');
@@ -4074,7 +4074,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     };
     const show = (key, lines) => {
       if (opened || seen[key] || !box.hidden || document.hidden) return false;
-      if (phone() && coversText()) return false;
+      if (coversText()) return false;   // never on top of something being read or clicked (text, links, social icons)
       const pill = document.getElementById('pill');
       if (pill && (pill.dataset.state === 'form' || pill.classList.contains('pill--away'))) return false;
       if (document.documentElement.classList.contains('mf-open') || document.getElementById('flow')?.hidden === false) return false;
