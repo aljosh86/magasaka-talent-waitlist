@@ -1291,6 +1291,15 @@ html.mf-open{overscroll-behavior:none}
    change height when switching tabs. One fixed 3:2 frame for all four, pinned to the top. */
 .concept__shot img{aspect-ratio:3/2;object-fit:cover;object-position:top center}
 </style>
+<style>
+.flow__error{margin:0;color:#8b2525;font-size:15px;line-height:1.5;overflow-wrap:anywhere}
+.pill__error{position:absolute;bottom:calc(100% + 12px);left:0;right:0;margin:0;padding:14px 18px;border-radius:16px;background:var(--field-white);color:#8b2525;font-size:15px;line-height:1.5;box-shadow:0 6px 18px rgba(20,20,20,.12);overflow-wrap:anywhere}
+.flow__error[hidden],.pill__error[hidden]{display:none}
+.signup button:disabled,.pill__form button:disabled{opacity:.65;cursor:wait}
+.flow__panel[aria-busy="true"] .flow__select,.flow__panel[aria-busy="true"] .flow__chips,.flow__panel[aria-busy="true"] .flow__results{pointer-events:none}
+</style>
+<script src="waitlist-config.js"></script>
+<script src="waitlist-client.js"></script>
 </head>
 <body>
 <div id="loader" aria-hidden="true">
@@ -1685,8 +1694,9 @@ html.mf-open{overscroll-behavior:none}
       </div>
       <div class="flow__field">
         <p class="flow__label">First name</p>
-        <div class="flow__pill"><input id="flowName" type="text" autocomplete="given-name" placeholder="Your first name" aria-label="First name"></div>
+        <div class="flow__pill"><input id="flowName" type="text" autocomplete="given-name" placeholder="Your first name" aria-label="First name" maxlength="100" aria-describedby="flowNameError"></div>
         <button class="flow__btn" id="flowNameBtn" type="submit" disabled>Continue</button>
+        <p class="flow__error" id="flowNameError" role="alert" hidden></p>
       </div>
     </form>
   </section>
@@ -1709,6 +1719,7 @@ html.mf-open{overscroll-behavior:none}
           <span id="flowPicked">0 of 3 picked</span>
         </div>
         <button class="flow__btn" id="flowCardBtn" type="button" disabled>Get my card</button>
+        <p class="flow__error" id="flowCardError" role="alert" hidden></p>
       </div>
     </div>
   </section>
@@ -1719,7 +1730,7 @@ html.mf-open{overscroll-behavior:none}
         <img id="cardPhoto" src="images/card-photo.jpg" alt="" aria-hidden="true">
         <span class="wcard__veil" aria-hidden="true"></span>
         <span class="wcard__gloss" aria-hidden="true"></span>
-        <span class="wcard__no" id="cardNo">#1,248</span>
+        <span class="wcard__no" id="cardNo"></span>
         <span class="wcard__mark" aria-hidden="true"><svg aria-hidden="true" focusable="false" viewBox="0 0 155 20" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g clip-path="url(#clip0_6_249)">
 <path d="M4.84719 4.17437V20C2.009 18.8865 0 16.1241 0 12.8903V0H0.677564C2.98034 0 4.84956 1.86923 4.84956 4.17437H4.84719Z" fill="#EDECE8"/>
@@ -1763,7 +1774,7 @@ Marc!</h2>
             <input id="flowLink" readonly aria-label="Your share link">
             <button class="flow__copy" id="flowCopy" type="button"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M5.625 10.875C5.625 8.40015 5.625 7.16269 6.39385 6.39385C7.16269 5.625 8.40015 5.625 10.875 5.625C13.3498 5.625 14.5873 5.625 15.3562 6.39385C16.125 7.16269 16.125 8.40015 16.125 10.875C16.125 13.3498 16.125 14.5873 15.3562 15.3562C14.5873 16.125 13.3498 16.125 10.875 16.125C8.40015 16.125 7.16269 16.125 6.39385 15.3562C5.625 14.5873 5.625 13.3498 5.625 10.875Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.625 12.375C4.57766 12.375 4.054 12.375 3.63301 12.2277C2.87899 11.9639 2.28615 11.371 2.02231 10.617C1.875 10.196 1.875 9.6723 1.875 8.625V7.125C1.875 4.65013 1.875 3.41269 2.64385 2.64385C3.41269 1.875 4.65013 1.875 7.125 1.875H8.625C9.6723 1.875 10.196 1.875 10.617 2.02231C11.371 2.28615 11.9639 2.87899 12.2277 3.63301C12.375 4.054 12.375 4.57766 12.375 5.625" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Copy</span></button>
           </div>
-          <p class="flow__invite">Invites go out in batches. Share your link and jump the line.</p>
+          <p class="flow__invite">Invites go out in batches. Share your link and invite a friend.</p>
           <div class="flow__socials">
             <a id="shFacebook" href="#" target="_blank" rel="noopener" aria-label="Share on Facebook" title="Facebook"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M13.5 21v-7.6h2.6l.4-3h-3V8.5c0-.9.3-1.5 1.5-1.5h1.6V4.3c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 4v2.2H7.8v3h2.6V21z"/></svg></a>
             <a id="shMessenger" href="#" target="_blank" rel="noopener" aria-label="Share on Messenger" title="Messenger"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2.5c-5.3 0-9.5 3.9-9.5 9.1 0 2.7 1.1 5.1 3 6.8v3.1l2.9-1.6c1.1.3 2.3.5 3.6.5 5.3 0 9.5-3.9 9.5-9.1S17.3 2.5 12 2.5zm1 12.2-2.4-2.6-4.7 2.6 5.2-5.5 2.5 2.6 4.6-2.6z"/></svg></a>
@@ -1774,7 +1785,7 @@ Marc!</h2>
           <ol class="flow__next" aria-label="What happens next">
             <li><strong>You're on the list.</strong> We'll email you when your invite is ready.</li>
             <li><strong>Invites go out in batches</strong> before our launch in early 2027.</li>
-            <li><strong>The first 10,000 verified profiles</strong> become Founding Members.</li>
+            <li><strong>10,000 waitlist spots.</strong> Your email is not yet verified.</li>
           </ol>
           <a class="flow__read" href="#manifesto" data-flow-manifesto>While you wait, read why we're building Magasaka →</a>
         </div>
@@ -1784,6 +1795,7 @@ Marc!</h2>
 </div>
 
 <nav class="pill" id="pill" data-state="idle" aria-label="Sign up">
+  <p class="pill__error" id="pillError" role="alert" hidden></p>
   <div class="pill__slot">
     <button class="pill__join" id="pillJoin" type="button"><span>Join the waitlist</span></button>
     <form class="pill__form" id="pillForm" novalidate>
@@ -2299,18 +2311,28 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     });
   });
 
-  // waitlist form (no endpoint yet)
+  // Both email entry points wait for the backend before displaying signup success.
   const signup = document.getElementById('signup');
-  if (signup) signup.addEventListener('submit', e => {
+  if (signup) signup.addEventListener('submit', async e => {
     e.preventDefault();
     const input = signup.querySelector('input');
     let err = signup.parentElement.querySelector('.signup__err');
     if (!err){ err = document.createElement('p'); err.className = 'signup__err'; err.setAttribute('role','alert'); signup.insertAdjacentElement('afterend', err); }
     const v = input.value.trim();
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)){ err.textContent = 'That email does not look right.'; input.focus(); return; }
-    err.textContent = '';
-    input.value = '';
-    if (window.__mgJoin) window.__mgJoin(v);
+    const button = signup.querySelector('button');
+    if (button.disabled) return;
+    err.textContent = ''; input.setAttribute('aria-invalid', 'false');
+    button.disabled = true; signup.setAttribute('aria-busy', 'true');
+    try {
+      await window.__mgJoin(v);
+      input.value = '';
+    } catch (error) {
+      err.textContent = error.message;
+      input.setAttribute('aria-invalid', 'true');
+    } finally {
+      button.disabled = false; signup.removeAttribute('aria-busy');
+    }
   });
 
   // sections ease in as they come into view
@@ -2409,13 +2431,29 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       if (pill.dataset.state === 'form'){ e.stopImmediatePropagation(); setState('idle'); }
     }, true);
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && pill.dataset.state === 'form') setState('idle'); });
-    form.addEventListener('submit', e => {
+    form.addEventListener('submit', async e => {
       e.preventDefault();
       const v = email.value.trim();
-      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)){ email.focus(); send.textContent = 'Check email'; setTimeout(() => send.textContent = 'Join the waitlist', 1800); return; }
-      email.value = ''; setState('idle');
-      if (window.__mgJoin) window.__mgJoin(v);
+      const errorEl = document.getElementById('pillError');
+      errorEl.hidden = true; errorEl.textContent = '';
+      email.setAttribute('aria-describedby', 'pillError');
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)){
+        errorEl.textContent = 'Please enter a valid email address.'; errorEl.hidden = false;
+        email.setAttribute('aria-invalid', 'true'); email.focus(); return;
+      }
+      if (send.disabled) return;
+      email.setAttribute('aria-invalid', 'false');
+      send.disabled = true; send.textContent = 'Joining…'; form.setAttribute('aria-busy', 'true');
+      try {
+        await window.__mgJoin(v);
+        email.value = ''; setState('idle');
+      } catch (error) {
+        errorEl.textContent = error.message; errorEl.hidden = false;
+      } finally {
+        send.disabled = false; send.textContent = 'Join the waitlist'; form.removeAttribute('aria-busy');
+      }
     });
+    email.addEventListener('input', () => { document.getElementById('pillError').hidden = true; });
   })();
 
   // --- scroll-tied word-by-word reveal
@@ -2692,7 +2730,8 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
   (() => {
     const flow = document.getElementById('flow');
     if (!flow) return;
-    const STORE = 'mg-waitlist';
+    const api = window.MagasakaWaitlist;
+    const STORE = 'mg-waitlist-v2:' + (api ? api.apiUrl : location.origin);
     const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
     // starting category list from the brief; the search covers the niches, not just the category names
@@ -2732,13 +2771,27 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     const search = $('#flowSearch'), chipWrap = $('#flowChips'), results = $('#flowResults');
     const meta = $('#flowPicked'), cardBtn = $('#flowCardBtn');
 
-    let state = {email:'', name:'', title:'', picks:[], ref:'', no:0};
+    let state = {email:'', name:'', title:'', picks:[], ref:'', no:0, complete:false, referredBy:''};
     try { const raw = localStorage.getItem(STORE); if (raw) state = Object.assign(state, JSON.parse(raw)); } catch(e){}
+    if (!Array.isArray(state.picks)) state.picks = [];
     const save = () => { try { localStorage.setItem(STORE, JSON.stringify(state)); } catch(e){} };
 
-    // a stable early-access number and referral code, derived from the email until there is a backend
-    function hash(str){ let h = 2166136261; for (let i=0;i<str.length;i++){ h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return Math.abs(h); }
-    const shareUrl = () => location.origin + location.pathname + '?ref=' + state.ref;
+    const shareUrl = () => api.shareUrl(state.ref);
+    let joining = false, savingProfile = false;
+    const setError = (id, message = '') => {
+      const el = $(id); el.textContent = message; el.hidden = !message;
+    };
+    const setPanelBusy = (panel, busy) => {
+      if (busy) {
+        panel.setAttribute('aria-busy', 'true');
+        panel.querySelectorAll('button,input').forEach(el => { el.dataset.wasDisabled = String(el.disabled); el.disabled = true; });
+      } else {
+        panel.removeAttribute('aria-busy');
+        panel.querySelectorAll('[data-was-disabled]').forEach(el => { el.disabled = el.dataset.wasDisabled === 'true'; delete el.dataset.wasDisabled; });
+      }
+      $('#flowEdit').disabled = busy;
+    };
+    nameInput.maxLength = 100; search.maxLength = 80;
 
     let flowStep = 0;
     function show(i){
@@ -2772,13 +2825,19 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     });
 
     // --- step 2: first name
-    nameInput.addEventListener('input', () => { nameBtn.disabled = !nameInput.value.trim(); });
-    $('#flowNameForm').addEventListener('submit', e => {
+    nameInput.addEventListener('input', () => { nameBtn.disabled = !nameInput.value.trim(); setError('#flowNameError'); });
+    $('#flowNameForm').addEventListener('submit', async e => {
       e.preventDefault();
       const v = nameInput.value.trim();
-      if (!v) return;
-      state.name = v; save();
-      show(1); setTimeout(() => search.focus({preventScroll:true}), 220);
+      if (!v || savingProfile) return;
+      savingProfile = true; setError('#flowNameError');
+      const panel = $('#flowNameForm'); setPanelBusy(panel, true); nameBtn.textContent = 'Saving…';
+      try {
+        const saved = await api.saveName(state.email, v);
+        state.name = saved.name; state.no = saved.no; state.ref = saved.ref; save();
+        show(1); setTimeout(() => search.focus({preventScroll:true}), 220);
+      } catch (error) { setError('#flowNameError', error.message); }
+      finally { savingProfile = false; setPanelBusy(panel, false); nameBtn.textContent = 'Continue'; }
     });
 
     // --- step 3a: the title, from an animated dropdown
@@ -2898,16 +2957,21 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     search.addEventListener('keydown', e => {
       if (e.key === 'Enter'){ e.preventDefault(); const first = results.querySelector('.flow__row'); if (first) first.click(); }
     });
-    cardBtn.addEventListener('click', () => { if (state.title && state.picks.length) buildCard(); });
+    cardBtn.addEventListener('click', async () => {
+      if (!state.title || !state.picks.length || savingProfile) return;
+      savingProfile = true; setError('#flowCardError');
+      const panel = cardBtn.closest('.flow__panel'); setPanelBusy(panel, true); cardBtn.textContent = 'Saving…';
+      try {
+        state = {...state, ...await api.complete(state)}; save(); buildCard();
+      } catch (error) { setError('#flowCardError', error.message); }
+      finally {
+        savingProfile = false; setPanelBusy(panel, false); cardBtn.textContent = 'Get my card'; renderChips();
+      }
+    });
 
     // --- step 4: the card and the share link
     function buildCard(){
-      if (!state.no){
-        const h = hash(state.email || state.name);
-        state.no = 1000 + (h % 9000);
-        state.ref = (state.name.toLowerCase().replace(/[^a-z0-9]/g,'') || 'talent') + state.no;
-        save();
-      }
+      if (!state.complete || !Number.isInteger(state.no) || state.no < 1 || state.no > 10000 || !state.ref) return;
       $('#cardName').textContent = state.name;
       $('#cardNo').textContent = '#' + state.no.toLocaleString('en-US');
       $('#cardTitle').textContent = state.title;
@@ -2982,10 +3046,11 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       a.click();
     });
 
-    // whoever referred this visitor, ready for the waitlist record (?ref=marc1248)
+    // Capture referral attribution for a new signup. The server resolves valid codes.
+    let incomingReferral = '';
     try {
       const ref = new URLSearchParams(location.search).get('ref');
-      if (ref && !state.referredBy){ state.referredBy = ref; save(); }
+      if (ref && /^[a-zA-Z0-9_-]{1,64}$/.test(ref)) incomingReferral = ref;
     } catch(e){}
 
     // the card in 3D: a mouse tilts it on hover; on touch it drifts on its own and tilts under a finger.
@@ -3040,8 +3105,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     })();
 
     // --- entry points: both waitlist forms hand off to the flow
-    // NOTE for the dev: there is no endpoint yet, so the record below is kept in localStorage.
-    // The waitlist row needs: email, name, picks[], ref (their own code), referredBy (who sent them).
+    // localStorage keeps drafts and a private browser key; the database is authoritative.
     function startFlow(step){
       open(step);
       nameInput.value = state.name || '';
@@ -3049,15 +3113,19 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       search.value = ''; setBrowse(false);
       renderTitle(); renderChips(); renderResults();
     }
-    window.__mgJoin = function(email){
-      const same = state.email && state.email.toLowerCase() === email.toLowerCase();
-      if (!same){                                  // a different email is a different person: start over
-        state = {email:email, name:'', picks:[], ref:'', no:0, referredBy:state.referredBy};
-        save(); startFlow(0); return;
-      }
-      state.email = email; save();
-      if (state.name && state.title && state.picks.length){ buildCard(); open(2); return; }   // already on the list: show their card again
-      startFlow(state.name ? 1 : 0);
+    window.__mgJoin = async function(email){
+      if (!api) throw new Error('Signups are temporarily unavailable. Please reload the page and try again.');
+      if (joining || savingProfile) throw new Error('Your details are being saved. Please wait a moment.');
+      joining = true;
+      try {
+        const saved = await api.join(email, incomingReferral);
+        const same = state.email && state.email.toLowerCase() === saved.email;
+        const draft = same && !saved.complete ? {title:state.title, picks:state.picks} : {};
+        state = {...saved, ...draft}; save();
+        setError('#flowNameError'); setError('#flowCardError');
+        if (saved.complete){ buildCard(); open(2); return; }
+        startFlow(state.name ? 1 : 0);
+      } finally { joining = false; }
     };
     // a way back into the steps from the card
     // Back: card -> title & skills, skills -> name
