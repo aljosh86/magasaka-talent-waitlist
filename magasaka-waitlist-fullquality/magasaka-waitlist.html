@@ -4082,7 +4082,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
 </script>
 
 <script>
-  // farm sounds: a calm 67s loop from "Tunog ng BUKID | Sound of FARM" (used with the owner's OK), on by default (the button turns it off, and that choice is remembered).
+  // farm sounds: a calm 72s loop, with one rooster crow, from "Tunog ng BUKID | Sound of FARM" (used with the owner's OK), on by default (the button turns it off, and that choice is remembered).
   // Browsers only allow sound after a tap, click or key press, so it fades in on the first one.
   (() => {
     const btn = document.getElementById('soundBtn');
@@ -4106,7 +4106,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       fadeT = requestAnimationFrame(step);
     };
     const play = () => {
-      if (!audio){ audio = new Audio('audio/bukid.mp3'); audio.loop = true; audio.preload = 'auto'; audio.volume = 0; }
+      if (!audio){ audio = new Audio('audio/bukid.mp3?v=2'); audio.loop = true; audio.preload = 'auto'; audio.volume = 0; }
       return audio.play().then(() => { set(true); fade(VOL, 1600); }, () => set(false));
     };
     const stop = () => { set(false); if (audio) fade(0, 500, () => audio.pause()); };
