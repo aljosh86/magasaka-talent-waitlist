@@ -1868,7 +1868,6 @@ Marc!</h2>
             <li><strong>Invites go out in batches</strong> before our launch in early 2027.</li>
             <li><strong>10,000 waitlist spots.</strong> Your email is not yet verified.</li>
           </ol>
-          <a class="flow__read" href="#manifesto" data-flow-manifesto>While you wait, read why we're building Magasaka →</a>
         </div>
       </div>
     </div>
@@ -3998,15 +3997,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     btn.addEventListener('click', () => { opened = true; seen.opened = 1; save(); hide(); });
   })();
 </script>
-<script>
-  document.querySelectorAll('[data-flow-manifesto]').forEach(a => a.addEventListener('click', e => {
-    e.preventDefault(); e.stopImmediatePropagation();
-    const flow = document.getElementById('flow');
-    const x = flow && document.getElementById('flowClose');
-    if (x) x.click();
-    setTimeout(() => window.__mgManifesto && window.__mgManifesto(), 450);
-  }, true));
-</script>
+
 <script>
   // calm music: a slow 78s loop (soft piano, airy pads, a distant bamboo flute), on by default (the button turns it off, and that choice is remembered).
   // Browsers only allow sound after a tap, click or key press, so it fades in on the first one.
