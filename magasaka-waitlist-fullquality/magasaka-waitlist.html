@@ -3693,41 +3693,20 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     function close(){ box.hidden = true; btn.setAttribute('aria-expanded', 'false'); }
     // soft sounds, synthesised on the spot; only ever after someone has tapped him
     let ac = null;
-    // a spry old man's voice: a bright buzzy tone with a quick shake, a little breath, shaped into a vowel.
-    // pts = [time, loudness 0..1, pitch Hz]; vowel = formants [Hz, Q, gain]
-    const O = [[520, 5, 1], [950, 6, .5], [2500, 8, .15]], E = [[480, 5, 1], [1850, 8, .45], [2600, 8, .2]];
-    const voice = (pts, len, vowel) => {
-      const t0 = ac.currentTime + .01, out = ac.createGain(), vol = .12;
-      out.gain.setValueAtTime(0, t0);
-      pts.forEach(([at, v]) => out.gain.linearRampToValueAtTime(v * vol, t0 + at));
-      out.gain.linearRampToValueAtTime(0, t0 + len);
-      const o = ac.createOscillator(); o.type = 'sawtooth';
-      o.frequency.setValueAtTime(pts[0][2], t0);
-      pts.forEach(([at, , f]) => o.frequency.linearRampToValueAtTime(f, t0 + at));
-      const wob = ac.createOscillator(), wobAmt = ac.createGain();      // the quick shake of an older voice
-      wob.frequency.value = 7; wobAmt.gain.value = 4; wob.connect(wobAmt).connect(o.frequency);
-      const n = ac.createBufferSource(), buf = ac.createBuffer(1, ac.sampleRate * len | 0, ac.sampleRate), d = buf.getChannelData(0);
-      for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
-      n.buffer = buf; const breath = ac.createGain(); breath.gain.value = .08;
-      const mix = ac.createGain(); o.connect(mix); n.connect(breath).connect(mix);
-      const low = ac.createBiquadFilter(); low.type = 'lowpass'; low.frequency.value = 3200; low.Q.value = .5;
-      mix.connect(low);
-      vowel.forEach(([f, q, g]) => {
-        const bp = ac.createBiquadFilter(), bg = ac.createGain();
-        bp.type = 'bandpass'; bp.frequency.value = f; bp.Q.value = q; bg.gain.value = g;
-        low.connect(bp).connect(bg).connect(out);
-      });
-      out.connect(ac.destination);
-      [o, wob, n].forEach(x => { x.start(t0); x.stop(t0 + len + .05); });
+    const tone = (freq, at, len, vol, type, drop) => {
+      const o = ac.createOscillator(), g = ac.createGain(), t = ac.currentTime + at;
+      o.type = type; o.frequency.setValueAtTime(freq, t);
+      if (drop) o.frequency.exponentialRampToValueAtTime(freq * drop, t + len);
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + .008); g.gain.exponentialRampToValueAtTime(.0001, t + len);
+      o.connect(g).connect(ac.destination); o.start(t); o.stop(t + len + .02);
     };
     const sound = kind => {
       if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       try {
         ac = ac || new (window.AudioContext || window.webkitAudioContext)();
         if (ac.state === 'suspended') ac.resume();
-        if (kind === 'poke') voice([[0, 0, 150], [.02, 1, 175], [.09, 1, 215], [.17, .6, 190]], .22, O);   // "oy!"
-        else voice([[0, 0, 200], [.015, 1, 205], [.07, .8, 195], [.09, 0, 190], [.13, 0, 215], [.145, 1, 220], [.2, .8, 205],
-                    [.22, 0, 200], [.26, 0, 225], [.275, .9, 230], [.36, .5, 200]], .4, E);                   // "he-he-he!"
+        if (kind === 'poke'){ tone(520, 0, .12, .05, 'sine', .55); tone(1040, 0, .05, .012, 'triangle', .6); }
+        else { tone(880, 0, .35, .022, 'sine'); tone(1320, .09, .45, .016, 'sine'); }
       } catch(e){}
     };
     window.__mgJuanSound = sound;
