@@ -1394,10 +1394,13 @@ html.mf-open{overscroll-behavior:none}
 <style>
 /* phone: "Inside Magasaka" is exactly one screen tall, the screenshot sitting on the bottom edge */
 @media (max-width:640px){
-  .concept{min-height:100svh;display:flex;flex-direction:column;box-sizing:border-box;padding-top:max(96px,calc(env(safe-area-inset-top,0px) + 84px))}
-  .concept__inner{flex:1;display:flex;flex-direction:column}
-  .concept__shot{flex:1;min-height:300px;display:flex;flex-direction:column}
-  .concept__shot img.shot{flex:1;height:100%;aspect-ratio:auto;object-fit:cover;object-position:left top}
+  /* one screen tall, everything centred in it: all four tabs fit across, and the whole app screen shows (not a zoomed crop) */
+  .concept{min-height:100svh;display:flex;flex-direction:column;justify-content:center;box-sizing:border-box;padding:84px 0 48px}
+  .concept__inner{display:flex;flex-direction:column}
+  .tabs{margin-top:36px;padding:0 16px;justify-content:space-between;overflow:visible}
+  .tab{flex:1 1 0;width:auto;max-width:none;min-width:0;height:34px;padding:0 2px;font-size:14px;white-space:nowrap}
+  .concept__shot{position:relative;left:auto;width:auto;max-width:none;margin:28px 16px 0 !important;border-width:5px;border-bottom:5px solid rgba(237,236,232,.2);border-radius:14px}
+  .concept__shot img.shot{width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;object-position:left top}
 }
 </style>
 <style>
