@@ -1410,6 +1410,17 @@ html.mf-open{overscroll-behavior:none}
 .faq__q{-webkit-tap-highlight-color:transparent}
 </style>
 <style>.faq__item.is-instant .faq__a,.faq__item.is-instant .faq__a *,.faq__item.is-instant .faq__icon{transition:none!important}</style>
+<style>
+/* "What freelancers deal with today": a live sky (shader-sky.js) held behind the section while it is pinned.
+   Pale palette so the dark text stays readable; it melts into the page colour at the top and bottom edges. */
+.psky{position:sticky;top:0;z-index:0;display:block;width:100vw;height:100vh;height:100lvh;margin:0 0 -100vh calc(50% - 50vw);margin-bottom:-100lvh;
+  overflow:hidden;pointer-events:none;background:linear-gradient(180deg,#6fa6d6 0%,#a9cbe6 55%,#dce9f1 100%)}
+.psky canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.psky::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(62% 46% at 50% 52%,rgba(244,245,243,.55),rgba(244,245,243,0) 72%),
+    linear-gradient(180deg,var(--field-white) 0%,rgba(237,236,232,0) 14%,rgba(237,236,232,0) 86%,var(--field-white) 100%)}
+.pstage .problem{z-index:1}
+</style>
 <script src="waitlist-config.js"></script>
 <script src="waitlist-client.js"></script>
 </head>
@@ -4214,6 +4225,29 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
         }
       }, 160);
     }, {passive:true});
+  })();
+</script>
+<script src="shader-sky.js"></script>
+<script>
+  // a sky behind "What freelancers deal with today", once that section has been set up as a pinned stage
+  (() => {
+    if (!window.createShaderSky) return;
+    let tries = 0;
+    const mount = () => {
+      const stage = document.querySelector('.pstage');
+      if (!stage){ if (++tries < 40) setTimeout(mount, 250); return; }
+      if (stage.querySelector('.psky')) return;
+      const sky = document.createElement('div'); sky.className = 'psky'; sky.setAttribute('aria-hidden', 'true');
+      const canvas = document.createElement('canvas'); sky.appendChild(canvas);
+      stage.insertBefore(sky, stage.firstChild);
+      const phone = matchMedia('(max-width: 640px)').matches;
+      window.createShaderSky(canvas, {
+        colors: ['#6FA6D6', '#DCE9F1', '#FFFFFF', '#BFCEDC'],   // soft zenith blue, pale horizon, white cloud, cool shade
+        speed: 0.1, coverage: 0.5, intensity: 0.9, amount: 0.5, scale: 0.4, variation: 0.7,
+        maxPixels: phone ? 200000 : 720000                       // the cloud march is heavy; phones render fewer pixels
+      });
+    };
+    mount();
   })();
 </script>
 </body>
