@@ -1483,7 +1483,7 @@ body:has(.pill.pill--away) .juan-say{display:none}
 <style>
 /* the drawing under the letter, in the same ink (desktop has it in the letter photo itself) */
 .mf__drawing{display:none}
-@media (max-width:640px){.mf__text .mf__drawing{display:block;width:100%;height:auto;margin:1.6em 0 0;mix-blend-mode:multiply}}
+@media (max-width:640px){.mf__text .mf__drawing{display:inline-block;width:auto;height:4.4em;margin:0 0 0 .7em;vertical-align:middle;mix-blend-mode:multiply}}
 </style>
 <script src="waitlist-config.js"></script>
 <script src="waitlist-client.js"></script>
@@ -3426,7 +3426,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     <div class="mf__sheet" id="mfSheet">
       <div class="mf__scroll" tabindex="-1">
         <span class="mf__creases" aria-hidden="true"></span>
-        <img class="mf__photo" src="images/manifesto-letter-drawing.jpg" width="1414" height="3401" alt="" decoding="async" loading="lazy">
+        <img class="mf__photo" src="images/manifesto-letter-drawing.jpg?v=2" width="1414" height="2552" alt="" decoding="async" loading="lazy">
         <!-- phones: the same letter as real text in a hand font, so the lines are short enough to read -->
         <div class="mf__text" aria-hidden="true">
           <p>My parents are farmers.</p>
@@ -3442,8 +3442,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
           <p>For me, that responsibility reaches back to the farms.</p>
           <p>In the future, we will share a portion of what Magasaka earns to support farmers and the wider Philippine agricultural sector. We will hold ourselves to this promise, alongside our commitments to talent and businesses, as Magasaka grows.</p>
           <p>Families like mine are part of why Magasaka exists. I want them to share in what it makes possible.</p>
-          <p class="mf__sign">- Marc</p>
-          <img class="mf__drawing" src="images/manifesto-drawing.webp" width="760" height="571" alt="A pen drawing of a nipa hut, a coconut tree, rice fields, mountains, birds and a smiling sun" loading="lazy" decoding="async">
+          <p class="mf__sign">- Marc <img class="mf__drawing" src="images/manifesto-drawing.webp?v=2" width="300" height="225" alt="a little pen drawing of a nipa hut, a coconut tree, rice fields, mountains, birds and a smiling sun" loading="lazy" decoding="async"></p>
         </div>
       </div>
       <button class="mf__close" type="button" aria-label="Close the manifesto" data-mf-close><svg width="16" height="16" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M16.5 5.5L5.50074 16.4993M16.4993 16.5L5.5 5.50078" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
