@@ -1487,6 +1487,7 @@ body:has(.pill.pill--away) .juan-say{display:none}
 </style>
 <style>
 /* Inside Magasaka: the cards in the Opportunity screen can be tapped. Each card is a copy of its own pixels that lifts off the screenshot */
+@supports (overflow:clip){.concept{overflow:clip}}   /* tapping a card focuses it; hidden would let the section slide sideways to show it */
 .hots{position:absolute;inset:0;z-index:2;opacity:0;visibility:hidden;transition:opacity .4s ease,visibility 0s .4s}
 .hots.is-on{opacity:1;visibility:visible;transition:opacity .4s ease .2s,visibility 0s}
 .hots__dim{position:absolute;inset:0;background:rgba(18,22,18,.28);opacity:0;transition:opacity .45s ease;pointer-events:none}
@@ -4458,6 +4459,8 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     window.__mgShotHold = true;   // the tabs stop turning while a card is open
   };
   hots.forEach(b => b.addEventListener('click', e => { e.stopPropagation(); open(b); }));
+  const sec = shot.closest('.concept');
+  wrap.addEventListener('focusin', () => { if (sec && sec.scrollLeft) sec.scrollLeft = 0; });
   wrap.addEventListener('click', close);
   document.addEventListener('click', e => { if (active && !shot.contains(e.target)) close(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && active) { const b = active; close(); b.focus(); } });
