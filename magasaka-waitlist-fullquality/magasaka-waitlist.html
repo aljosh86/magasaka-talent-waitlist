@@ -1345,14 +1345,7 @@ html.mf-open{overscroll-behavior:none}
    (shape from Natural Earth, rendered on Higgsfield) */
 .flow__map{position:fixed;z-index:-1;left:72%;top:26%;width:min(138vh,110vw);aspect-ratio:1200/1607;pointer-events:none;
   transform:translate(-50%,-50%) perspective(550px) rotateX(70deg) rotateY(5deg) rotateZ(51deg);transform-style:preserve-3d}
-.flow__map-img{position:absolute;inset:0;background:url(images/ph-map.webp?v=3) center/contain no-repeat;opacity:.16;transition:opacity 1.2s ease}
-.flow__map{transition:left 1.4s cubic-bezier(.22,1,.36,1),top 1.4s cubic-bezier(.22,1,.36,1),width 1.4s cubic-bezier(.22,1,.36,1),transform 1.4s cubic-bezier(.22,1,.36,1)}
-/* on the card screen the whole country swings over to the free space on the right, so their signal can be seen */
-@media (min-width:1100px){
-  .flow.is-done .flow__map{left:86%;top:52%;width:66vh;transform:translate(-50%,-50%) perspective(1400px) rotateX(50deg) rotateZ(14deg)}
-  .flow.is-done .flow__map-img{opacity:.35}
-}
-@media (prefers-reduced-motion: reduce){.flow__map,.flow__map-img{transition:none}}
+.flow__map-img{position:absolute;inset:0;background:url(images/ph-map.webp?v=3) center/contain no-repeat;opacity:.16}
 /* the member's signal on the map: a dot with rings spreading out over the ground */
 .flow__ping{position:absolute;width:0;height:0}
 .flow__ping::before{content:"";position:absolute;left:-9px;top:-9px;width:18px;height:18px;border-radius:50%;background:#4f7a36;
@@ -2900,7 +2893,6 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       stepLabel.textContent = 'Step ' + Math.min(i + 2, 3) + ' of 3';
       top.classList.toggle('is-done', i === 2);
       top.dataset.step = i; flowStep = i;
-      flow.classList.toggle('is-done', i === 2);
       flow.scrollTop = 0;
     }
     function open(step){
@@ -2942,7 +2934,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       if (!hit){ ping.hidden = true; return; }
       ping.style.left = (hit[1] * 100) + '%'; ping.style.top = (hit[2] * 100) + '%';
       ping.hidden = false;
-      setTimeout(() => ping.classList.add('is-live'), 1300);   // once the map has settled
+      setTimeout(() => ping.classList.add('is-live'), 700);
     }
 
     // --- step 2: first name
