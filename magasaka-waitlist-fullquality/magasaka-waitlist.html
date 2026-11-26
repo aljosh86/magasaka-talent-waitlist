@@ -2410,10 +2410,19 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     item.querySelector('.faq__q').setAttribute('aria-expanded', String(open));
   };
   faqItems.forEach(item => {
-    item.querySelector('.faq__q').addEventListener('click', () => {
+    const q = item.querySelector('.faq__q');
+    q.addEventListener('click', () => {
       const open = item.dataset.open !== 'true';
+      // keep the tapped question where it is while an answer above it folds away (otherwise it jumps up under your finger)
+      const y0 = q.getBoundingClientRect().top, until = performance.now() + 480;
+      const hold = () => {
+        const d = q.getBoundingClientRect().top - y0;
+        if (Math.abs(d) > .5) window.scrollTo({top: scrollY + d, behavior: 'instant'});
+        if (performance.now() < until) requestAnimationFrame(hold);
+      };
       if (open) faqItems.forEach(other => { if (other !== item) setFaq(other, false); });
       setFaq(item, open);
+      requestAnimationFrame(hold);
     });
   });
 
