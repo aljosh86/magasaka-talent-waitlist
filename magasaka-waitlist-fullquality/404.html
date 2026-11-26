@@ -8,7 +8,7 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="preload" href="/images/404/farm.webp" as="image">
+
 <meta name="theme-color" content="#eee1d8">
 <style>
 :root{--ink:#141414;--bg:#eee1d8;--font:"Inter Display","Inter",-apple-system,"Segoe UI",Helvetica,Arial,sans-serif}
@@ -31,14 +31,10 @@ header{position:absolute;left:0;top:0;z-index:2;padding:calc(env(safe-area-inset
 h1{margin:0;font-weight:500;font-size:clamp(32px,4.2vw,58px);line-height:1.04;letter-spacing:-.03em}
 footer{position:absolute;left:0;right:0;bottom:0;z-index:2;text-align:center;padding:0 20px calc(env(safe-area-inset-bottom,0px) + 18px);color:rgba(255,255,255,.85);font-size:13px;text-shadow:0 1px 6px rgba(0,0,0,.35)}
 footer a{color:inherit}
-/* tall screens: the field is shown as a wide band in the middle, fading into the page colour above and below */
 @media (max-aspect-ratio: 1/1){
-  .stage{inset:auto;left:50%;top:50%;width:190vw;aspect-ratio:2200/943;transform:translate(-50%,-44%)}
-  .stage canvas{-webkit-mask-image:linear-gradient(180deg,transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(180deg,transparent,#000 14%,#000 86%,transparent)}
-  .page::after{display:none}
-  .head{top:auto;bottom:calc(50% + 34vw)}
+  .page::after{height:30%}
+  .head{top:max(84px,11vh)}
   h1{font-size:32px}
-  footer{color:#a89c90;text-shadow:none}
 }
 </style>
 </head>
@@ -88,9 +84,11 @@ footer a{color:inherit}
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const SHEET = {h: 300, frames: [[0, 288], [292, 272], [568, 331], [903, 301], [1208, 307], [1519, 240], [1763, 302], [2069, 284]]};
     // the water's corners in the photo, as fractions of its width and height: far-left, far-right, near-right, near-left
-    const Q = [[.363, .174], [.615, .174], [.747, .872], [.249, .872]];
+    // two framings of the same scene: wide for landscape screens, tall for phones held upright
+    const TALL = matchMedia('(max-aspect-ratio: 1/1)').matches;
+    const Q = TALL ? [[.242, .296], [.780, .296], [.918, .714], [.082, .714]] : [[.363, .174], [.615, .174], [.747, .872], [.249, .872]];
     const photo = new Image(), sheet = new Image();
-    photo.src = '/images/404/farm.webp'; sheet.src = '/images/404/seedlings.webp';
+    photo.src = TALL ? '/images/404/farm-tall.webp' : '/images/404/farm.webp'; sheet.src = '/images/404/seedlings.webp';
     let W = 0, H = 0, dpr = 1, raf = 0, visible = true, ready = 0, planted = 0, dx = 0, dy = 0, dw = 0, dh = 0;
     const seeds = [], ripples = [], mouse = {x: -9999, y: -9999};
 
@@ -116,8 +114,8 @@ footer a{color:inherit}
     function layout(){
       const r = cv.getBoundingClientRect(); dpr = Math.min(devicePixelRatio || 1, 2);
       W = r.width; H = r.height; cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
-      const iw = photo.naturalWidth || 2200, ih = photo.naturalHeight || 943, k = Math.max(W / iw, H / ih);
-      dw = iw * k; dh = ih * k; dx = (W - dw) / 2; dy = (H - dh) * .62;
+      const iw = photo.naturalWidth || (TALL ? 1000 : 2200), ih = photo.naturalHeight || (TALL ? 1768 : 943), k = Math.max(W / iw, H / ih);
+      dw = iw * k; dh = ih * k; dx = (W - dw) / 2; dy = (H - dh) * (TALL ? .5 : .62);
       M = homography(Q.map(([x, y]) => [dx + x * dw, dy + y * dh])); Minv = invert(M);
       nearW = apply(M, 1, 1)[0] - apply(M, 0, 1)[0];
     }
@@ -196,6 +194,7 @@ footer a{color:inherit}
     cv.addEventListener('pointerleave', () => { mouse.x = mouse.y = -9999; kick(); });
 
     new ResizeObserver(() => { layout(); kick(); }).observe(cv);
+    matchMedia('(max-aspect-ratio: 1/1)').addEventListener('change', () => location.reload());
     new IntersectionObserver(([en]) => { visible = en.isIntersecting; if (visible) kick(); }).observe(cv);
     document.addEventListener('visibilitychange', () => { visible = !document.hidden; if (visible) kick(); });
     layout();
