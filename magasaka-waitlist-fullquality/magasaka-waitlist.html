@@ -3955,7 +3955,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
   (() => {
     const btn = document.getElementById('soundBtn');
     if (!btn) return;
-    const KEY = 'mg-ambience', VOL = .35;
+    const KEY = 'mg-ambience', VOL = .2;
     let audio = null, want = false, fadeT = 0;
     want = true;
     try { want = localStorage.getItem(KEY) !== 'off'; } catch(e){}
@@ -3984,12 +3984,16 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       want ? play() : stop();
     });
     if (want){
+      // try right away (allowed for visitors the browser already trusts with sound); otherwise start on the first tap, click or key
+      const EVENTS = ['pointerdown','pointerup','touchend','click','keydown'];
       const first = e => {
         if (e.target.closest && e.target.closest('#soundBtn')) return;
-        removeEventListener('pointerdown', first, true); removeEventListener('keydown', first, true);
-        if (want) play();
+        if (!want || btn.getAttribute('aria-pressed') === 'true') return done();
+        play().then(() => { if (btn.getAttribute('aria-pressed') === 'true') done(); });
       };
-      addEventListener('pointerdown', first, true); addEventListener('keydown', first, true);
+      const done = () => EVENTS.forEach(ev => removeEventListener(ev, first, true));
+      EVENTS.forEach(ev => addEventListener(ev, first, true));
+      play().then(() => { if (btn.getAttribute('aria-pressed') === 'true') done(); });
     }
     // quiet when the tab is hidden, back when it returns
     document.addEventListener('visibilitychange', () => {
