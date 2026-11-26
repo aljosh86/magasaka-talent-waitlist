@@ -1489,6 +1489,9 @@ body:has(.pill.pill--away) .juan-say{display:none}
 /* Inside Magasaka: click an app screen and it grows to fill the screen */
 .concept__shot.is-zoomable{cursor:zoom-in}
 @media (hover:hover){.concept__shot.is-zoomable .shot{transition:opacity .6s ease,transform .7s cubic-bezier(.22,1,.36,1)}.concept__shot.is-zoomable:hover .shot{transform:scale(1.008)}}
+html.szoom-on .pill{opacity:0;transform:translate(-50%,16px);pointer-events:none;transition:opacity .45s ease,transform .6s cubic-bezier(.22,1,.36,1)}
+html.szoom-on .juan,html.szoom-on .juan-say{opacity:0;transform:translateY(16px);pointer-events:none;transition:opacity .45s ease,transform .6s cubic-bezier(.22,1,.36,1)}
+html.szoom-off .pill,html.szoom-off .juan,html.szoom-off .juan-say{transition:opacity .5s ease .15s,transform .7s cubic-bezier(.22,1,.36,1) .15s}
 .szoom{position:fixed;inset:0;z-index:200;display:grid;place-items:center;cursor:zoom-out;visibility:hidden;touch-action:none}
 .szoom.is-open{visibility:visible}
 .szoom__bg{position:absolute;inset:0;background:rgba(12,14,12,.84);opacity:0;will-change:opacity}
@@ -4410,7 +4413,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
   document.body.appendChild(box);
   const bg = box.querySelector('.szoom__bg'), pan = box.querySelector('.szoom__pan'), frame = box.querySelector('.szoom__frame'), img = box.querySelector('.szoom__img'), x = box.querySelector('.szoom__x');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)'), phone = matchMedia('(max-width:640px)');
-  let open = false, busy = false, anims = [], shift = 0;
+  let open = false, busy = false, anims = [], shift = 0, offT = 0;
   const cur = () => tabs.find(t => t.getAttribute('aria-selected') === 'true') || tabs[0];
   const srcOf = t => (t.dataset.shot || '').split(',')[0];
   // decode each big picture before it is needed, so the first frames of the zoom are not spent loading it
@@ -4455,6 +4458,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
   const show = () => {
     if (open || busy) return;
     open = busy = true; window.__mgShotHold = true;
+    clearTimeout(offT); document.documentElement.classList.remove('szoom-off'); document.documentElement.classList.add('szoom-on');   // the pill and Mang Juan fade away while it is open
     prep().then(() => {
       box.classList.add('is-open');
       const base = R(frame.getBoundingClientRect()), sm = small();
@@ -4476,6 +4480,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     const now = R(frame.getBoundingClientRect());        // where it is now, even if slid sideways on a phone
     const room = pan.scrollWidth - pan.clientWidth, frac = phone.matches && room > 0 ? pan.scrollLeft / room : 0;
     box.classList.remove('is-settled', 'is-shown');
+    document.documentElement.classList.replace('szoom-on', 'szoom-off'); offT = setTimeout(() => document.documentElement.classList.remove('szoom-off'), 900);
     const base = R(frame.getBoundingClientRect());       // leaving the slide resets it; animate from where it was
     if (phone.matches) setShift(Math.round(slideMax() * frac));
     const sm = small();
