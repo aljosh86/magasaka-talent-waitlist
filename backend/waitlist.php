@@ -11,10 +11,17 @@ final class WaitlistError extends RuntimeException
 
 const WAITLIST_CAPACITY = 10000;
 const WAITLIST_TITLES = [
-    'Virtual Assistant', 'Customer Support Specialist', 'Sales & Lead Generation Specialist',
-    'Marketer', 'Designer & Creative', 'Writer & Translator', 'Developer', 'Data & AI Specialist',
-    'Bookkeeper & Accountant', 'E-commerce Specialist', 'HR & Recruitment Specialist', 'Engineer & Drafter',
-    'Healthcare Professional', 'Educator', 'Legal Assistant',
+    'Virtual Assistant', 'Executive Assistant', 'Project Manager', 'Data Entry Specialist',
+    'Customer Support Specialist', 'Technical Support Specialist', 'Community Manager',
+    'Sales & Lead Generation Specialist', 'Appointment Setter', 'Digital Marketer', 'Social Media Manager',
+    'SEO Specialist', 'Graphic Designer', 'Video Editor', 'Motion Designer', 'Illustrator', 'Photographer',
+    'Voice Over Artist', 'Content Writer', 'Copywriter', 'Editor & Proofreader', 'Translator',
+    'Web Developer', 'Software Developer', 'Mobile App Developer', 'UI/UX Designer', 'QA Tester',
+    'IT Support Specialist', 'System Administrator', 'DevOps Engineer', 'Data Analyst',
+    'AI & Data Specialist', 'Automation Specialist', 'Bookkeeper', 'Accountant', 'Consultant', 'Recruiter',
+    'HR Specialist', 'Engineer', 'Architect', 'CAD Drafter', 'Paralegal', 'Legal Assistant',
+    'E-commerce Specialist', 'Medical Virtual Assistant', 'Healthcare Professional', 'Online Teacher',
+    'Tutor',
 ];
 
 function waitlist_text(mixed $value, int $maxLength, string $label): string

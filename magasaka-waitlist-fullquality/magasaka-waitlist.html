@@ -1290,6 +1290,9 @@ html.mf-open{overscroll-behavior:none}
 /* Inside Magasaka: two of the four screenshots are 24px narrower (3048 vs 3072), which made the frame
    change height when switching tabs. One fixed 3:2 frame for all four, pinned to the top. */
 .concept__shot img{aspect-ratio:3/2;object-fit:cover;object-position:top center}
+.flow__optgroup{margin:10px 14px 4px;font:500 11px/1.2 var(--font);letter-spacing:.06em;text-transform:uppercase;color:#9a9a94;
+  animation:dd-row .4s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(var(--i,0) * 18ms)}
+.flow__optgroup:first-child{margin-top:6px}
 </style>
 <style>
 .flow__error{margin:0;color:#8b2525;font-size:15px;line-height:1.5;overflow-wrap:anywhere}
@@ -2735,30 +2738,43 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
     // starting category list from the brief; the search covers the niches, not just the category names
+    // categories and niches follow Upwork's, plus the remote work Filipino talent does most (e-commerce, healthcare, teaching)
     const CATS = {
-      'Admin & Virtual Assistance': ['General VA','Executive Assistant','Data Entry','Project Management','Real Estate VA'],
-      'Customer Support': ['Chat & Email Support','Phone Support','Technical Support'],
-      'Sales & Lead Generation': ['Appointment Setting','Cold Calling','Lead Research'],
-      'Marketing': ['Social Media Management','Community Management','SEO','Paid Ads','Email Marketing'],
-      'Creative & Design': ['Video Editing','Video Production','Graphic Design','UI/UX Design','Motion Graphics','Illustration','Photography','Voice Over'],
-      'Writing & Translation': ['Copywriting','Content Writing','Proofreading & Editing','Translation','Transcription'],
-      'Tech & Development': ['Web Development','WordPress','Mobile App Development','Software Engineering','QA Testing','IT Support'],
-      'Data & AI': ['Data Analysis','AI Training & Data Labeling','Automation'],
-      'Finance & Accounting': ['Bookkeeping','Accounting','Payroll','Tax'],
-      'E-commerce': ['Shopify','Amazon & Marketplaces','Product Listings'],
-      'HR & Recruitment': ['Recruiting','HR Admin'],
-      'Engineering & Architecture': ['CAD & Drafting','Civil Engineering','Electrical Engineering','Mechanical Engineering'],
+      'Admin Support': ['Virtual Assistance','Executive Assistance','Data Entry','Transcription','Project Management','Market Research'],
+      'Customer Service': ['Customer Support','Technical Support','Phone Support','Community Management','Content Moderation'],
+      'Sales & Marketing': ['Lead Generation','Appointment Setting','Cold Calling','Social Media Marketing','SEO','Paid Ads','Email Marketing','Marketing Strategy','PR & Brand Strategy'],
+      'Design & Creative': ['Graphic Design','Branding & Logo Design','Video Editing','Animation & Motion Graphics','Illustration','Photography','Audio & Music Production','Voice Over','Presentation Design'],
+      'Writing': ['Content Writing','Copywriting','Editing & Proofreading','Business Writing','Technical Writing','Ghostwriting'],
+      'Translation': ['Translation & Localization','Interpretation','Language Tutoring'],
+      'Web, Mobile & Software Dev': ['Web Development','WordPress','Mobile App Development','Software Development','E-commerce Development','UI/UX Design','QA Testing','AI Apps & Integration','Game Development'],
+      'IT & Networking': ['IT Support','Network & System Administration','DevOps & Cloud','Cybersecurity','Database Administration','CRM & ERP Systems'],
+      'Data Science & Analytics': ['Data Analysis','Data Visualization','Data Extraction & ETL','Machine Learning','AI Training & Data Labeling','Automation'],
+      'Accounting & Consulting': ['Bookkeeping','Accounting','Payroll','Tax Preparation','Financial Planning','Management Consulting'],
+      'HR & Recruiting': ['Recruiting','Talent Sourcing','HR Administration'],
+      'Engineering & Architecture': ['3D Modeling & CAD','Architecture','Interior Design','Civil & Structural Engineering','Electrical Engineering','Mechanical Engineering'],
+      'Legal': ['Paralegal Services','Contract Law','Legal Research','Immigration Law'],
+      'E-commerce': ['Shopify','Amazon & Marketplaces','Product Listings','Store Management'],
       'Healthcare': ['Medical VA','Medical Billing','Medical Coding','Medical Scribe'],
-      'Education': ['Online Teaching','Tutoring','Course Creation'],
-      'Legal': ['Paralegal','Legal Research']
+      'Education': ['Online Teaching','Tutoring','Course Creation']
     };
     // one title per person (shown on the card); each maps to the category whose niches it suggests
     const TITLES = {
-      'Virtual Assistant':'Admin & Virtual Assistance', 'Customer Support Specialist':'Customer Support',
-      'Sales & Lead Generation Specialist':'Sales & Lead Generation', 'Marketer':'Marketing', 'Designer & Creative':'Creative & Design',
-      'Writer & Translator':'Writing & Translation', 'Developer':'Tech & Development', 'Data & AI Specialist':'Data & AI',
-      'Bookkeeper & Accountant':'Finance & Accounting', 'E-commerce Specialist':'E-commerce', 'HR & Recruitment Specialist':'HR & Recruitment',
-      'Engineer & Drafter':'Engineering & Architecture', 'Healthcare Professional':'Healthcare', 'Educator':'Education', 'Legal Assistant':'Legal'
+      'Virtual Assistant':'Admin Support', 'Executive Assistant':'Admin Support', 'Project Manager':'Admin Support', 'Data Entry Specialist':'Admin Support',
+      'Customer Support Specialist':'Customer Service', 'Technical Support Specialist':'Customer Service', 'Community Manager':'Customer Service',
+      'Sales & Lead Generation Specialist':'Sales & Marketing', 'Appointment Setter':'Sales & Marketing', 'Digital Marketer':'Sales & Marketing', 'Social Media Manager':'Sales & Marketing', 'SEO Specialist':'Sales & Marketing',
+      'Graphic Designer':'Design & Creative', 'Video Editor':'Design & Creative', 'Motion Designer':'Design & Creative', 'Illustrator':'Design & Creative', 'Photographer':'Design & Creative', 'Voice Over Artist':'Design & Creative',
+      'Content Writer':'Writing', 'Copywriter':'Writing', 'Editor & Proofreader':'Writing',
+      'Translator':'Translation',
+      'Web Developer':'Web, Mobile & Software Dev', 'Software Developer':'Web, Mobile & Software Dev', 'Mobile App Developer':'Web, Mobile & Software Dev', 'UI/UX Designer':'Web, Mobile & Software Dev', 'QA Tester':'Web, Mobile & Software Dev',
+      'IT Support Specialist':'IT & Networking', 'System Administrator':'IT & Networking', 'DevOps Engineer':'IT & Networking',
+      'Data Analyst':'Data Science & Analytics', 'AI & Data Specialist':'Data Science & Analytics', 'Automation Specialist':'Data Science & Analytics',
+      'Bookkeeper':'Accounting & Consulting', 'Accountant':'Accounting & Consulting', 'Consultant':'Accounting & Consulting',
+      'Recruiter':'HR & Recruiting', 'HR Specialist':'HR & Recruiting',
+      'Engineer':'Engineering & Architecture', 'Architect':'Engineering & Architecture', 'CAD Drafter':'Engineering & Architecture',
+      'Paralegal':'Legal', 'Legal Assistant':'Legal',
+      'E-commerce Specialist':'E-commerce',
+      'Medical Virtual Assistant':'Healthcare', 'Healthcare Professional':'Healthcare',
+      'Online Teacher':'Education', 'Tutor':'Education'
     };
     const SKILLS = [];
     for (const cat in CATS) for (const s of CATS[cat]) SKILLS.push({name:s, cat});
@@ -2854,9 +2870,15 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     }
     function openTitles(){
       titleList.innerHTML = '';
+      let group = '';
       Object.keys(TITLES).forEach((t, i) => {
+        if (TITLES[t] !== group){            // a small heading per category, so the longer list stays easy to scan
+          group = TITLES[t];
+          const h = document.createElement('p'); h.className = 'flow__optgroup'; h.textContent = group; h.setAttribute('aria-hidden', 'true');
+          h.style.setProperty('--i', Math.min(i, 14)); titleList.appendChild(h);
+        }
         const b = document.createElement('button');
-        b.type = 'button'; b.setAttribute('role', 'option'); b.textContent = t; b.style.setProperty('--i', i);
+        b.type = 'button'; b.setAttribute('role', 'option'); b.textContent = t; b.style.setProperty('--i', Math.min(i, 14));
         b.setAttribute('aria-selected', String(t === state.title));
         b.addEventListener('click', () => {
           state.title = t; save(); renderTitle(); closeTitles(); setBrowse(false); renderChips(); renderResults();

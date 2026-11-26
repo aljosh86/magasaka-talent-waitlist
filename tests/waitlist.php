@@ -56,7 +56,7 @@ try {
     $name = "José O’Neil 🌱";
     $saved = waitlist_update($pdo, ['email' => $first['email'], 'name' => $name], $token, false)['entry'];
     check($saved['name'] === $name && !$saved['complete'], 'Save Unicode name independently');
-    $profile = ['email' => $first['email'], 'name' => $name, 'title' => 'Developer', 'picks' => ['PHP', 'Custom niche', 'QA Testing']];
+    $profile = ['email' => $first['email'], 'name' => $name, 'title' => 'Web Developer', 'picks' => ['PHP', 'Custom niche', 'QA Testing']];
     $done = waitlist_update($pdo, $profile, $token, true)['entry'];
     check($done['complete'] && $done['picks'] === $profile['picks'] && $done['no'] === 1 && $done['ref'] === $first['ref'], 'Complete profile saves all fields and keeps the original number and referral');
     rejects(fn () => waitlist_update($pdo, $profile, bin2hex(random_bytes(32)), true), 'invalid_session', 'Cannot edit another signup using only its email');
