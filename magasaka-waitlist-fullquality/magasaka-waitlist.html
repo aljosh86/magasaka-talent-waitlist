@@ -1310,7 +1310,7 @@ html.mf-open{overscroll-behavior:none}
 .nav__sound.is-dark{color:var(--ink)}
 .nav__sound.is-dark:hover{background:rgba(20,20,20,.06)}
 .nav__sound:focus-visible{outline:2px solid currentColor;outline-offset:2px}
-.nav__sound-bars path{transform-box:fill-box;transform-origin:center;transform:scaleY(.35);transition:transform .4s cubic-bezier(.22,1,.36,1)}
+.nav__sound-bars path{transform-box:fill-box;transform-origin:center;transform:scaleY(.6);transition:transform .4s cubic-bezier(.22,1,.36,1)}
 .nav__sound[aria-pressed="true"] .nav__sound-bars path{animation:snd 1.6s ease-in-out infinite}
 .nav__sound[aria-pressed="true"] .nav__sound-bars path:nth-child(2){animation-delay:-.4s}
 .nav__sound[aria-pressed="true"] .nav__sound-bars path:nth-child(3){animation-delay:-.9s}
@@ -1322,14 +1322,15 @@ html.mf-open{overscroll-behavior:none}
 .nav__hint{position:absolute;right:clamp(46px,calc(3.31vw + 34px),84px);top:calc(env(safe-area-inset-top,0px) + 58px);margin:0;display:flex;align-items:flex-start;gap:2px;
   font-family:'Magasaka Hand','Segoe Print','Bradley Hand',cursive;font-size:19px;line-height:1;color:var(--field-white);white-space:nowrap;pointer-events:none;
   opacity:0;transform:translateY(6px) rotate(-3deg);transition:opacity .6s ease,transform .6s cubic-bezier(.22,1,.36,1),color .3s}
-.nav__hint span{padding-top:20px}
+.nav__hint span{padding-top:20px;text-shadow:0 1px 10px rgba(0,0,0,.45)}
+.nav__hint.is-dark span{text-shadow:none}
 .nav__hint svg{width:46px;height:34px;flex:none;margin-top:-6px}
 .nav__hint.is-on{opacity:.9;transform:rotate(-3deg)}
 .nav__hint.is-dark{color:var(--ink)}
 .nav__hint.is-on svg{animation:hint-nudge 2.4s ease-in-out infinite}
 @keyframes hint-nudge{0%,100%{transform:none}50%{transform:translate(2px,-2px)}}
 @media (prefers-reduced-motion: reduce){.nav__hint.is-on svg{animation:none}}
-@media (max-width:640px){.nav__hint{right:38px;top:calc(env(safe-area-inset-top,0px) + 44px);font-size:16px}.nav__hint svg{width:38px;height:28px}.nav__hint span{padding-top:16px}}
+@media (max-width:640px){.nav__hint{right:38px;top:calc(env(safe-area-inset-top,0px) + 44px);font-size:16px}.nav__hint svg{width:38px;height:28px;margin-left:4px}.nav__hint span{padding-top:18px}}
 </style>
 <script src="waitlist-config.js"></script>
 <script src="waitlist-client.js"></script>
