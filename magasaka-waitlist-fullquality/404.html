@@ -24,9 +24,9 @@ header{align-self:stretch;padding:calc(env(safe-area-inset-top,0px) + 30px) clam
 .eyebrow{margin:0;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#958d84}
 h1{margin:0;font-weight:500;font-size:clamp(34px,4.4vw,58px);line-height:1.04;letter-spacing:-.03em}
 /* the paddy, in the middle of everything; its misty edges melt into the page */
-.stage{position:relative;z-index:1;width:min(1080px,96vw);aspect-ratio:1600/1195;margin:4px 0 -2%}
+.stage{position:relative;z-index:1;width:min(920px,92vw);aspect-ratio:1600/1195;margin:0 0 -1%}
 .stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:crosshair;touch-action:manipulation;
-  -webkit-mask-image:radial-gradient(ellipse 56% 54% at 50% 50%,#000 70%,transparent 100%);mask-image:radial-gradient(ellipse 56% 54% at 50% 50%,#000 70%,transparent 100%)}
+  -webkit-mask-image:radial-gradient(ellipse 56% 52% at 50% 48%,#000 68%,transparent 100%);mask-image:radial-gradient(ellipse 56% 52% at 50% 48%,#000 68%,transparent 100%)}
 .stage canvas:focus-visible{outline:none}
 .stage:has(canvas:focus-visible)::after{content:"";position:absolute;inset:6% 4%;border-radius:24px;outline:2px solid var(--ink);outline-offset:4px;pointer-events:none}
 .hint{position:absolute;left:50%;bottom:4%;transform:translateX(-50%);margin:0;padding:7px 14px;border-radius:100px;background:rgba(255,255,255,.72);
@@ -150,12 +150,17 @@ footer a{color:inherit}
     const rnd = (a, b) => a + Math.random() * (b - a);
     function seed(u, v, born){ return {u, v, born, f: Math.random() * SHEET.frames.length | 0, h: rnd(.85, 1.15), flip: Math.random() < .5, ph: rnd(0, 6.28), lean: rnd(-.05, .05)}; }
     function plant404(){
-      const off = document.createElement('canvas'); off.width = 640; off.height = 300;
+      // each digit drawn on its own with a clear gap, and stretched tall to make up for the field's foreshortening;
+      // set in the middle-to-near part of the paddy, where rows are far enough apart to read
+      const off = document.createElement('canvas'); off.width = 640; off.height = 380;
       const o = off.getContext('2d');
-      o.textAlign = 'center'; o.textBaseline = 'middle'; o.font = '800 270px "Inter Display","Inter",Arial,sans-serif'; o.fillText('404', 320, 158);
-      const d = o.getImageData(0, 0, 640, 300).data, pts = [], step = 19;
-      for (let y = 4; y < 300; y += step) for (let x = 4; x < 640; x += step)
-        if (d[(y * 640 + x) * 4 + 3] > 120) pts.push({u: .08 + x / 640 * .84 + rnd(-.005, .005), v: .08 + y / 300 * .8 + rnd(-.005, .005)});
+      o.textAlign = 'center'; o.textBaseline = 'middle'; o.font = '700 210px "Inter Display","Inter",Arial,sans-serif';
+      o.save(); o.scale(1, 1.55);
+      [['4', 112], ['0', 320], ['4', 528]].forEach(([c, x]) => o.fillText(c, x, 124));
+      o.restore();
+      const d = o.getImageData(0, 0, 640, 380).data, pts = [], sx = 20, sy = 17;
+      for (let y = 4; y < 380; y += sy) for (let x = 4; x < 640; x += sx)
+        if (d[(y * 640 + x) * 4 + 3] > 120) pts.push({u: .1 + x / 640 * .8 + rnd(-.004, .004), v: .2 + y / 380 * .66 + rnd(-.004, .004)});
       pts.sort((a, b) => a.v - b.v || a.u - b.u);
       const now = performance.now() + 400;
       pts.forEach((p, i) => seeds.push(seed(p.u, p.v, reduce ? 0 : now + i * 14)));
@@ -166,7 +171,7 @@ footer a{color:inherit}
       if (grow <= 0) return;
       const e = 1 - Math.pow(1 - grow, 3);
       const p = proj(sd.u, sd.v), [fx, fw] = SHEET.frames[sd.f];
-      const hpx = W * .068 * p.s * sd.h * e, wpx = hpx * fw / SHEET.h;
+      const hpx = W * .056 * p.s * sd.h * e, wpx = hpx * fw / SHEET.h;
       const dx = p.x - mouse.x, dy = (p.y - hpx * .5) - mouse.y, dist = Math.hypot(dx, dy);
       const push = dist < 110 ? (1 - dist / 110) * Math.sign(dx || 1) * .35 : 0;
       const wind = reduce ? 0 : Math.sin(now * .0014 + sd.u * 6 + sd.v * 3 + sd.ph) * .07 + Math.sin(now * .0037 + sd.ph) * .02;
