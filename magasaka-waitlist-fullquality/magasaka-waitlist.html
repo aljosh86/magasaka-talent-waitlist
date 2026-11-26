@@ -1400,7 +1400,6 @@ html.mf-open{overscroll-behavior:none}
   .concept__shot img.shot{flex:1;height:100%;aspect-ratio:auto;object-fit:cover;object-position:left top}
 }
 </style>
-<style>.faq__item.is-instant .faq__a,.faq__item.is-instant .faq__a *,.faq__item.is-instant .faq__icon{transition:none!important}</style>
 <script src="waitlist-config.js"></script>
 <script src="waitlist-client.js"></script>
 </head>
@@ -2415,21 +2414,18 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     const q = item.querySelector('.faq__q');
     q.addEventListener('click', () => {
       const open = item.dataset.open !== 'true';
-      if (open){
-        faqItems.forEach(other => {
-          if (other === item || other.dataset.open !== 'true') return;
-          if (other.compareDocumentPosition(item) & Node.DOCUMENT_POSITION_FOLLOWING){
-            // the open answer is above the tapped question: fold it at once and shift the page by exactly that much,
-            // so the question you tapped doesn't move at all (an animated fold above it made the page slide)
-            const y0 = q.getBoundingClientRect().top;
-            other.classList.add('is-instant'); setFaq(other, false);
-            const d = q.getBoundingClientRect().top - y0;
-            if (d){ window.__mgQuietScroll = performance.now() + 250; window.scrollTo({top: scrollY + d, behavior: 'instant'}); }
-            requestAnimationFrame(() => requestAnimationFrame(() => other.classList.remove('is-instant')));
-          } else setFaq(other, false);
-        });
-      }
+      // both answers fold smoothly; meanwhile the page follows along so the question you tapped stays put,
+      // and the logo bar is told this isn't the reader scrolling back up
+      const y0 = q.getBoundingClientRect().top, until = performance.now() + 460;
+      const hold = () => {
+        const d = q.getBoundingClientRect().top - y0;
+        window.__mgQuietScroll = performance.now() + 120;
+        if (Math.abs(d) > .5) window.scrollTo({top: scrollY + d, behavior: 'instant'});
+        if (performance.now() < until) requestAnimationFrame(hold);
+      };
+      if (open) faqItems.forEach(other => { if (other !== item) setFaq(other, false); });
       setFaq(item, open);
+      requestAnimationFrame(hold);
     });
   });
 
