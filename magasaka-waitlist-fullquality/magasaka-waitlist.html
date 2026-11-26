@@ -1302,7 +1302,7 @@ html.mf-open{overscroll-behavior:none}
 .flow__panel[aria-busy="true"] .flow__select,.flow__panel[aria-busy="true"] .flow__chips,.flow__panel[aria-busy="true"] .flow__results{pointer-events:none}
 </style>
 <style>
-/* farm ambience toggle, top right */
+/* calm music toggle, top right */
 .nav__sound{display:grid;place-items:center;width:44px;height:44px;margin:-12px -12px -12px 0;padding:0;border:0;border-radius:50%;background:none;
   color:var(--field-white);cursor:pointer;opacity:0;transition:opacity .5s,color .3s,background-color .2s}
 .is-ready .nav__sound{opacity:.85}
@@ -1318,6 +1318,18 @@ html.mf-open{overscroll-behavior:none}
 @keyframes snd{0%,100%{transform:scaleY(.45)}50%{transform:scaleY(1)}}
 @media (prefers-reduced-motion: reduce){.nav__sound[aria-pressed="true"] .nav__sound-bars path{animation:none;transform:none}}
 @media (max-width:640px){.nav__sound{width:40px;height:40px;margin:-10px -10px -10px 0}}
+/* a handwritten nudge under the button while the music is off */
+.nav__hint{position:absolute;right:clamp(46px,calc(3.31vw + 34px),84px);top:calc(env(safe-area-inset-top,0px) + 58px);margin:0;display:flex;align-items:flex-start;gap:2px;
+  font-family:'Magasaka Hand','Segoe Print','Bradley Hand',cursive;font-size:19px;line-height:1;color:var(--field-white);white-space:nowrap;pointer-events:none;
+  opacity:0;transform:translateY(6px) rotate(-3deg);transition:opacity .6s ease,transform .6s cubic-bezier(.22,1,.36,1),color .3s}
+.nav__hint span{padding-top:20px}
+.nav__hint svg{width:46px;height:34px;flex:none;margin-top:-6px}
+.nav__hint.is-on{opacity:.9;transform:rotate(-3deg)}
+.nav__hint.is-dark{color:var(--ink)}
+.nav__hint.is-on svg{animation:hint-nudge 2.4s ease-in-out infinite}
+@keyframes hint-nudge{0%,100%{transform:none}50%{transform:translate(2px,-2px)}}
+@media (prefers-reduced-motion: reduce){.nav__hint.is-on svg{animation:none}}
+@media (max-width:640px){.nav__hint{right:38px;top:calc(env(safe-area-inset-top,0px) + 44px);font-size:16px}.nav__hint svg{width:38px;height:28px}.nav__hint span{padding-top:16px}}
 </style>
 <script src="waitlist-config.js"></script>
 <script src="waitlist-client.js"></script>
@@ -1391,9 +1403,10 @@ html.mf-open{overscroll-behavior:none}
 </clipPath>
 </defs>
 </svg></a>
-  <button class="nav__sound" id="soundBtn" type="button" aria-pressed="false" aria-label="Play farm sounds" title="Farm sounds">
+  <button class="nav__sound" id="soundBtn" type="button" aria-pressed="false" aria-label="Play calm music" title="Calm music">
     <svg class="nav__sound-bars" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 8v4M8 5v10M12 7v6M16 9v2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
   </button>
+  <p class="nav__hint" id="soundHint" aria-hidden="true"><span>tap for some calm music</span><svg viewBox="0 0 64 48" fill="none"><path d="M6 42C20 40 36 32 44 20C48 14 50 9 51 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M43 10L51 4L56 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></p>
 </header>
 
 <main id="top">
@@ -3950,7 +3963,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
   }, true));
 </script>
 <script>
-  // farm ambience: a calm loop, on by default (the button turns it off, and that choice is remembered).
+  // calm music: a gentle 78s loop (guitar, bamboo flute, kalimba), on by default (the button turns it off, and that choice is remembered).
   // Browsers only allow sound after a tap, click or key press, so it fades in on the first one.
   (() => {
     const btn = document.getElementById('soundBtn');
@@ -3961,7 +3974,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     try { want = localStorage.getItem(KEY) !== 'off'; } catch(e){}
     const set = on => {
       btn.setAttribute('aria-pressed', String(on));
-      btn.setAttribute('aria-label', on ? 'Mute farm sounds' : 'Play farm sounds');
+      btn.setAttribute('aria-label', on ? 'Pause the music' : 'Play calm music');
     };
     const fade = (to, ms, done) => {
       cancelAnimationFrame(fadeT);
@@ -3974,7 +3987,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       fadeT = requestAnimationFrame(step);
     };
     const play = () => {
-      if (!audio){ audio = new Audio('audio/farm.mp3'); audio.loop = true; audio.preload = 'auto'; audio.volume = 0; }
+      if (!audio){ audio = new Audio('audio/calm.mp3'); audio.loop = true; audio.preload = 'auto'; audio.volume = 0; }
       return audio.play().then(() => { set(true); fade(VOL, 1600); }, () => set(false));
     };
     const stop = () => { set(false); if (audio) fade(0, 500, () => audio.pause()); };
@@ -4000,10 +4013,26 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       if (!audio || btn.getAttribute('aria-pressed') !== 'true') return;
       if (document.hidden) audio.pause(); else audio.play().catch(() => {});
     });
+    // the handwritten nudge: only near the top, only while the music is off, and never for someone who turned it off
+    const hint = document.getElementById('soundHint');
+    const syncHint = () => {
+      if (!hint) return;
+      let off = false; try { off = localStorage.getItem(KEY) === 'off'; } catch(e){}
+      const show = !off && btn.getAttribute('aria-pressed') !== 'true' && scrollY < innerHeight * .5
+        && document.documentElement.classList.contains('is-ready');
+      hint.classList.toggle('is-on', show);
+    };
+    new MutationObserver(syncHint).observe(btn, {attributes:true, attributeFilter:['aria-pressed']});
+    new MutationObserver(syncHint).observe(document.documentElement, {attributes:true, attributeFilter:['class']});
+    addEventListener('scroll', syncHint, {passive:true});
+    setTimeout(syncHint, 1200);
     // same light/dark as the logo
     const logo = document.querySelector('.nav__logo');
     if (logo){
-      const sync = () => btn.classList.toggle('is-dark', logo.classList.contains('nav__logo--dark'));
+      const sync = () => {
+        const d = logo.classList.contains('nav__logo--dark');
+        btn.classList.toggle('is-dark', d); if (hint) hint.classList.toggle('is-dark', d);
+      };
       new MutationObserver(sync).observe(logo, {attributes:true, attributeFilter:['class']}); sync();
     }
   })();
