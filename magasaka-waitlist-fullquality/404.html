@@ -153,7 +153,7 @@ footer a{color:inherit}
       const off = document.createElement('canvas'); off.width = 640; off.height = 300;
       const o = off.getContext('2d');
       o.textAlign = 'center'; o.textBaseline = 'middle'; o.font = '800 270px "Inter Display","Inter",Arial,sans-serif'; o.fillText('404', 320, 158);
-      const d = o.getImageData(0, 0, 640, 300).data, pts = [], step = 22;
+      const d = o.getImageData(0, 0, 640, 300).data, pts = [], step = 19;
       for (let y = 4; y < 300; y += step) for (let x = 4; x < 640; x += step)
         if (d[(y * 640 + x) * 4 + 3] > 120) pts.push({u: .08 + x / 640 * .84 + rnd(-.005, .005), v: .08 + y / 300 * .8 + rnd(-.005, .005)});
       pts.sort((a, b) => a.v - b.v || a.u - b.u);
