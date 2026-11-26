@@ -1345,7 +1345,7 @@ html.mf-open{overscroll-behavior:none}
    (shape from Natural Earth, rendered on Higgsfield) */
 .flow::before{content:"";position:fixed;z-index:-1;left:72%;top:26%;width:min(138vh,110vw);aspect-ratio:1200/1607;
   transform:translate(-50%,-50%) perspective(550px) rotateX(70deg) rotateY(5deg) rotateZ(51deg);
-  background:url(images/ph-map.webp?v=2) center/contain no-repeat;opacity:.16;pointer-events:none}
+  background:url(images/ph-map.webp?v=3) center/contain no-repeat;opacity:.16;pointer-events:none}
 /* a soft white fade along the bottom of the screen */
 .flow::after{content:"";position:fixed;z-index:-1;left:0;right:0;bottom:0;height:38vh;pointer-events:none;
   background:linear-gradient(to bottom,rgba(255,255,255,0),rgba(255,255,255,.85))}
@@ -3993,7 +3993,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
   (() => {
     const btn = document.getElementById('soundBtn');
     if (!btn) return;
-    const KEY = 'mg-ambience', VOL = .2;
+    const KEY = 'mg-ambience', VOL = .13;
     let audio = null, want = false, fadeT = 0;
     want = true;
     try { want = localStorage.getItem(KEY) !== 'off'; } catch(e){}
