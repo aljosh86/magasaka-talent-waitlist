@@ -1735,12 +1735,12 @@ html.szoom-on .pill,html.szoom-off .pill{-webkit-backdrop-filter:none;backdrop-f
           </div>
           <div class="tabs" role="tablist" aria-label="Inside Magasaka">
             <span class="tabs__ink" aria-hidden="true"></span>
-            <button class="tab" type="button" role="tab" id="tab-1" aria-controls="shot" aria-selected="true" data-shot="images/app-1.png">Opportunity</button>
-            <button class="tab" type="button" role="tab" id="tab-2" aria-controls="shot" aria-selected="false" data-shot="images/app-2.png">Application</button>
-            <button class="tab" type="button" role="tab" id="tab-3" aria-controls="shot" aria-selected="false" data-shot="images/app-3.png">Work</button>
-            <button class="tab" type="button" role="tab" id="tab-4" aria-controls="shot" aria-selected="false" data-shot="images/app-4.png">Progress</button>
+            <button class="tab" type="button" role="tab" id="tab-1" aria-controls="shot" aria-selected="true" data-shot="images/app-1.webp">Opportunity</button>
+            <button class="tab" type="button" role="tab" id="tab-2" aria-controls="shot" aria-selected="false" data-shot="images/app-2.webp">Application</button>
+            <button class="tab" type="button" role="tab" id="tab-3" aria-controls="shot" aria-selected="false" data-shot="images/app-3.webp">Work</button>
+            <button class="tab" type="button" role="tab" id="tab-4" aria-controls="shot" aria-selected="false" data-shot="images/app-4.webp">Progress</button>
           </div>
-          <div class="concept__shot" id="shot" role="tabpanel" aria-label="Screenshot of the Magasaka app"><img class="shot" id="shotA" src="images/app-1.png" alt="Preview of the Magasaka talent app"><img class="shot shot--top" id="shotB" alt="" aria-hidden="true"></div>
+          <div class="concept__shot" id="shot" role="tabpanel" aria-label="Screenshot of the Magasaka app"><img class="shot" id="shotA" src="images/app-1.webp" alt="Preview of the Magasaka talent app"><img class="shot shot--top" id="shotB" alt="" aria-hidden="true"></div>
         </div>
       </section>
 
@@ -4427,7 +4427,15 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
   const cache = {};
   const decode = src => cache[src] || (cache[src] = (() => { const i = new Image(); i.src = src; return i.decode ? i.decode().catch(() => {}) : Promise.resolve(); })());
   if ('IntersectionObserver' in window) new IntersectionObserver((es, o) => { if (es.some(e => e.isIntersecting)) { tabs.forEach(t => decode(srcOf(t))); o.disconnect(); } }, {rootMargin: '400px'}).observe(shot);
-  const prep = () => { const src = srcOf(cur()); return decode(src).then(() => { if (img.getAttribute('src') !== src) { img.src = src; return img.decode ? img.decode().catch(() => {}) : null; } }); };
+  // the big picture is the very file the small one is showing (already downloaded), so it only needs decoding;
+  // never wait more than a moment for that, a slow phone should still feel the tap
+  const showing = () => { let best = layers[0], o = -1; layers.forEach(l => { const v = +getComputedStyle(l).opacity; if (l.getAttribute('src') && v > o) { o = v; best = l; } }); return best.getAttribute('src') || srcOf(cur()); };
+  const prep = () => {
+    const src = showing();
+    if (img.getAttribute('src') !== src) img.src = src;
+    const ok = img.decode ? img.decode().catch(() => {}) : Promise.resolve();
+    return Promise.race([ok, new Promise(r => setTimeout(r, img.complete ? 120 : 600))]);
+  };
   const sync = () => { box.setAttribute('aria-label', cur().textContent.trim() + ' screen, enlarged'); img.alt = 'The ' + cur().textContent.trim() + ' screen of the Magasaka talent app'; shot.setAttribute('aria-label', cur().textContent.trim() + ' screen. Press to enlarge'); };
   shot.classList.add('is-zoomable'); shot.tabIndex = 0;
   tabs.forEach(t => new MutationObserver(sync).observe(t, {attributes: true, attributeFilter: ['aria-selected']})); sync();
@@ -4474,10 +4482,15 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       const to = {...base, l: base.l - off};
       const settle = () => { anims.forEach(a => a.cancel()); anims = []; box.classList.add('is-settled'); pan.scrollLeft = off; busy = false; x.focus({preventScroll: true}); };
       if (reduce.matches) { bg.style.opacity = 1; box.classList.add('is-shown'); return settle(); }
+      // place the big picture over the small one, give the browser two frames to paint it there, then let it grow
       const going = run(base, sm.vis, to, sm.img, to, 780, phone.matches ? 6 : 8, phone.matches ? 10 : 14);
-      layers.forEach(l => l.style.visibility = 'hidden'); shot.classList.add('is-lifted');
-      fade(1, 520);
-      box.classList.add('is-shown');
+      anims.forEach(a => a.pause());
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        layers.forEach(l => l.style.visibility = 'hidden'); shot.classList.add('is-lifted');
+        anims.forEach(a => a.play());
+        fade(1, 520);
+        box.classList.add('is-shown');
+      }));
       going.then(settle);
     });
   };
