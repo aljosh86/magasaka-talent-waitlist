@@ -8,7 +8,7 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="preload" href="/images/404/paddy.webp?v=2" as="image">
+<link rel="preload" href="/images/404/paddy.webp?v=3" as="image">
 <meta name="theme-color" content="#eee1d8">
 <style>
 :root{--ink:#141414;--bg:#eee1d8;--font:"Inter Display","Inter",-apple-system,"Segoe UI",Helvetica,Arial,sans-serif}
@@ -96,7 +96,7 @@ header,.head,.stage,footer{z-index:2}
     // the water's corners in the photo, as fractions of its width and height: far-left, far-right, near-right, near-left
     const Q = [[.366, .177], [.615, .177], [.753, .865], [.246, .865]];
     const photo = new Image(), sheet = new Image();
-    photo.src = '/images/404/paddy.webp?v=2'; sheet.src = '/images/404/seedlings.webp';
+    photo.src = '/images/404/paddy.webp?v=3'; sheet.src = '/images/404/seedlings.webp';
     let W = 0, H = 0, dpr = 1, raf = 0, visible = true, ready = 0, planted = 0;
     const seeds = [], ripples = [], mouse = {x: -9999, y: -9999};
 
