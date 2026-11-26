@@ -1485,6 +1485,27 @@ body:has(.pill.pill--away) .juan-say{display:none}
 .mf__drawing{display:none}
 @media (max-width:640px){.mf__text .mf__sign{display:flex;align-items:center;gap:.5em;white-space:nowrap}.mf__text .mf__drawing{display:block;flex:1 1 0;min-width:0;width:100%;height:auto;max-height:6.5em;object-fit:contain;object-position:left center;mix-blend-mode:multiply}}
 </style>
+<style>
+/* Inside Magasaka: the cards in the Opportunity screen can be tapped. Each card is a copy of its own pixels that lifts off the screenshot */
+.hots{position:absolute;inset:0;z-index:2;opacity:0;visibility:hidden;transition:opacity .4s ease,visibility 0s .4s}
+.hots.is-on{opacity:1;visibility:visible;transition:opacity .4s ease .2s,visibility 0s}
+.hots__dim{position:absolute;inset:0;background:rgba(18,22,18,.28);opacity:0;transition:opacity .45s ease;pointer-events:none}
+.hots.is-open .hots__dim{opacity:1}
+.hot{position:absolute;padding:0;border:0;margin:0;cursor:pointer;background-repeat:no-repeat;border-radius:calc(var(--r,24px) * var(--s,.35));
+  transform:translateZ(0);box-shadow:0 0 0 rgba(0,0,0,0);
+  transition:transform .45s cubic-bezier(.2,.8,.2,1),box-shadow .45s cubic-bezier(.2,.8,.2,1),filter .45s ease;-webkit-tap-highlight-color:transparent}
+.hots.is-open .hot{filter:brightness(.78)}
+.hots.is-open .hot.is-active{filter:none;transform:translateY(-6px) scale(1.035);box-shadow:0 22px 50px rgba(10,20,10,.28),0 4px 12px rgba(10,20,10,.12);z-index:2}
+@media (hover:hover){.hots:not(.is-open) .hot:hover{transform:translateY(-3px) scale(1.015);box-shadow:0 12px 30px rgba(10,20,10,.18)}}
+.hot:active{transform:translateY(-2px) scale(.99)!important;transition-duration:.12s}
+.hot:focus-visible{outline:2px solid #4f7a36;outline-offset:3px}
+.hots__note{position:absolute;z-index:3;width:max-content;max-width:min(300px,80vw);padding:12px 15px;border-radius:12px;background:#141414;color:#f4f2ea;
+  font:400 14px/1.45 var(--font);box-shadow:0 14px 34px rgba(0,0,0,.3);opacity:0;transform:translateY(6px);pointer-events:none;
+  transition:opacity .3s ease,transform .45s cubic-bezier(.2,.8,.2,1)}
+.hots__note.is-up{transform:translateY(-6px)}
+.hots__note.is-shown{opacity:1;transform:none}
+.hots__note strong{display:block;margin-bottom:3px;font-weight:500;color:#9fd081}
+</style>
 <script src="waitlist-config.js"></script>
 <script src="waitlist-client.js"></script>
 </head>
@@ -2498,7 +2519,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       timer = setTimeout(step, wait);
     };
     const step = () => {
-      if (paused || !onScreen) return schedule();
+      if (paused || !onScreen || window.__mgShotHold) return schedule();
       const shots = shotsFor(tabs[tabIdx]);
       if (shots.length > 1 && shotIdx < shots.length - 1) select(tabIdx, shotIdx + 1);
       else select(tabIdx + 1, 0);
@@ -4369,6 +4390,89 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       n.focus(); n.click();
     }));
   })();
+</script>
+<script>
+// Inside Magasaka: tap a card in the Opportunity screen to lift it and read what it is for. Boxes are in the screenshot's own pixels (3072x2048).
+(() => {
+  const shot = document.getElementById('shot'), tab = document.getElementById('tab-1');
+  if (!shot || !tab) return;
+  const W = 3072, SRC = 'images/app-1.png';
+  const CARDS = [
+    [1921, 241, 618, 338, 24, 'Profile match', 'See how well you fit before you spend a single Seed.'],
+    [1921, 603, 618, 100, 16, 'Apply with Seeds', 'Seeds are free every week. If the client never replies, you get them back.'],
+    [1921, 727, 618, 92, 16, 'Save for later', 'Not ready yet? Keep it and come back when you are.'],
+    [561, 729, 1278, 152, 24, 'You qualify', 'Know if your experience meets the level before you apply.'],
+    [561, 909, 1278, 152, 24, 'Responds to every applicant', 'Clients who answer everyone are marked, so you know who will reply.'],
+    [561, 1089, 1278, 124, 24, 'The basics, up front', 'Rate, contract, level and hours. No guessing.'],
+    [1921, 945, 618, 380, 24, 'Protection included', 'Pay is secured before you start, and there is no platform cut from your earnings.'],
+    [1921, 1349, 618, 582, 24, 'About the client', 'Their hires, hire rate, rating from talent and how fast they reply.']
+  ];
+  const wrap = document.createElement('div'); wrap.className = 'hots';
+  wrap.innerHTML = '<div class="hots__dim"></div>';
+  const note = document.createElement('div'); note.className = 'hots__note'; note.setAttribute('role', 'status'); note.setAttribute('aria-live', 'polite');
+  const hots = CARDS.map(([x, y, w, h, r, title, text]) => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'hot';
+    b.setAttribute('aria-label', title + ': ' + text);
+    b.style.setProperty('--r', r + 'px');
+    b._box = {x, y, w, h}; b._title = title; b._text = text;
+    wrap.appendChild(b); return b;
+  });
+  wrap.appendChild(note); shot.appendChild(wrap);
+
+  const layout = () => {
+    const s = shot.querySelector('#shotA').getBoundingClientRect().width / W;
+    if (!s) return;
+    wrap.style.setProperty('--s', s);
+    hots.forEach(b => {
+      const {x, y, w, h} = b._box;
+      Object.assign(b.style, {left: x * s + 'px', top: y * s + 'px', width: w * s + 'px', height: h * s + 'px',
+        backgroundImage: `url(${SRC})`, backgroundSize: W * s + 'px auto', backgroundPosition: `${-x * s}px ${-y * s}px`});
+    });
+    if (active) place(active);
+  };
+  let active = null;
+  const place = b => {
+    const sr = shot.getBoundingClientRect(), br = b.getBoundingClientRect();
+    const up = br.top + br.height / 2 - sr.top > sr.height * .55;
+    note.classList.toggle('is-up', up);
+    // keep the note on screen: phones show only part of the wide screenshot
+    const vw = document.documentElement.clientWidth, nw = note.offsetWidth;
+    let left = br.left; left = Math.max(12, Math.min(left, vw - nw - 12));
+    note.style.left = (left - sr.left) + 'px';
+    note.style.top = up ? (br.top - sr.top - note.offsetHeight - 14) + 'px' : (br.bottom - sr.top + 14) + 'px';
+  };
+  const close = () => {
+    if (!active) return;
+    active.classList.remove('is-active'); active = null;
+    wrap.classList.remove('is-open'); note.classList.remove('is-shown');
+    window.__mgShotHold = false;
+  };
+  const open = b => {
+    if (active === b) return close();
+    if (active) active.classList.remove('is-active');
+    active = b; b.classList.add('is-active'); wrap.classList.add('is-open');
+    note.classList.remove('is-shown');
+    note.innerHTML = `<strong>${b._title}</strong>${b._text}`;
+    place(b);
+    requestAnimationFrame(() => note.classList.add('is-shown'));
+    window.__mgShotHold = true;   // the tabs stop turning while a card is open
+  };
+  hots.forEach(b => b.addEventListener('click', e => { e.stopPropagation(); open(b); }));
+  wrap.addEventListener('click', close);
+  document.addEventListener('click', e => { if (active && !shot.contains(e.target)) close(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && active) { const b = active; close(); b.focus(); } });
+
+  const sync = () => {
+    const on = tab.getAttribute('aria-selected') === 'true';
+    wrap.classList.toggle('is-on', on);
+    hots.forEach(b => b.tabIndex = on ? 0 : -1);
+    if (!on) close();
+  };
+  new MutationObserver(sync).observe(tab, {attributes: true, attributeFilter: ['aria-selected']});
+  sync();
+  if ('ResizeObserver' in window) new ResizeObserver(layout).observe(shot); else addEventListener('resize', layout);
+  layout();
+})();
 </script>
 </body>
 </html>
