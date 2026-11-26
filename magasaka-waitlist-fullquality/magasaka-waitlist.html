@@ -1382,6 +1382,15 @@ html.mf-open{overscroll-behavior:none}
   .chcard__label{letter-spacing:.06em}
 }
 </style>
+<style>
+/* the top of the hero photo is pale (the soil's cut edge and the sky), so the white logo, music button and note
+   get a soft dark veil behind them, plus a faint shadow. Both go away once the logo turns dark on light sections. */
+.nav::before{content:"";position:absolute;left:0;right:0;top:0;height:calc(env(safe-area-inset-top,0px) + 130px);z-index:-1;pointer-events:none;
+  background:linear-gradient(to bottom,rgba(12,14,10,.5),rgba(12,14,10,.22) 55%,rgba(12,14,10,0));transition:opacity .4s ease}
+.nav:has(.nav__logo--dark)::before{opacity:0}
+.nav__logo:not(.nav__logo--dark),.nav__sound:not(.is-dark){filter:drop-shadow(0 1px 5px rgba(0,0,0,.35))}
+@media (max-width:640px){.nav::before{height:calc(env(safe-area-inset-top,0px) + 110px)}}
+</style>
 <script src="waitlist-config.js"></script>
 <script src="waitlist-client.js"></script>
 </head>
