@@ -22,7 +22,34 @@
     return token;
   }
 
+  // Local design preview: on localhost with no PHP behind the page (e.g. a Python or Live Server preview),
+  // walk through the flow with a pretend entry kept in this browser only. Never active on a real domain,
+  // and never when the API answers (XAMPP / php -S), so real signups are unaffected.
+  const isLocal = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
+  function previewEntry(action, input, email) {
+    const KEY = 'mg-waitlist-preview:' + email;
+    let entry = null;
+    try { entry = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (_) {}
+    if (!entry) {
+      entry = {email, name: '', title: '', picks: [], no: 1 + Math.floor(Math.random() * 999), complete: false, verified: false,
+        ref: 'preview' + Math.random().toString(36).slice(2, 8), referredBy: input.referredBy || ''};
+    }
+    if (action === 'name' || action === 'complete') entry.name = input.name;
+    if (action === 'complete') Object.assign(entry, {title: input.title, picks: input.picks, complete: true});
+    try { localStorage.setItem(KEY, JSON.stringify(entry)); } catch (_) {}
+    console.warn('[waitlist] No PHP API on this local preview; using a pretend entry (nothing is saved to the database).');
+    return entry;
+  }
+
   async function request(action, input) {
+    try { return await send(action, input); }
+    catch (error) {
+      if (isLocal && error.noApi) return previewEntry(action, input, input.email.trim().toLowerCase());
+      throw error;
+    }
+  }
+
+  async function send(action, input) {
     const email = input.email.trim().toLowerCase();
     const token = tokenFor(email, action === 'join');
     const controller = new AbortController();
@@ -35,7 +62,11 @@
       });
       let result;
       try { result = await response.json(); }
-      catch (_) { throw new Error('We could not confirm your signup. Please try again shortly.'); }
+      catch (_) {
+        const error = new Error('We could not confirm your signup. Please try again shortly.');
+        error.noApi = true;   // not JSON: there is no API behind this page
+        throw error;
+      }
       if (!response.ok || !result.ok) {
         const error = new Error(result.message || 'We could not save your details. Please try again.');
         error.code = result.code;
