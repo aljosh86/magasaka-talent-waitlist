@@ -3013,8 +3013,9 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     function addPick(v){
       if (state.picks.length >= 3 || state.picks.includes(v)) return;
       state.picks.push(v); save();
-      search.value = ''; setBrowse(false); renderChips(); renderResults();
-      if (state.picks.length < 3) search.focus({preventScroll:true});
+      // close the list after each pick so it never sits over the Continue button; a tap on the search opens it again
+      search.value = ''; setBrowse(false); resultsOpen = false; renderChips(); renderResults();
+      if (document.activeElement === search) search.blur();
     }
     function row(name, cat, cls){
       const b = document.createElement('button');
