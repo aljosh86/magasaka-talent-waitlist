@@ -3958,7 +3958,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     // Each shows once per visit, and never once the chat has been opened.
     if (!say) return;
     const text = say.querySelector('.juan-say__text');
-    let seen = {}, opened = false, hideT = 0;
+    let seen = {}, opened = false, hideT = 0, shownAt = 0;
     try { seen = JSON.parse(sessionStorage.getItem('mg-juan-say') || '{}'); opened = !!seen.opened; } catch(e){}
     const save = () => { try { sessionStorage.setItem('mg-juan-say', JSON.stringify(seen)); } catch(e){} };
     const hide = () => {
@@ -3967,8 +3967,17 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       say.classList.remove('is-in'); say.classList.add('is-out');
       setTimeout(() => { say.hidden = true; say.classList.remove('is-out'); }, 260);
     };
+    // on phones the bubble only speaks up where it won't sit on top of something being read
+    const phone = () => matchMedia('(max-width: 640px)').matches;
+    const coversText = () => {
+      const W = innerWidth, H = innerHeight;
+      const pts = [[W - 40, H - 150], [W - 130, H - 150], [W - 230, H - 150], [W - 40, H - 200], [W - 130, H - 200], [W - 230, H - 200]];
+      return pts.some(([x, y]) => document.elementsFromPoint(x, y).some(el =>
+        !el.closest('#pill, #askBtn, #juanSay, .ask') && el.matches('p, h1, h2, h3, h4, li, blockquote, label, input, button, .rcard, .chcard, img')));
+    };
     const show = (key, lines) => {
       if (opened || seen[key] || !box.hidden || document.hidden) return false;
+      if (phone() && coversText()) return false;
       const pill = document.getElementById('pill');
       if (pill && (pill.dataset.state === 'form' || pill.classList.contains('pill--away'))) return false;
       if (document.documentElement.classList.contains('mf-open') || document.getElementById('flow')?.hidden === false) return false;
@@ -3977,9 +3986,11 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       say.hidden = false; say.classList.remove('is-out'); say.classList.add('is-in');
       if (!reduce){ mj.classList.remove('is-poke'); void mj.getBoundingClientRect(); mj.classList.add('is-poke'); }
       if (window.__mgJuanSound && (!navigator.userActivation || navigator.userActivation.hasBeenActive)) window.__mgJuanSound('psst');
-      clearTimeout(hideT); hideT = setTimeout(hide, 9000);
+      clearTimeout(hideT); hideT = setTimeout(hide, phone() ? 6000 : 9000);
+      shownAt = scrollY;
       return true;
     };
+    addEventListener('scroll', () => { if (!say.hidden && phone() && Math.abs(scrollY - shownAt) > 160) hide(); }, {passive:true});
     const HELLO = ["Psst! Uy, anak, kumusta? May tanong ka ba tungkol sa Magasaka? 👒",
                    "Psst! Dito, dito! Ako si Mang Juan. Tanungin mo ako kahit ano tungkol sa Magasaka.",
                    "Psst! Kumain ka na ba? Hehe. Tanong ka lang kung may gusto kang malaman! 🌾"];
