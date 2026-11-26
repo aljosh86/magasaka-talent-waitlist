@@ -1439,6 +1439,16 @@ html.mf-open{overscroll-behavior:none}
 body:has(.pill.pill--away) .juan{opacity:0;pointer-events:none;transform:translateY(16px)}
 body:has(.pill.pill--away) .juan-say{display:none}
 </style>
+<style>
+/* keyboard: a visible ring on the closing email box, a skip link that appears on the first Tab, and focus rings that stay
+   off for mouse and touch */
+.band .signup:focus-within{outline:2px solid var(--field-white);outline-offset:3px}
+.signup input:focus-visible{outline:none}
+.roles__track:focus-visible{outline:2px solid var(--logo-green);outline-offset:6px;border-radius:12px}
+.skip{position:fixed;left:16px;top:12px;z-index:200;padding:12px 18px;border-radius:100px;background:var(--ink);color:#fff;font:500 15px/1 var(--font);
+  text-decoration:none;transform:translateY(-200%);transition:transform .25s ease}
+.skip:focus{transform:none;outline:2px solid var(--field-white);outline-offset:2px}
+</style>
 <script src="waitlist-config.js"></script>
 <script src="waitlist-client.js"></script>
 </head>
@@ -1517,6 +1527,7 @@ body:has(.pill.pill--away) .juan-say{display:none}
   <p class="nav__hint" id="soundHint" aria-hidden="true"><span>tap this!</span><svg viewBox="0 0 32 26" fill="none"><path d="M2 22C11 22 21 17 27 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M22.5 8L27 4.5L29.5 9.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></p>
 </header>
 
+<a class="skip" href="#signup">Skip to the waitlist form</a>
 <main id="top">
   <section class="hero" id="hero" aria-label="Introduction">
     <div class="stage">
@@ -1658,7 +1669,7 @@ body:has(.pill.pill--away) .juan-say{display:none}
             <button class="tab" type="button" role="tab" id="tab-3" aria-controls="shot" aria-selected="false" data-shot="images/app-3.png">Work</button>
             <button class="tab" type="button" role="tab" id="tab-4" aria-controls="shot" aria-selected="false" data-shot="images/app-4.png">Progress</button>
           </div>
-          <div class="concept__shot"><img class="shot" id="shotA" src="images/app-1.png" alt="Preview of the Magasaka talent app"><img class="shot shot--top" id="shotB" alt="" aria-hidden="true"></div>
+          <div class="concept__shot" id="shot" role="tabpanel" aria-label="Screenshot of the Magasaka app"><img class="shot" id="shotA" src="images/app-1.png" alt="Preview of the Magasaka talent app"><img class="shot shot--top" id="shotB" alt="" aria-hidden="true"></div>
         </div>
       </section>
 
@@ -1670,7 +1681,7 @@ body:has(.pill.pill--away) .juan-say{display:none}
           </div>
           <p class="muted-17">From support and operations to <br>creative, marketing and tech.</p>
         </div>
-        <div class="roles__track">
+        <div class="roles__track" tabindex="0" role="region" aria-label="Kinds of work: use the arrow keys to scroll">
           <article class="rcard">
             <img src="images/roles/1.jpg" alt="" loading="lazy">
             <div class="rcard__cap"><span>Support</span><strong>Virtual Assistant</strong></div>
@@ -3016,7 +3027,9 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       top.dataset.step = i; flowStep = i;
       flow.scrollTop = 0;
     }
+    let opener = null;
     function open(step){
+      opener = document.activeElement && document.activeElement !== document.body ? document.activeElement : null;
       flow.hidden = false;
       document.documentElement.classList.add('flow-open');
       requestAnimationFrame(() => flow.classList.add('is-open'));
@@ -3027,8 +3040,24 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     function close(){
       flow.classList.remove('is-open');
       document.documentElement.classList.remove('flow-open');
-      setTimeout(() => { flow.hidden = true; }, 300);
+      setTimeout(() => {
+        flow.hidden = true;
+        // back to where you were (the pill or the email box), or the pill if that is gone
+        const back = opener && document.contains(opener) && opener.offsetParent !== null ? opener : document.getElementById('pillJoin');
+        if (back) back.focus({preventScroll:true});
+      }, 300);
     }
+    // keyboard: Tab and Shift+Tab stay inside the dialog while it is open
+    flow.addEventListener('keydown', e => {
+      if (e.key !== 'Tab' || flow.hidden) return;
+      const items = [...flow.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),[tabindex]:not([tabindex="-1"])')]
+        .filter(el => el.offsetParent !== null && !el.closest('[hidden]') && !el.closest('.flow__screen:not(.is-on)'));
+      if (!items.length) return;
+      const first = items[0], last = items[items.length - 1];
+      if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+      else if (!flow.contains(document.activeElement)){ e.preventDefault(); first.focus(); }
+    });
     flow.querySelector('.flow__logo').addEventListener('click', e => { e.preventDefault(); close(); });
     $('#flowClose').addEventListener('click', close);
     addEventListener('keydown', e => {
@@ -4278,6 +4307,26 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       });
     };
     mount();
+  })();
+</script>
+<script>
+  document.querySelector('.skip')?.addEventListener('click', e => {
+    const input = document.querySelector('#signup input');
+    if (!input) return;
+    e.preventDefault();
+    window.__mgNavUntil = performance.now() + 2500;   // jump straight there, past the pinned sections
+    input.closest('.band')?.scrollIntoView({block:'center'});
+    setTimeout(() => input.focus({preventScroll:true}), 400);
+  });
+  // "Inside Magasaka" tabs: left and right arrow keys move between them, as tabs should
+  (() => {
+    const tabs = [...document.querySelectorAll('.tabs [role="tab"]')];
+    tabs.forEach((t, i) => t.addEventListener('keydown', e => {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      e.preventDefault();
+      const n = tabs[(i + (e.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length];
+      n.focus(); n.click();
+    }));
   })();
 </script>
 </body>
