@@ -1435,7 +1435,7 @@ html.mf-open{overscroll-behavior:none}
 <style>
 /* all screens: Mang Juan steps aside at the closing call-to-action (same moment the pill does), so nothing sits on
    the footer links and social icons; he comes back as soon as you scroll up */
-.juan{transition:opacity .35s ease,transform .45s cubic-bezier(.22,1,.36,1)}
+.juan{transition:opacity .35s ease,transform .45s cubic-bezier(.22,1,.36,1),box-shadow .3s}
 body:has(.pill.pill--away) .juan{opacity:0;pointer-events:none;transform:translateY(16px)}
 body:has(.pill.pill--away) .juan-say{display:none}
 </style>
