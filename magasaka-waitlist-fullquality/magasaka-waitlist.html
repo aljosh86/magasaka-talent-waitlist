@@ -1778,11 +1778,8 @@ html.mf-open{overscroll-behavior:none}
         <p class="flow__label">First name</p>
         <div class="flow__pill"><input id="flowName" type="text" autocomplete="given-name" placeholder="Your first name" aria-label="First name" maxlength="100" aria-describedby="flowNameError"></div>
         <p class="flow__label flow__label--place">Where are you based? <span>(optional)</span></p>
-        <div class="flow__search flow__place">
-          <div class="flow__pill"><input id="flowPlace" type="text" autocomplete="off" placeholder="City or province" aria-label="City or province (optional)" maxlength="80"
-            role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="flowPlaceList"></div>
-          <div class="flow__results" id="flowPlaceList" role="listbox" aria-label="Places" hidden></div>
-        </div>
+        <div class="flow__pill"><input id="flowPlace" type="text" list="flowPlaces" autocomplete="off" placeholder="City or province" aria-label="City or province (optional)" maxlength="80"></div>
+        <datalist id="flowPlaces"></datalist>
         <button class="flow__btn" id="flowNameBtn" type="submit" disabled>Continue</button>
         <p class="flow__error" id="flowNameError" role="alert" hidden></p>
       </div>
@@ -2931,49 +2928,9 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     // --- where they're based: provinces and cities, each with its spot on the map image (x, y as fractions)
     const PLACES = [["Abra",0.4276,0.2295],["Agusan del Norte",0.7763,0.7006],["Agusan del Sur",0.791,0.7339],["Aklan",0.532,0.5666],["Albay",0.6301,0.4732],["Angeles City",0.4125,0.3654],["Antique",0.4768,0.5505],["Apayao",0.4547,0.1986],["Aurora",0.4978,0.3103],["Bacolod City",0.5878,0.6172],["Baguio City",0.4135,0.2947],["Basilan",0.52,0.8506],["Bataan",0.4,0.3929],["Batanes",0.5121,0.0303],["Batangas",0.448,0.4338],["Benguet",0.4197,0.2868],["Biliran",0.6977,0.5649],["Bohol",0.6802,0.6627],["Bukidnon",0.7354,0.7667],["Bulacan",0.4427,0.3758],["Butuan City",0.7749,0.7135],["Cagayan",0.4894,0.2094],["Cagayan de Oro City",0.7128,0.7407],["Caloocan, Metro Manila",0.4417,0.3938],["Camarines Norte",0.5668,0.4188],["Camarines Sur",0.6156,0.448],["Camiguin",0.7149,0.7006],["Capiz",0.562,0.5774],["Catanduanes",0.6783,0.4392],["Cavite",0.4304,0.4153],["Cebu",0.6397,0.6391],["Cebu City",0.6547,0.6372],["Cotabato",0.7221,0.8073],["Cotabato City",0.6801,0.8099],["Dagupan City",0.3942,0.3156],["Davao City",0.7782,0.8182],["Davao Occidental",0.7792,0.873],["Davao Oriental",0.8294,0.819],["Davao de Oro",0.8073,0.7928],["Davao del Norte",0.7829,0.797],["Davao del Sur",0.7727,0.8591],["Dinagat Islands",0.7792,0.6469],["Eastern Samar",0.7905,0.6132],["General Santos City",0.7454,0.871],["Guimaras",0.5603,0.6229],["Ifugao",0.4581,0.2709],["Iligan City",0.691,0.7517],["Ilocos Norte",0.4212,0.194],["Ilocos Sur",0.4134,0.2622],["Iloilo",0.5588,0.5998],["Iloilo City",0.5552,0.6124],["Isabela",0.5107,0.2611],["Kalinga",0.466,0.2339],["La Union",0.4011,0.2862],["Laguna",0.4649,0.4215],["Lanao del Norte",0.671,0.7632],["Lanao del Sur",0.6866,0.7719],["Lapu-Lapu City",0.6591,0.6374],["Las Piñas, Metro Manila",0.4421,0.4039],["Leyte",0.7267,0.5985],["Lucena City",0.4846,0.4339],["Maguindanao",0.694,0.8236],["Makati, Metro Manila",0.445,0.3987],["Malabon, Metro Manila",0.4398,0.3927],["Mandaluyong, Metro Manila",0.4462,0.3973],["Mandaue City",0.6572,0.6353],["Manila, Metro Manila",0.4416,0.3964],["Marikina, Metro Manila",0.4509,0.3944],["Marinduque",0.5135,0.4649],["Masbate",0.6336,0.5292],["Misamis Occidental",0.6413,0.7474],["Misamis Oriental",0.7347,0.7248],["Mountain Province",0.455,0.2562],["Muntinlupa, Metro Manila",0.4463,0.4058],["Naga City",0.6033,0.4513],["Navotas, Metro Manila",0.4389,0.3938],["Negros Occidental",0.5878,0.631],["Negros Oriental",0.5912,0.6678],["Northern Samar",0.7215,0.5207],["Nueva Ecija",0.4423,0.335],["Nueva Vizcaya",0.4498,0.2965],["Occidental Mindoro",0.4487,0.505],["Olongapo City",0.3899,0.3813],["Oriental Mindoro",0.4688,0.4941],["Ormoc City",0.7039,0.5969],["Palawan",0.2164,0.7087],["Pampanga",0.4169,0.3724],["Pangasinan",0.3942,0.3248],["Parañaque, Metro Manila",0.4436,0.4022],["Pasay, Metro Manila",0.4424,0.3991],["Pasig, Metro Manila",0.4498,0.3978],["Pateros, Metro Manila",0.4485,0.3992],["Puerto Princesa City",0.2721,0.6602],["Quezon",0.5184,0.4369],["Quezon City, Metro Manila",0.4473,0.392],["Quirino",0.491,0.3007],["Rizal",0.4632,0.3915],["Romblon",0.5563,0.5192],["Samar",0.7352,0.5515],["San Juan, Metro Manila",0.4457,0.3961],["Santiago City",0.4798,0.2757],["Sarangani",0.7574,0.8811],["Siquijor",0.6326,0.7003],["Sorsogon",0.6621,0.5005],["South Cotabato",0.7212,0.8614],["Southern Leyte",0.751,0.6503],["Sultan Kudarat",0.69,0.8492],["Sulu",0.4326,0.9046],["Surigao del Norte",0.8055,0.6731],["Surigao del Sur",0.8156,0.721],["Tacloban City",0.7338,0.5844],["Taguig, Metro Manila",0.447,0.4006],["Tarlac",0.4031,0.347],["Tawi-Tawi",0.3572,0.9456],["Valenzuela, Metro Manila",0.4418,0.3907],["Zambales",0.3812,0.3708],["Zamboanga City",0.5197,0.8203],["Zamboanga Sibugay",0.5834,0.7825],["Zamboanga del Norte",0.5691,0.7649],["Zamboanga del Sur",0.6115,0.7751]];
     const placeInput = $('#flowPlace');
-    const placeList = $('#flowPlaceList');
-    // a small suggestion list in the same style as the skills search (the browser's own list was a full-height dark panel)
-    const ABROAD = 'Outside the Philippines';
-    const kindOf = p => p.endsWith(', Metro Manila') ? 'Metro Manila' : p.endsWith(' City') ? 'City' : 'Province';
-    const nameOf = p => p.replace(/, Metro Manila$/, '');
-    let placeHits = [], placeAt = -1;
-    function closePlaces(){
-      if (placeList.hidden) return;
-      placeInput.setAttribute('aria-expanded', 'false');
-      placeList.classList.add('is-closing');
-      setTimeout(() => { placeList.hidden = true; placeList.classList.remove('is-closing'); }, 180);
-    }
-    function choosePlace(p){ placeInput.value = p; placeHits = []; closePlaces(); }
-    function renderPlaces(){
-      const q = placeInput.value.trim().toLowerCase();
-      if (!q){ closePlaces(); return; }
-      const all = [...PLACES.map(r => r[0]), ABROAD];
-      placeHits = all.filter(p => p.toLowerCase().includes(q))
-        .sort((a, b) => (a.toLowerCase().startsWith(q) ? 0 : 1) - (b.toLowerCase().startsWith(q) ? 0 : 1)).slice(0, 5);
-      placeList.innerHTML = ''; placeAt = -1;
-      if (!placeHits.length){ closePlaces(); return; }
-      placeHits.forEach((p, i) => {
-        const r = row(p === ABROAD ? p : nameOf(p), p === ABROAD ? '' : kindOf(p));
-        r.setAttribute('role', 'option'); r.id = 'flowPlace-' + i;
-        r.addEventListener('mousedown', e => e.preventDefault());       // keep focus in the input
-        r.addEventListener('click', () => choosePlace(p));
-        placeList.appendChild(r);
-      });
-      placeList.hidden = false; placeList.classList.remove('is-closing');
-      placeInput.setAttribute('aria-expanded', 'true');
-    }
-    placeInput.addEventListener('input', renderPlaces);
-    placeInput.addEventListener('blur', () => setTimeout(closePlaces, 120));
-    placeInput.addEventListener('keydown', e => {
-      if (placeList.hidden || !placeHits.length) return;
-      if (e.key === 'ArrowDown' || e.key === 'ArrowUp'){
-        e.preventDefault();
-        placeAt = (placeAt + (e.key === 'ArrowDown' ? 1 : -1) + placeHits.length) % placeHits.length;
-        [...placeList.children].forEach((c, i) => c.classList.toggle('is-active', i === placeAt));
-        placeInput.setAttribute('aria-activedescendant', 'flowPlace-' + placeAt);
-      } else if (e.key === 'Enter' && placeAt > -1){ e.preventDefault(); choosePlace(placeHits[placeAt]); }
-      else if (e.key === 'Escape'){ closePlaces(); }
-    });
+    const placeList = $('#flowPlaces');
+    PLACES.forEach(([p]) => { const o = document.createElement('option'); o.value = p; placeList.appendChild(o); });
+    { const o = document.createElement('option'); o.value = 'Outside the Philippines'; placeList.appendChild(o); }
     const findPlace = v => { v = (v || '').trim().toLowerCase(); return PLACES.find(([p]) => p.toLowerCase() === v)
       || PLACES.find(([p]) => p.toLowerCase().replace(/ city$|, metro manila$/, '') === v.replace(/ city$/, '')); };
     if (state.location) placeInput.value = state.location;
