@@ -2034,22 +2034,47 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       im.onerror = res; im.src = `${SEQ.dir}${TIER}/${String(i + 1).padStart(4, '0')}.webp`;
     });
   }
-  // load the opening frames first, then coarse-to-fine so the whole timeline is scrubbable early
-  const order = [];
-  if (reduce) order.push(STATIC_FRAME); else {
-    const seen = new Uint8Array(N), add = i => { if (i < N && !seen[i]) { seen[i] = 1; order.push(i); } };
+  // Loading plan (desktop used to fetch all 616 HD frames, about 95MB, on arrival):
+  //  1. the first 24 frames, so the opening plays at once;
+  //  2. a coarse pass over the whole timeline (every 8th frame, ~12MB on desktop) so any scroll position has a picture;
+  //  3. the in-between frames only near where the reader is (mostly ahead of them), as they scroll.
+  // Every other frame is the finest anyone gets (every fourth on Save-Data); at this scroll length that still reads smooth.
+  const saveData = !!(navigator.connection && navigator.connection.saveData);
+  const finest = saveData ? 4 : 2;
+  const seen = new Uint8Array(N), upfront = [];
+  const add = i => { if (i < N && !seen[i]) { seen[i] = 1; upfront.push(i); } };
+  if (reduce) add(STATIC_FRAME); else {
     for (let i = 0; i < 24; i++) add(i);
-    // phones skip every other frame (half the download, still smooth on a small screen); on Save-Data, every fourth
-    const saveData = !!(navigator.connection && navigator.connection.saveData);
-    const finest = TIER === 'sd' ? (saveData ? 4 : 2) : 1;
-    for (const step of [32, 16, 8, 4, 2, 1]) if (step >= finest) for (let i = 0; i < N; i += step) add(i);
+    for (const step of [32, 16, 8]) for (let i = 0; i < N; i += step) add(i);
   }
   let firstReady;
   const framesReady = new Promise(r => firstReady = r);
+  // near-the-reader filler: picks the closest missing frame ahead (and a little behind), a few at a time
+  let inflight = 0, coarseDone = false;
+  const AHEAD = 110, BEHIND = 30, PARALLEL = 6;
+  function nextNear(){
+    for (let d = 0; d <= AHEAD; d++){
+      for (const i of d <= BEHIND ? [want + d, want - d] : [want + d]){
+        const k = i - (i % finest);
+        if (k >= 0 && k < N && !seen[k]) return k;
+      }
+    }
+    return -1;
+  }
+  function fill(){
+    if (reduce || !coarseDone) return;
+    while (inflight < PARALLEL){
+      const k = nextNear(); if (k < 0) return;
+      seen[k] = 1; inflight++;
+      load(k).then(() => { inflight--; fill(); });
+    }
+  }
+  addEventListener('scroll', () => { if (coarseDone) fill(); }, {passive:true});
   (async () => {
-    await Promise.all(order.slice(0, 24).map(load));
+    await Promise.all(upfront.slice(0, 24).map(load));
     size(); firstReady();
-    for (let k = 24; k < order.length; k += 12) await Promise.all(order.slice(k, k + 12).map(load));
+    for (let k = 24; k < upfront.length; k += 12) await Promise.all(upfront.slice(k, k + 12).map(load));
+    coarseDone = true; fill();
   })();
 
   // ---- intro loader: use the supplied logo construction and counter-portal animation
