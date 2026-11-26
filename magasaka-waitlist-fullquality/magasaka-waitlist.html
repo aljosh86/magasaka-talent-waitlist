@@ -1364,12 +1364,12 @@ html.mf-open{overscroll-behavior:none}
    (shape from Natural Earth, rendered on Higgsfield) */
 .flow::before{content:"";position:fixed;z-index:-1;left:72%;top:26%;width:min(138vh,110vw);aspect-ratio:1200/1607;
   transform:translate(-50%,-50%) perspective(550px) rotateX(70deg) rotateY(5deg) rotateZ(51deg);
-  background:url(images/ph-map.webp?v=4) center/contain no-repeat;opacity:.16;pointer-events:none}
+  background:url(images/ph-map.webp?v=4) center/contain no-repeat;opacity:.26;filter:grayscale(1) blur(3px);pointer-events:none}
 /* a soft white fade along the bottom of the screen */
 .flow::after{content:"";position:fixed;z-index:-1;left:0;right:0;bottom:0;height:38vh;pointer-events:none;
   background:linear-gradient(to bottom,rgba(255,255,255,0),rgba(255,255,255,.85))}
 @media (max-width:640px){
-  .flow::before{left:50%;top:62%;width:150vw;transform:translate(-50%,-50%) perspective(1300px) rotateX(55deg) rotateZ(80deg);opacity:.45}
+  .flow::before{left:50%;top:62%;width:150vw;transform:translate(-50%,-50%) perspective(1300px) rotateX(55deg) rotateZ(80deg);opacity:.55}
   .flow::after{height:30vh}
 }
 </style>
