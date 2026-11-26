@@ -1287,6 +1287,9 @@ html.mf-open{overscroll-behavior:none}
   .flow__next li::before{width:20px;height:20px;font-size:11px}
   .flow__read{font-size:13.5px}
 }
+/* Inside Magasaka: two of the four screenshots are 24px narrower (3048 vs 3072), which made the frame
+   change height when switching tabs. One fixed 3:2 frame for all four, pinned to the top. */
+.concept__shot img{aspect-ratio:3/2;object-fit:cover;object-position:top center}
 </style>
 </head>
 <body>
