@@ -3693,39 +3693,41 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     function close(){ box.hidden = true; btn.setAttribute('aria-expanded', 'false'); }
     // soft sounds, synthesised on the spot; only ever after someone has tapped him
     let ac = null;
-    // an old man's closed-mouth hum: a low buzzy voice with a slight wobble, a breath of rasp,
-    // filtered through nasal "mm" resonances. pts = [time, loudness 0..1, pitch Hz]
-    const hum = (pts, len) => {
-      const t0 = ac.currentTime + .01, out = ac.createGain(), vol = .11;
+    // a spry old man's voice: a bright buzzy tone with a quick shake, a little breath, shaped into a vowel.
+    // pts = [time, loudness 0..1, pitch Hz]; vowel = formants [Hz, Q, gain]
+    const O = [[520, 5, 1], [950, 6, .5], [2500, 8, .15]], E = [[480, 5, 1], [1850, 8, .45], [2600, 8, .2]];
+    const voice = (pts, len, vowel) => {
+      const t0 = ac.currentTime + .01, out = ac.createGain(), vol = .12;
       out.gain.setValueAtTime(0, t0);
       pts.forEach(([at, v]) => out.gain.linearRampToValueAtTime(v * vol, t0 + at));
       out.gain.linearRampToValueAtTime(0, t0 + len);
       const o = ac.createOscillator(); o.type = 'sawtooth';
       o.frequency.setValueAtTime(pts[0][2], t0);
       pts.forEach(([at, , f]) => o.frequency.linearRampToValueAtTime(f, t0 + at));
-      const wob = ac.createOscillator(), wobAmt = ac.createGain();      // the shake in an older voice
-      wob.frequency.value = 6.2; wobAmt.gain.value = 3.2; wob.connect(wobAmt).connect(o.frequency);
+      const wob = ac.createOscillator(), wobAmt = ac.createGain();      // the quick shake of an older voice
+      wob.frequency.value = 7; wobAmt.gain.value = 4; wob.connect(wobAmt).connect(o.frequency);
       const n = ac.createBufferSource(), buf = ac.createBuffer(1, ac.sampleRate * len | 0, ac.sampleRate), d = buf.getChannelData(0);
       for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
-      n.buffer = buf; const rasp = ac.createGain(); rasp.gain.value = .05;
-      const mix = ac.createGain(); o.connect(mix); n.connect(rasp).connect(mix);
-      const low = ac.createBiquadFilter(); low.type = 'lowpass'; low.frequency.value = 1300; low.Q.value = .5;
+      n.buffer = buf; const breath = ac.createGain(); breath.gain.value = .08;
+      const mix = ac.createGain(); o.connect(mix); n.connect(breath).connect(mix);
+      const low = ac.createBiquadFilter(); low.type = 'lowpass'; low.frequency.value = 3200; low.Q.value = .5;
       mix.connect(low);
-      [[260, 4, 1], [950, 6, .28], [2300, 7, .1]].forEach(([f, q, g]) => {   // nasal formants
-        const b = ac.createBiquadFilter(), bg = ac.createGain();
-        b.type = 'bandpass'; b.frequency.value = f; b.Q.value = q; bg.gain.value = g;
-        low.connect(b).connect(bg).connect(out);
+      vowel.forEach(([f, q, g]) => {
+        const bp = ac.createBiquadFilter(), bg = ac.createGain();
+        bp.type = 'bandpass'; bp.frequency.value = f; bp.Q.value = q; bg.gain.value = g;
+        low.connect(bp).connect(bg).connect(out);
       });
       out.connect(ac.destination);
-      [o, wob, n].forEach(s => { s.start(t0); s.stop(t0 + len + .05); });
+      [o, wob, n].forEach(x => { x.start(t0); x.stop(t0 + len + .05); });
     };
     const sound = kind => {
       if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       try {
         ac = ac || new (window.AudioContext || window.webkitAudioContext)();
         if (ac.state === 'suspended') ac.resume();
-        if (kind === 'poke') hum([[0, 0, 98], [.07, .9, 104], [.2, .8, 128]], .27);            // "hm?" a little surprised
-        else hum([[0, 0, 112], [.05, 1, 108], [.16, .7, 96], [.21, .15, 94], [.27, .9, 104], [.42, .7, 116]], .5);  // "mm-hm"
+        if (kind === 'poke') voice([[0, 0, 150], [.02, 1, 175], [.09, 1, 215], [.17, .6, 190]], .22, O);   // "oy!"
+        else voice([[0, 0, 200], [.015, 1, 205], [.07, .8, 195], [.09, 0, 190], [.13, 0, 215], [.145, 1, 220], [.2, .8, 205],
+                    [.22, 0, 200], [.26, 0, 225], [.275, .9, 230], [.36, .5, 200]], .4, E);                   // "he-he-he!"
       } catch(e){}
     };
     window.__mgJuanSound = sound;
