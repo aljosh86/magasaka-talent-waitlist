@@ -4148,7 +4148,9 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       if (busy || !matchMedia('(max-width: 640px)').matches) return;
       clearTimeout(t);
       t = setTimeout(() => {
-        const top = sec.getBoundingClientRect().top, h = innerHeight;
+        // layout position, not the on-screen one: the section's ease-in nudges it a few pixels while it appears
+        let y = 0; for (let el = sec; el; el = el.offsetParent) y += el.offsetTop;
+        const top = y - scrollY, h = innerHeight;
         if (Math.abs(top) > 2 && Math.abs(top) < h * .3){
           busy = true;
           scrollTo({top: scrollY + top, behavior: 'smooth'});
