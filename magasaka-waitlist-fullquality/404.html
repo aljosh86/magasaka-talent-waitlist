@@ -20,19 +20,19 @@ header{align-self:stretch;padding:calc(env(safe-area-inset-top,0px) + 30px) clam
 .logo{display:inline-block;width:154px;height:20px;color:var(--ink)}
 .logo svg{display:block;width:100%;height:100%}
 .logo svg path[fill]{fill:currentColor}
-.head{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;padding:24px 20px 0}
+.head{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;padding:24px 20px 0}
 .eyebrow{margin:0;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#958d84}
 h1{margin:0;font-weight:500;font-size:clamp(34px,4.4vw,58px);line-height:1.04;letter-spacing:-.03em}
 /* the paddy, in the middle of everything; its misty edges melt into the page */
-.stage{position:relative;width:min(1080px,96vw);aspect-ratio:1600/1195;margin-top:-1.5%}
+.stage{position:relative;z-index:1;width:min(1080px,96vw);aspect-ratio:1600/1195;margin:4px 0 -2%}
 .stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:crosshair;touch-action:manipulation;
-  -webkit-mask-image:radial-gradient(ellipse 58% 60% at 50% 50%,#000 72%,transparent 100%);mask-image:radial-gradient(ellipse 58% 60% at 50% 50%,#000 72%,transparent 100%)}
+  -webkit-mask-image:radial-gradient(ellipse 56% 54% at 50% 50%,#000 70%,transparent 100%);mask-image:radial-gradient(ellipse 56% 54% at 50% 50%,#000 70%,transparent 100%)}
 .stage canvas:focus-visible{outline:none}
-.stage:focus-within::after{content:"";position:absolute;inset:6% 4%;border-radius:24px;outline:2px solid var(--ink);outline-offset:4px;pointer-events:none}
+.stage:has(canvas:focus-visible)::after{content:"";position:absolute;inset:6% 4%;border-radius:24px;outline:2px solid var(--ink);outline-offset:4px;pointer-events:none}
 .hint{position:absolute;left:50%;bottom:4%;transform:translateX(-50%);margin:0;padding:7px 14px;border-radius:100px;background:rgba(255,255,255,.72);
   -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);font-size:13px;color:#4b4741;white-space:nowrap;pointer-events:none;transition:opacity .6s}
 .hint.is-gone{opacity:0}
-.foot{display:flex;flex-direction:column;align-items:center;gap:22px;text-align:center;padding:0 20px 40px;margin-top:-2%;position:relative}
+.foot{display:flex;flex-direction:column;align-items:center;gap:22px;text-align:center;padding:0 20px 40px;position:relative;z-index:2}
 .sub{margin:0;color:var(--muted);font-size:clamp(16px,1.3vw,18px);max-width:480px}
 .juan{display:flex;align-items:flex-end;justify-content:center;gap:12px;min-height:56px}
 .juan svg{flex:none;width:48px;height:48px;border-radius:50%;background:radial-gradient(circle at 32% 26%,#4f7a36 0%,#2f4f22 55%,#1c3314 100%);box-shadow:0 10px 24px -10px rgba(20,40,10,.6)}
@@ -53,8 +53,7 @@ footer{margin-top:auto;padding:0 20px calc(env(safe-area-inset-bottom,0px) + 24p
 footer a{color:inherit}
 @media (max-width:640px){
   .head{padding-top:28px}
-  .stage{width:128vw;margin-top:-4%}
-  .foot{margin-top:-6%}
+  .stage{width:118vw;margin:0 0 -4%}
 }
 @media (prefers-reduced-motion: reduce){.juan svg .mj__eyes{animation:none}.btn,.bubble{transition:none}}
 </style>
@@ -154,9 +153,9 @@ footer a{color:inherit}
       const off = document.createElement('canvas'); off.width = 640; off.height = 300;
       const o = off.getContext('2d');
       o.textAlign = 'center'; o.textBaseline = 'middle'; o.font = '800 270px "Inter Display","Inter",Arial,sans-serif'; o.fillText('404', 320, 158);
-      const d = o.getImageData(0, 0, 640, 300).data, pts = [], step = 17;
+      const d = o.getImageData(0, 0, 640, 300).data, pts = [], step = 22;
       for (let y = 4; y < 300; y += step) for (let x = 4; x < 640; x += step)
-        if (d[(y * 640 + x) * 4 + 3] > 120) pts.push({u: .14 + x / 640 * .72 + rnd(-.004, .004), v: .1 + y / 300 * .74 + rnd(-.004, .004)});
+        if (d[(y * 640 + x) * 4 + 3] > 120) pts.push({u: .08 + x / 640 * .84 + rnd(-.005, .005), v: .08 + y / 300 * .8 + rnd(-.005, .005)});
       pts.sort((a, b) => a.v - b.v || a.u - b.u);
       const now = performance.now() + 400;
       pts.forEach((p, i) => seeds.push(seed(p.u, p.v, reduce ? 0 : now + i * 14)));
@@ -167,7 +166,7 @@ footer a{color:inherit}
       if (grow <= 0) return;
       const e = 1 - Math.pow(1 - grow, 3);
       const p = proj(sd.u, sd.v), [fx, fw] = SHEET.frames[sd.f];
-      const hpx = W * .075 * p.s * sd.h * e, wpx = hpx * fw / SHEET.h;
+      const hpx = W * .068 * p.s * sd.h * e, wpx = hpx * fw / SHEET.h;
       const dx = p.x - mouse.x, dy = (p.y - hpx * .5) - mouse.y, dist = Math.hypot(dx, dy);
       const push = dist < 110 ? (1 - dist / 110) * Math.sign(dx || 1) * .35 : 0;
       const wind = reduce ? 0 : Math.sin(now * .0014 + sd.u * 6 + sd.v * 3 + sd.ph) * .07 + Math.sin(now * .0037 + sd.ph) * .02;
