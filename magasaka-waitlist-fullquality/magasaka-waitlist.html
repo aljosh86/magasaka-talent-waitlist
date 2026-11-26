@@ -1486,7 +1486,7 @@ body:has(.pill.pill--away) .juan-say{display:none}
 @media (max-width:640px){.mf__text .mf__sign{display:flex;align-items:center;gap:.5em;white-space:nowrap}.mf__text .mf__drawing{display:block;flex:1 1 0;min-width:0;width:100%;height:auto;max-height:6.5em;object-fit:contain;object-position:left center;mix-blend-mode:multiply}}
 </style>
 <style>
-/* Inside Magasaka: click the Opportunity screen and it grows to fill the screen */
+/* Inside Magasaka: click an app screen and it grows to fill the screen */
 .concept__shot.is-zoomable{cursor:zoom-in}
 @media (hover:hover){.concept__shot.is-zoomable .shot{transition:opacity .6s ease,transform .7s cubic-bezier(.22,1,.36,1)}.concept__shot.is-zoomable:hover .shot{transform:scale(1.008)}}
 .szoom{position:fixed;inset:0;z-index:200;display:grid;place-items:center;cursor:zoom-out;visibility:hidden;touch-action:none}
@@ -4396,25 +4396,35 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
   })();
 </script>
 <script>
-// Inside Magasaka: click the Opportunity screen and it grows from where it sits to fill the screen; click, Esc or x to put it back.
+// Inside Magasaka: click an app screen and it grows from where it sits to fill the screen; click, Esc or x to put it back.
+// On phones, wherever you slide the big picture to is where the small one stays (and where the big one opens next time).
 // Only transforms move, so the graphics card does all the work: an outer frame grows from the part of the small picture you can
 // see while the picture inside grows from the whole small picture. Both follow a soft spring, sampled into keyframes.
 (() => {
-  const shot = document.getElementById('shot'), tab = document.getElementById('tab-1');
-  if (!shot || !tab || !Element.prototype.animate) return;
-  const SRC = 'images/app-1.png', sec = shot.closest('.concept'), layers = shot.querySelectorAll('.shot');
+  const shot = document.getElementById('shot'), tabs = [...document.querySelectorAll('.tab')];
+  if (!shot || !tabs.length || !Element.prototype.animate) return;
+  const sec = shot.closest('.concept'), layers = shot.querySelectorAll('.shot');
   const box = document.createElement('div'); box.className = 'szoom';
-  box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true'); box.setAttribute('aria-label', 'Opportunity screen, enlarged');
-  box.innerHTML = '<div class="szoom__bg"></div><div class="szoom__pan"><div class="szoom__frame"><img class="szoom__img" alt="The Opportunity screen of the Magasaka talent app" decoding="async"></div><div class="szoom__shade"></div></div><button class="szoom__x" type="button" aria-label="Close">&times;</button>';
+  box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true'); 
+  box.innerHTML = '<div class="szoom__bg"></div><div class="szoom__pan"><div class="szoom__frame"><img class="szoom__img" alt="" decoding="async"></div><div class="szoom__shade"></div></div><button class="szoom__x" type="button" aria-label="Close">&times;</button>';
   document.body.appendChild(box);
   const bg = box.querySelector('.szoom__bg'), pan = box.querySelector('.szoom__pan'), frame = box.querySelector('.szoom__frame'), img = box.querySelector('.szoom__img'), x = box.querySelector('.szoom__x');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)'), phone = matchMedia('(max-width:640px)');
-  let open = false, busy = false, ready = null, anims = [];
-  const prep = () => ready || (ready = (img.src = SRC, img.decode ? img.decode().catch(() => {}) : Promise.resolve()));
-  if ('IntersectionObserver' in window) new IntersectionObserver((es, o) => { if (es.some(e => e.isIntersecting)) { prep(); o.disconnect(); } }, {rootMargin: '400px'}).observe(shot);
-  const on = () => tab.getAttribute('aria-selected') === 'true';
-  const sync = () => { shot.classList.toggle('is-zoomable', on()); if (on()) { shot.tabIndex = 0; shot.setAttribute('aria-label', 'Opportunity screen. Press to enlarge'); } else shot.removeAttribute('tabindex'); };
-  new MutationObserver(sync).observe(tab, {attributes: true, attributeFilter: ['aria-selected']}); sync();
+  let open = false, busy = false, anims = [], shift = 0;
+  const cur = () => tabs.find(t => t.getAttribute('aria-selected') === 'true') || tabs[0];
+  const srcOf = t => (t.dataset.shot || '').split(',')[0];
+  // decode each big picture before it is needed, so the first frames of the zoom are not spent loading it
+  const cache = {};
+  const decode = src => cache[src] || (cache[src] = (() => { const i = new Image(); i.src = src; return i.decode ? i.decode().catch(() => {}) : Promise.resolve(); })());
+  if ('IntersectionObserver' in window) new IntersectionObserver((es, o) => { if (es.some(e => e.isIntersecting)) { tabs.forEach(t => decode(srcOf(t))); o.disconnect(); } }, {rootMargin: '400px'}).observe(shot);
+  const prep = () => { const src = srcOf(cur()); return decode(src).then(() => { if (img.getAttribute('src') !== src) { img.src = src; return img.decode ? img.decode().catch(() => {}) : null; } }); };
+  const sync = () => { box.setAttribute('aria-label', cur().textContent.trim() + ' screen, enlarged'); img.alt = 'The ' + cur().textContent.trim() + ' screen of the Magasaka talent app'; shot.setAttribute('aria-label', cur().textContent.trim() + ' screen. Press to enlarge'); };
+  shot.classList.add('is-zoomable'); shot.tabIndex = 0;
+  tabs.forEach(t => new MutationObserver(sync).observe(t, {attributes: true, attributeFilter: ['aria-selected']})); sync();
+  // phones: how far the small picture is slid to the left, so the part you looked at stays in view
+  const slideMax = () => { const a = shot.getBoundingClientRect(); return Math.min(0, innerWidth - 16 - (a.right - shift)); };
+  const setShift = v => { shift = v; shot.style.translate = v ? v + 'px 0' : ''; };
+  addEventListener('resize', () => { if (shift) setShift(Math.max(shift, slideMax())); });
 
   const R = r => ({l: r.left, t: r.top, w: r.width, h: r.height});
   // the small picture, and the part of it you can actually see
@@ -4443,26 +4453,32 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
   const fade = (to, ms) => bg.animate([{opacity: getComputedStyle(bg).opacity}, {opacity: to}], {duration: ms, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'forwards'});
 
   const show = () => {
-    if (open || busy || !on()) return;
+    if (open || busy) return;
     open = busy = true; window.__mgShotHold = true;
     prep().then(() => {
-      pan.scrollLeft = 0;
       box.classList.add('is-open');
       const base = R(frame.getBoundingClientRect()), sm = small();
-      if (reduce.matches) { bg.style.opacity = 1; box.classList.add('is-shown', 'is-settled'); busy = false; x.focus({preventScroll: true}); return; }
-      const going = run(base, sm.vis, base, sm.img, base, 780, phone.matches ? 6 : 8, phone.matches ? 10 : 14);
+      const room = Math.max(0, base.w + 32 - innerWidth), m = slideMax();
+      const off = phone.matches && m < 0 ? Math.round(room * Math.min(1, shift / m)) : 0;
+      const to = {...base, l: base.l - off};
+      const settle = () => { anims.forEach(a => a.cancel()); anims = []; box.classList.add('is-settled'); pan.scrollLeft = off; busy = false; x.focus({preventScroll: true}); };
+      if (reduce.matches) { bg.style.opacity = 1; box.classList.add('is-shown'); return settle(); }
+      const going = run(base, sm.vis, to, sm.img, to, 780, phone.matches ? 6 : 8, phone.matches ? 10 : 14);
       layers.forEach(l => l.style.visibility = 'hidden');
       fade(1, 520);
       box.classList.add('is-shown');
-      going.then(() => { busy = false; box.classList.add('is-settled'); x.focus({preventScroll: true}); });
+      going.then(settle);
     });
   };
   const hide = () => {
     if (!open || busy) return;
     busy = true;
     const now = R(frame.getBoundingClientRect());        // where it is now, even if slid sideways on a phone
+    const room = pan.scrollWidth - pan.clientWidth, frac = phone.matches && room > 0 ? pan.scrollLeft / room : 0;
     box.classList.remove('is-settled', 'is-shown');
-    const base = R(frame.getBoundingClientRect()), sm = small();   // leaving the slide resets it; animate from where it was
+    const base = R(frame.getBoundingClientRect());       // leaving the slide resets it; animate from where it was
+    if (phone.matches) setShift(Math.round(slideMax() * frac));
+    const sm = small();
     const done = () => {
       box.classList.remove('is-open'); layers.forEach(l => l.style.visibility = '');
       anims.forEach(a => a.cancel()); anims = []; bg.getAnimations().forEach(a => a.cancel()); bg.style.opacity = '';
