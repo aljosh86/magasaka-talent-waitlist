@@ -1373,6 +1373,15 @@ html.mf-open{overscroll-behavior:none}
   .flow::after{height:30vh}
 }
 </style>
+<style>
+/* phone: "What changes here" sits on the same left edge as the card label below it, with room to breathe */
+@media (max-width:640px){
+  .changes__head{align-self:stretch;align-items:flex-start;text-align:left}
+  .changes__title{text-align:left;margin:0}
+  .changes{gap:44px}
+  .chcard__label{letter-spacing:.06em}
+}
+</style>
 <script src="waitlist-config.js"></script>
 <script src="waitlist-client.js"></script>
 </head>
