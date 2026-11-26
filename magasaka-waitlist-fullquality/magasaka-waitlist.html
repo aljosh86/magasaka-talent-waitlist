@@ -1482,7 +1482,7 @@ html.mf-open{overscroll-behavior:none}
 </clipPath>
 </defs>
 </svg></a>
-  <button class="nav__sound" id="soundBtn" type="button" aria-pressed="false" aria-label="Play calm music" title="Calm music">
+  <button class="nav__sound" id="soundBtn" type="button" aria-pressed="false" aria-label="Play farm sounds" title="Farm sounds">
     <svg class="nav__sound-bars" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 8v4M8 5v10M12 7v6M16 9v2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
   </button>
   <p class="nav__hint" id="soundHint" aria-hidden="true"><span>tap this!</span><svg viewBox="0 0 32 26" fill="none"><path d="M2 22C11 22 21 17 27 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M22.5 8L27 4.5L29.5 9.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></p>
@@ -4082,7 +4082,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
 </script>
 
 <script>
-  // calm music: a slow 78s loop (soft piano, airy pads, a distant bamboo flute), on by default (the button turns it off, and that choice is remembered).
+  // farm sounds: a calm 67s loop from "Tunog ng BUKID | Sound of FARM" (used with the owner's OK), on by default (the button turns it off, and that choice is remembered).
   // Browsers only allow sound after a tap, click or key press, so it fades in on the first one.
   (() => {
     const btn = document.getElementById('soundBtn');
@@ -4093,7 +4093,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     try { want = localStorage.getItem(KEY) !== 'off'; } catch(e){}
     const set = on => {
       btn.setAttribute('aria-pressed', String(on));
-      btn.setAttribute('aria-label', on ? 'Pause the music' : 'Play calm music');
+      btn.setAttribute('aria-label', on ? 'Pause the farm sounds' : 'Play farm sounds');
     };
     const fade = (to, ms, done) => {
       cancelAnimationFrame(fadeT);
@@ -4106,7 +4106,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       fadeT = requestAnimationFrame(step);
     };
     const play = () => {
-      if (!audio){ audio = new Audio('audio/calm.mp3?v=2'); audio.loop = true; audio.preload = 'auto'; audio.volume = 0; }
+      if (!audio){ audio = new Audio('audio/bukid.mp3'); audio.loop = true; audio.preload = 'auto'; audio.volume = 0; }
       return audio.play().then(() => { set(true); fade(VOL, 1600); }, () => set(false));
     };
     const stop = () => { set(false); if (audio) fade(0, 500, () => audio.pause()); };
