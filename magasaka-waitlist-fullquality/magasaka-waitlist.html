@@ -2282,13 +2282,17 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     if (!matchMedia('(prefers-reduced-motion: reduce)').matches) schedule();
   })();
 
-  // FAQ accordion
-  document.querySelectorAll('.faq__item').forEach(item => {
-    const q = item.querySelector('.faq__q');
-    q.addEventListener('click', () => {
+  // FAQ accordion: one answer open at a time
+  const faqItems = document.querySelectorAll('.faq__item');
+  const setFaq = (item, open) => {
+    item.dataset.open = String(open);
+    item.querySelector('.faq__q').setAttribute('aria-expanded', String(open));
+  };
+  faqItems.forEach(item => {
+    item.querySelector('.faq__q').addEventListener('click', () => {
       const open = item.dataset.open !== 'true';
-      item.dataset.open = String(open);
-      q.setAttribute('aria-expanded', String(open));
+      if (open) faqItems.forEach(other => { if (other !== item) setFaq(other, false); });
+      setFaq(item, open);
     });
   });
 
