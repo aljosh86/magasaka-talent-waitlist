@@ -1318,19 +1318,19 @@ html.mf-open{overscroll-behavior:none}
 @keyframes snd{0%,100%{transform:scaleY(.45)}50%{transform:scaleY(1)}}
 @media (prefers-reduced-motion: reduce){.nav__sound[aria-pressed="true"] .nav__sound-bars path{animation:none;transform:none}}
 @media (max-width:640px){.nav__sound{width:40px;height:40px;margin:-10px -10px -10px 0}}
-/* a handwritten nudge under the button while the music is off */
-.nav__hint{position:absolute;right:clamp(46px,calc(3.31vw + 34px),84px);top:calc(env(safe-area-inset-top,0px) + 58px);margin:0;display:flex;align-items:flex-start;gap:2px;
-  font-family:'Magasaka Hand','Segoe Print','Bradley Hand',cursive;font-size:24px;line-height:1;color:var(--field-white);white-space:nowrap;pointer-events:none;
-  opacity:0;transform:translateY(6px) rotate(-3deg);transition:opacity .6s ease,transform .6s cubic-bezier(.22,1,.36,1),color .3s}
-.nav__hint span{padding-top:20px;text-shadow:0 1px 10px rgba(0,0,0,.45)}
+/* a small handwritten nudge, its arrow tip placed (by script) just off the button's lower-left */
+.nav__hint{position:absolute;left:0;top:0;margin:0;display:flex;align-items:flex-start;gap:1px;
+  font-family:'Magasaka Hand','Segoe Print','Bradley Hand',cursive;font-size:17px;line-height:1;color:var(--field-white);white-space:nowrap;pointer-events:none;
+  opacity:0;transition:opacity .6s ease,color .3s}
+.nav__hint span{display:block;padding-top:17px;transform:rotate(-5deg);text-shadow:0 1px 6px rgba(0,0,0,.3)}
 .nav__hint.is-dark span{text-shadow:none}
-.nav__hint svg{width:46px;height:34px;flex:none;margin-top:-6px}
-.nav__hint.is-on{opacity:1;transform:rotate(-4deg)}
+.nav__hint svg{display:block;width:30px;height:24px;flex:none}
+.nav__hint.is-on{opacity:.72}
 .nav__hint.is-dark{color:var(--ink)}
-.nav__hint.is-on svg{animation:hint-nudge 2.4s ease-in-out infinite}
-@keyframes hint-nudge{0%,100%{transform:none}50%{transform:translate(2px,-2px)}}
+.nav__hint.is-on svg{animation:hint-nudge 2.6s ease-in-out infinite}
+@keyframes hint-nudge{0%,100%{transform:none}50%{transform:translate(1px,-1px)}}
 @media (prefers-reduced-motion: reduce){.nav__hint.is-on svg{animation:none}}
-@media (max-width:640px){.nav__hint{right:38px;top:calc(env(safe-area-inset-top,0px) + 44px);font-size:21px}.nav__hint svg{width:38px;height:28px;margin-left:4px}.nav__hint span{padding-top:18px}}
+@media (max-width:640px){.nav__hint{font-size:15px}.nav__hint span{padding-top:15px}.nav__hint svg{width:26px;height:21px}}
 </style>
 <script src="waitlist-config.js"></script>
 <script src="waitlist-client.js"></script>
@@ -1407,7 +1407,7 @@ html.mf-open{overscroll-behavior:none}
   <button class="nav__sound" id="soundBtn" type="button" aria-pressed="false" aria-label="Play calm music" title="Calm music">
     <svg class="nav__sound-bars" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 8v4M8 5v10M12 7v6M16 9v2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
   </button>
-  <p class="nav__hint" id="soundHint" aria-hidden="true"><span>tap this!</span><svg viewBox="0 0 64 48" fill="none"><path d="M6 42C20 40 36 32 44 20C48 14 50 9 51 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M43 10L51 4L56 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></p>
+  <p class="nav__hint" id="soundHint" aria-hidden="true"><span>tap this!</span><svg viewBox="0 0 32 26" fill="none"><path d="M2 22C11 22 21 17 27 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M22.5 8L27 4.5L29.5 9.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></p>
 </header>
 
 <main id="top">
@@ -4022,6 +4022,20 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
         && document.documentElement.classList.contains('is-ready');
       hint.classList.toggle('is-on', show);
     };
+    // put the arrow's tip just below-left of the button's icon, wherever the layout puts the button
+    const placeHint = () => {
+      if (!hint) return;
+      const nav = btn.parentElement, nr = nav.getBoundingClientRect(), br = btn.getBoundingClientRect();
+      const svg = hint.querySelector('svg'), sr = svg.getBoundingClientRect(), hr = hint.getBoundingClientRect();
+      const k = sr.width / 32;                                   // svg units to px
+      const tipX = sr.left - hr.left + 27 * k, tipY = sr.top - hr.top + 4.5 * k;
+      const bx = br.left + br.width / 2 - nr.left, by = br.top + br.height / 2 - nr.top;
+      hint.style.left = (bx - 8 - tipX) + 'px';
+      hint.style.top = (by + 9 - tipY) + 'px';
+    };
+    addEventListener('resize', placeHint);
+    if (document.fonts) document.fonts.ready.then(placeHint);
+    placeHint();
     new MutationObserver(syncHint).observe(btn, {attributes:true, attributeFilter:['aria-pressed']});
     new MutationObserver(syncHint).observe(document.documentElement, {attributes:true, attributeFilter:['class']});
     addEventListener('scroll', syncHint, {passive:true});
