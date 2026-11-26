@@ -4436,6 +4436,9 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
   const prep = () => {
     const el = showing(), c = el.cloneNode(false);
     c.removeAttribute('id'); c.removeAttribute('aria-hidden'); c.removeAttribute('style'); c.className = 'szoom__img';
+    // give the copy its size up front: some browsers (Safari) lay out a fresh <img> as 0px tall until it reports loaded,
+    // and a zoom measured from 0px draws nothing
+    if (el.naturalWidth) { c.width = el.naturalWidth; c.height = el.naturalHeight; }
     c.alt = 'The ' + cur().textContent.trim() + ' screen of the Magasaka talent app';
     img.replaceWith(c); img = c;
     return el.complete ? Promise.resolve() : Promise.race([new Promise(r => { el.addEventListener('load', r, {once: true}); el.addEventListener('error', r, {once: true}); }), new Promise(r => setTimeout(r, 800))]);
@@ -4478,13 +4481,24 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     if (open || busy) return;
     open = busy = true; window.__mgShotHold = true;
     clearTimeout(offT); document.documentElement.classList.remove('szoom-off'); document.documentElement.classList.add('szoom-on');   // the pill and Mang Juan fade away while it is open
-    prep().then(() => {
-      box.classList.add('is-open');
-      const base = R(frame.getBoundingClientRect()), sm = small();
+    const measure = tries => new Promise(res => { const f = n => { const b = R(frame.getBoundingClientRect()); if ((b.w > 0 && b.h > 0) || !n) res(b); else requestAnimationFrame(() => f(n - 1)); }; f(tries); });
+    prep().then(() => { box.classList.add('is-open'); return measure(20); }).then(base => {
+      const sm = small();
       const room = Math.max(0, base.w + 32 - innerWidth), m = slideMax();
       const off = phone.matches && m < 0 ? Math.round(room * Math.min(1, shift / m)) : 0;
       const to = {...base, l: base.l - off};
-      const settle = () => { anims.forEach(a => a.cancel()); anims = []; box.classList.add('is-settled'); pan.scrollLeft = off; busy = false; x.focus({preventScroll: true}); };
+      let settled = false;
+      const settle = () => {
+        if (settled) return; settled = true; clearTimeout(watch);
+        anims.forEach(a => a.cancel()); anims = []; box.classList.add('is-shown', 'is-settled'); bg.style.opacity = 1;
+        layers.forEach(l => l.style.visibility = 'hidden'); shot.classList.add('is-lifted');
+        // if the copy somehow has no picture, show the original file again (and keep checking for a moment)
+        const fix = n => { if (!open) return; if (img.complete && !img.naturalWidth) { const src = srcOf(cur()); img.removeAttribute('src'); img.src = src; } if (n) setTimeout(() => fix(n - 1), 400); };
+        fix(3);
+        pan.scrollLeft = off; busy = false; x.focus({preventScroll: true});
+      };
+      // safety net: whatever a browser does with the animation, the picture is fully open within a moment
+      const watch = setTimeout(settle, 1500);
       if (reduce.matches) { bg.style.opacity = 1; box.classList.add('is-shown'); return settle(); }
       // place the big picture over the small one, give the browser two frames to paint it there, then let it grow
       const going = run(base, sm.vis, to, sm.img, to, 780, phone.matches ? 6 : 8, phone.matches ? 10 : 14);
