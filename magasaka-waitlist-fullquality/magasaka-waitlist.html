@@ -1396,7 +1396,8 @@ html.mf-open{overscroll-behavior:none}
 @media (max-width:640px){
   .concept{min-height:100svh;display:flex;flex-direction:column;box-sizing:border-box;padding-top:max(96px,calc(env(safe-area-inset-top,0px) + 84px))}
   .concept__inner{flex:1;display:flex;flex-direction:column}
-  .concept__shot{margin-top:auto!important}
+  .concept__shot{flex:1;min-height:300px;display:flex;flex-direction:column}
+  .concept__shot img.shot{flex:1;height:100%;aspect-ratio:auto;object-fit:cover;object-position:left top}
 }
 </style>
 <script src="waitlist-config.js"></script>
@@ -1748,9 +1749,9 @@ html.mf-open{overscroll-behavior:none}
     <div class="band__foot">
       <span class="band__legal"><span>Magasaka © 2026</span><span class="band__links"><a href="terms.html">Terms</a><a href="privacy.html">Privacy</a></span></span>
       <nav class="socials" aria-label="Magasaka on social">
-        <a href="https://www.facebook.com/trymagasaka/" target="_blank" rel="noopener" aria-label="Magasaka on Facebook"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M16 3H14C11.7909 3 10 4.79086 10 7V21M7 10.5H15.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-        <a href="https://x.com/trymagasaka" target="_blank" rel="noopener" aria-label="Magasaka on X"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 21L10.5484 13.4516M13.4516 10.5484L21 21H16L10.5484 13.4516L3 3H8L13.4516 10.5484ZM21 3L13.4516 10.5484" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-        <a href="https://www.linkedin.com/company/magasaka" target="_blank" rel="noopener" aria-label="Magasaka on LinkedIn"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 10V21M10 21V10M10 15C10 12.2386 11.7909 10 14.5 10C17.2091 10 19 12.2386 19 15V21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 4.5V4.6" stroke="currentColor" stroke-width="3.3" stroke-linecap="round"/></svg></a>
+        <a href="https://www.facebook.com/trymagasaka/" target="_blank" rel="noopener" aria-label="Magasaka on Facebook"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M13.5 21v-7.6h2.6l.4-3h-3V8.5c0-.9.3-1.5 1.5-1.5h1.6V4.3c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 4v2.2H7.8v3h2.6V21z"/></svg></a>
+        <a href="https://x.com/trymagasaka" target="_blank" rel="noopener" aria-label="Magasaka on X"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M17.8 3h3.1l-6.8 7.8 8 10.2h-6.3l-4.9-6.4L5.3 21H2.2l7.3-8.3L1.8 3h6.4l4.4 5.8zm-1.1 16.2h1.7L7.4 4.7H5.6z"/></svg></a>
+        <a href="https://www.linkedin.com/company/magasaka" target="_blank" rel="noopener" aria-label="Magasaka on LinkedIn"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 3.3a2.1 2.1 0 1 1 0 4.2 2.1 2.1 0 0 1 0-4.2zM3.2 9h3.6v12H3.2zM9.1 9h3.5v1.7c.5-.9 1.7-2 3.5-2 3.7 0 4.4 2.5 4.4 5.7V21h-3.7v-5.9c0-1.4 0-3.2-1.9-3.2s-2.2 1.5-2.2 3.1v6H9.1z"/></svg></a>
       </nav>
     </div>
   </section>
