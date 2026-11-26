@@ -1420,6 +1420,10 @@ html.mf-open{overscroll-behavior:none}
   background:radial-gradient(62% 46% at 50% 52%,rgba(244,245,243,.55),rgba(244,245,243,0) 72%),
     linear-gradient(180deg,var(--field-white) 0%,rgba(237,236,232,0) 14%,rgba(237,236,232,0) 86%,var(--field-white) 100%)}
 .pstage .problem{z-index:1}
+/* softer: the sky shows through at 72% over the page colour, and the logo mark behind the words is gone */
+.psky{background:var(--field-white)}
+.psky canvas{opacity:.72}
+.problem__bg{display:none}
 </style>
 <script src="waitlist-config.js"></script>
 <script src="waitlist-client.js"></script>
