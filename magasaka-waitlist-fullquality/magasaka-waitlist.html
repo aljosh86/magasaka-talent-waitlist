@@ -1488,21 +1488,25 @@ body:has(.pill.pill--away) .juan-say{display:none}
 <style>
 /* Inside Magasaka: click the Opportunity screen and it grows to fill the screen */
 .concept__shot.is-zoomable{cursor:zoom-in}
-@media (hover:hover){.concept__shot.is-zoomable .shot{transition:opacity .6s ease,transform .5s cubic-bezier(.2,.8,.2,1)}.concept__shot.is-zoomable:hover .shot{transform:scale(1.012)}}
-.szoom{position:fixed;inset:0;z-index:200;display:grid;place-items:center;cursor:zoom-out;visibility:hidden}
+@media (hover:hover){.concept__shot.is-zoomable .shot{transition:opacity .6s ease,transform .6s cubic-bezier(.22,1,.36,1)}.concept__shot.is-zoomable:hover .shot{transform:scale(1.01)}}
+.szoom{position:fixed;inset:0;z-index:200;display:grid;place-items:center;cursor:zoom-out;visibility:hidden;touch-action:none}
 .szoom.is-open{visibility:visible}
-.szoom__bg{position:absolute;inset:0;background:rgba(12,14,12,.82);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);opacity:0;transition:opacity .5s ease}
+.szoom__bg{position:absolute;inset:0;background:rgba(12,14,12,.84);opacity:0;transition:opacity .55s cubic-bezier(.22,1,.36,1)}
 .szoom.is-shown .szoom__bg{opacity:1}
-.szoom__pan{position:relative;max-width:100%;max-height:100%;overflow:auto;scrollbar-width:none;overscroll-behavior:contain}
+.szoom__pan{position:relative;max-width:100%;overflow:visible;scrollbar-width:none;overscroll-behavior:contain}
 .szoom__pan::-webkit-scrollbar{display:none}
-.szoom__img{display:block;width:min(94vw,calc(90vh * 1.5));height:auto;border-radius:14px;box-shadow:0 30px 80px rgba(0,0,0,.45);transform-origin:0 0;will-change:transform}
-.szoom__x{position:absolute;top:calc(env(safe-area-inset-top,0px) + 16px);right:16px;z-index:1;width:44px;height:44px;border:0;border-radius:50%;background:rgba(244,242,234,.14);color:#f4f2ea;font-size:22px;line-height:1;cursor:pointer;opacity:0;transition:opacity .4s ease .15s}
-.szoom.is-shown .szoom__x{opacity:1}
+.szoom__img{display:block;width:min(94vw,calc(90vh * 1.5));height:auto;border-radius:14px;transform-origin:0 0;will-change:transform,clip-path;backface-visibility:hidden}
+.szoom__shade{position:absolute;inset:0;border-radius:14px;box-shadow:0 30px 80px rgba(0,0,0,.45);opacity:0;transition:opacity .5s ease;pointer-events:none}
+.szoom.is-settled .szoom__shade{opacity:1}
+.szoom__x{position:absolute;top:calc(env(safe-area-inset-top,0px) + 16px);right:16px;z-index:1;width:44px;height:44px;border:0;border-radius:50%;background:rgba(244,242,234,.14);color:#f4f2ea;font-size:22px;line-height:1;cursor:pointer;opacity:0;transform:scale(.8);transition:opacity .35s ease,transform .45s cubic-bezier(.22,1,.36,1)}
+.szoom.is-shown .szoom__x{opacity:1;transform:none;transition-delay:.25s}
 /* phones: the screen is too narrow to fit it whole, so it fills the height and you slide it sideways */
 @media (max-width:640px){
   .szoom{place-items:center start}
   .szoom__pan{width:100%;padding:0 16px;box-sizing:border-box}
+  .szoom.is-settled .szoom__pan{overflow-x:auto;touch-action:pan-x}
   .szoom__img{width:calc(min(78svh,560px) * 1.5);max-width:none;border-radius:10px}
+  .szoom__shade{display:none}
 }
 </style>
 <script src="waitlist-config.js"></script>
@@ -4391,59 +4395,79 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
   })();
 </script>
 <script>
-// Inside Magasaka: click the Opportunity screen and it grows from where it sits to fill the screen; click, Esc or x to put it back
+// Inside Magasaka: click the Opportunity screen and it grows from where it sits to fill the screen; click, Esc or x to put it back.
+// The big image starts exactly over the part of the small one you can see (same crop, same corners) and opens out from there.
 (() => {
   const shot = document.getElementById('shot'), tab = document.getElementById('tab-1');
   if (!shot || !tab) return;
-  const SRC = 'images/app-1.png';
+  const SRC = 'images/app-1.png', sec = shot.closest('.concept');
   const box = document.createElement('div'); box.className = 'szoom';
   box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true'); box.setAttribute('aria-label', 'Opportunity screen, enlarged');
-  box.innerHTML = '<div class="szoom__bg"></div><div class="szoom__pan"><img class="szoom__img" alt="The Opportunity screen of the Magasaka talent app"></div><button class="szoom__x" type="button" aria-label="Close">&times;</button>';
+  box.innerHTML = '<div class="szoom__bg"></div><div class="szoom__pan"><img class="szoom__img" alt="The Opportunity screen of the Magasaka talent app" decoding="async"></div><button class="szoom__x" type="button" aria-label="Close">&times;</button>';
   document.body.appendChild(box);
   const img = box.querySelector('.szoom__img'), pan = box.querySelector('.szoom__pan'), x = box.querySelector('.szoom__x');
-  const EASE = 'cubic-bezier(.2,.8,.2,1)', reduce = matchMedia('(prefers-reduced-motion: reduce)');
-  let open = false, busy = false;
+  const shade = document.createElement('div'); shade.className = 'szoom__shade'; pan.appendChild(shade);
+  const OPEN = 'transform .62s cubic-bezier(.22,1,.36,1), clip-path .62s cubic-bezier(.22,1,.36,1)';
+  const CLOSE = 'transform .48s cubic-bezier(.32,.72,0,1), clip-path .48s cubic-bezier(.32,.72,0,1)';
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)'), phone = matchMedia('(max-width:640px)');
+  let open = false, busy = false, ready = null;
+  // decode the big picture before it is needed, so the first frames of the zoom are not spent loading it
+  const prep = () => ready || (ready = (img.src = SRC, img.decode ? img.decode().catch(() => {}) : Promise.resolve()));
+  if ('IntersectionObserver' in window) new IntersectionObserver((es, o) => { if (es.some(e => e.isIntersecting)) { prep(); o.disconnect(); } }, {rootMargin: '400px'}).observe(shot);
   const on = () => tab.getAttribute('aria-selected') === 'true';
   const sync = () => { shot.classList.toggle('is-zoomable', on()); if (on()) { shot.tabIndex = 0; shot.setAttribute('aria-label', 'Opportunity screen. Press to enlarge'); } else shot.removeAttribute('tabindex'); };
   new MutationObserver(sync).observe(tab, {attributes: true, attributeFilter: ['aria-selected']}); sync();
 
-  // the transform that puts the big image exactly over the small one
-  const from = () => {
-    const a = shot.querySelector('#shotA').getBoundingClientRect(), b = img.getBoundingClientRect();
-    return `translate(${a.left - b.left}px,${a.top - b.top}px) scale(${a.width / b.width})`;
+  // where the small picture is, and which part of it you can actually see
+  const start = () => {
+    const a = shot.querySelector('#shotA').getBoundingClientRect(), b = img.getBoundingClientRect(), k = a.width / b.width;
+    const c = sec ? sec.getBoundingClientRect() : a;
+    const vis = {l: Math.max(a.left, c.left, 0), t: Math.max(a.top, c.top), r: Math.min(a.right, c.right, innerWidth), b: Math.min(a.bottom, c.bottom)};
+    const ins = [(vis.t - a.top), (a.right - vis.r), (a.bottom - vis.b), (vis.l - a.left)].map(v => Math.max(0, v) / k + 'px');
+    return {transform: `translate(${a.left - b.left}px,${a.top - b.top}px) scale(${k})`, clip: `inset(${ins.join(' ')} round ${10 / k}px)`};
   };
+  const END_CLIP = 'inset(0px 0px 0px 0px round 0px)';
+  const set = (t, tr, cl) => { img.style.transition = t; img.style.transform = tr; img.style.clipPath = cl; };
   const show = () => {
     if (open || busy || !on()) return;
     open = busy = true; window.__mgShotHold = true;
-    img.src = SRC; pan.scrollLeft = 0;
-    box.classList.add('is-open');
-    document.documentElement.style.overflow = 'hidden';
-    if (reduce.matches) { box.classList.add('is-shown'); busy = false; x.focus({preventScroll: true}); return; }
-    img.style.transition = 'none'; img.style.transform = from(); shot.style.visibility = 'hidden';
-    img.getBoundingClientRect();
-    requestAnimationFrame(() => {
-      box.classList.add('is-shown');
-      img.style.transition = `transform .6s ${EASE}`; img.style.transform = 'none';
-      setTimeout(() => { busy = false; x.focus({preventScroll: true}); }, 600);
+    prep().then(() => {
+      pan.scrollLeft = 0;
+      box.classList.add('is-open');
+      if (reduce.matches) { box.classList.add('is-shown', 'is-settled'); busy = false; x.focus({preventScroll: true}); return; }
+      const st = start();
+      set('none', st.transform, st.clip);
+      img.getBoundingClientRect();
+      shot.style.visibility = 'hidden';
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        box.classList.add('is-shown');
+        set(OPEN, 'none', END_CLIP);
+        setTimeout(() => { busy = false; box.classList.add('is-settled'); x.focus({preventScroll: true}); }, 640);
+      }));
     });
   };
   const hide = () => {
     if (!open || busy) return;
-    busy = true; box.classList.remove('is-shown');
+    busy = true;
     const done = () => {
-      box.classList.remove('is-open'); shot.style.visibility = ''; img.style.transition = 'none'; img.style.transform = '';
-      document.documentElement.style.overflow = ''; open = busy = false; window.__mgShotHold = false;
+      box.classList.remove('is-open', 'is-settled'); shot.style.visibility = ''; set('none', '', '');
+      open = busy = false; window.__mgShotHold = false;
       shot.focus({preventScroll: true});
     };
+    box.classList.remove('is-shown');
     if (reduce.matches) return done();
-    shot.style.visibility = 'hidden';
-    img.style.transition = `transform .5s ${EASE}`; img.style.transform = from();
+    pan.scrollTo({left: 0});
+    box.classList.remove('is-settled');
+    const st = start();
+    set(CLOSE, st.transform, st.clip);
     setTimeout(done, 500);
   };
   shot.addEventListener('click', show);
   shot.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); show(); } });
-  box.addEventListener('click', e => { if (!(matchMedia('(max-width:640px)').matches && e.target === img)) hide(); });
+  box.addEventListener('click', e => { if (!(phone.matches && e.target === img)) hide(); });
   x.addEventListener('click', e => { e.stopPropagation(); hide(); });
+  // the page behind stays put without hiding its scrollbar (that would shift everything sideways mid-zoom)
+  box.addEventListener('wheel', e => { if (!(phone.matches && Math.abs(e.deltaX) > Math.abs(e.deltaY))) e.preventDefault(); }, {passive: false});
   document.addEventListener('keydown', e => { if (!open) return; if (e.key === 'Escape') hide(); if (e.key === 'Tab') { e.preventDefault(); x.focus(); } });
 })();
 </script>
