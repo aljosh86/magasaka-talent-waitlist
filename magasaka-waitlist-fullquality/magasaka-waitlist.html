@@ -2424,7 +2424,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
             const y0 = q.getBoundingClientRect().top;
             other.classList.add('is-instant'); setFaq(other, false);
             const d = q.getBoundingClientRect().top - y0;
-            if (d) window.scrollTo({top: scrollY + d, behavior: 'instant'});
+            if (d){ window.__mgQuietScroll = performance.now() + 250; window.scrollTo({top: scrollY + d, behavior: 'instant'}); }
             requestAnimationFrame(() => requestAnimationFrame(() => other.classList.remove('is-instant')));
           } else setFaq(other, false);
         });
@@ -2497,6 +2497,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     let lastY = scrollY, acc = 0;
     addEventListener('scroll', () => {
       const y = Math.max(0, scrollY), d = y - lastY; lastY = y;
+      if (performance.now() < (window.__mgQuietScroll || 0)){ acc = 0; return; }   // the page nudged itself (e.g. FAQs); not a reader scrolling up
       if (Math.sign(d) !== Math.sign(acc)) acc = 0;
       acc += d;
       const band = document.querySelector('.band');
