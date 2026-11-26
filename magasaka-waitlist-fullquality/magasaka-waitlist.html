@@ -3970,10 +3970,15 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     // on phones the bubble only speaks up where it won't sit on top of something being read
     const phone = () => matchMedia('(max-width: 640px)').matches;
     const coversText = () => {
-      const W = innerWidth, H = innerHeight;
-      const pts = [[W - 40, H - 150], [W - 130, H - 150], [W - 230, H - 150], [W - 40, H - 200], [W - 130, H - 200], [W - 230, H - 200]];
+      // measure where the bubble would sit, then look underneath it
+      const wasHidden = say.hidden;
+      say.style.visibility = 'hidden'; say.hidden = false;
+      const r = say.getBoundingClientRect();
+      say.hidden = wasHidden; say.style.visibility = '';
+      const pts = [];
+      for (const fx of [.08, .5, .92]) for (const fy of [.15, .5, .85]) pts.push([r.left + r.width * fx, r.top + r.height * fy]);
       return pts.some(([x, y]) => document.elementsFromPoint(x, y).some(el =>
-        !el.closest('#pill, #askBtn, #juanSay, .ask') && el.matches('p, h1, h2, h3, h4, li, blockquote, label, input, button, .rcard, .chcard, img')));
+        !el.closest('#pill, #askBtn, #juanSay, .ask') && el.matches('p, h1, h2, h3, h4, li, blockquote, label, input, button, a, .rcard, .chcard, img')));
     };
     const show = (key, lines) => {
       if (opened || seen[key] || !box.hidden || document.hidden) return false;
