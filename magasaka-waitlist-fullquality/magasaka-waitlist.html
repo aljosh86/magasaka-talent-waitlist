@@ -4422,7 +4422,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
   const bg = box.querySelector('.szoom__bg'), pan = box.querySelector('.szoom__pan'), frame = box.querySelector('.szoom__frame'), x = box.querySelector('.szoom__x');
   let img = box.querySelector('.szoom__img');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)'), phone = matchMedia('(max-width:640px)');
-  let open = false, busy = false, anims = [], shift = 0, offT = 0;
+  let open = false, busy = false, anims = [], shift = 0, offT = 0, closing = false, again = false;
   const cur = () => tabs.find(t => t.getAttribute('aria-selected') === 'true') || tabs[0];
   const srcOf = t => (t.dataset.shot || '').split(',')[0];
   // decode each big picture before it is needed, so the first frames of the zoom are not spent loading it
@@ -4478,6 +4478,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
   const fade = (to, ms) => bg.animate([{opacity: getComputedStyle(bg).opacity}, {opacity: to}], {duration: ms, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'forwards'});
 
   const show = () => {
+    if (closing) { again = true; return; }   // tapped again while it was still shrinking back: open as soon as it lands
     if (open || busy) return;
     open = busy = true; window.__mgShotHold = true;
     clearTimeout(offT); document.documentElement.classList.remove('szoom-off'); document.documentElement.classList.add('szoom-on');   // the pill and Mang Juan fade away while it is open
@@ -4514,7 +4515,8 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
   };
   const hide = () => {
     if (!open || busy) return;
-    busy = true;
+    busy = closing = true;
+    box.style.pointerEvents = 'none';                   // taps go through to the page (and the small screen) while it shrinks
     const now = R(frame.getBoundingClientRect());        // where it is now, even if slid sideways on a phone
     const room = pan.scrollWidth - pan.clientWidth, frac = phone.matches && room > 0 ? pan.scrollLeft / room : 0;
     box.classList.remove('is-settled', 'is-shown');
@@ -4526,8 +4528,9 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     const done = () => {
       box.classList.remove('is-open'); layers.forEach(l => l.style.visibility = '');
       anims.forEach(a => a.cancel()); anims = []; bg.getAnimations().forEach(a => a.cancel()); bg.style.opacity = '';
-      open = busy = false; window.__mgShotHold = false;
+      open = busy = closing = false; window.__mgShotHold = false; box.style.pointerEvents = '';
       shot.focus({preventScroll: true});
+      if (again) { again = false; show(); }
     };
     if (reduce.matches) return done();
     fade(0, 460);
