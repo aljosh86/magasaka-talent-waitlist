@@ -29,15 +29,23 @@ header{position:absolute;left:0;top:0;z-index:2;padding:calc(env(safe-area-inset
 .logo svg{display:block;width:100%;height:100%}
 .logo svg path[fill]{fill:currentColor}
 .logo:focus-visible{outline:2px solid var(--ink);outline-offset:4px;border-radius:6px}
-.head{position:absolute;left:0;top:0;z-index:2;transform:translate(-50%,-50%);pointer-events:none;opacity:0;transition:opacity .8s ease .9s}
-.head.is-placed{opacity:1}
-/* the line is a quiet caption at the bottom; the field says the rest */
-h1{margin:0;padding:10px 18px;border-radius:100px;white-space:nowrap;font-weight:400;font-size:15px;line-height:1.2;letter-spacing:0;color:var(--ink);
-  background:rgba(255,255,255,.62);-webkit-backdrop-filter:blur(10px) saturate(1.1);backdrop-filter:blur(10px) saturate(1.1);box-shadow:0 8px 24px -14px rgba(0,0,0,.45),inset 0 0 0 1px rgba(255,255,255,.5)}
-footer{position:absolute;left:0;right:0;bottom:0;z-index:2;text-align:center;padding:0 20px calc(env(safe-area-inset-bottom,0px) + 18px);color:rgba(255,255,255,.85);font-size:13px;text-shadow:0 1px 6px rgba(0,0,0,.35)}
-footer a{color:inherit}
+@font-face{font-family:'Magasaka Hand';font-style:normal;font-weight:400;font-display:swap;src:url(/fonts/magasaka-hand.otf) format('opentype')}
+@font-face{font-family:'Magasaka Hand';font-style:normal;font-weight:400;font-display:swap;src:url(/fonts/indie-flower-latin.woff2) format('woff2')}
+/* a handwritten note off to the side of the paddy, its arrow pointing at the 404 */
+.head{position:absolute;left:0;top:0;z-index:2;display:flex;align-items:flex-end;gap:2px;pointer-events:none;color:#fff;
+  opacity:0;transition:opacity .8s ease 1.2s;transform:translateY(-50%) rotate(-4deg);transform-origin:left center}
+.head.is-placed{opacity:.95}
+h1{margin:0;font:400 clamp(24px,2.1vw,30px)/1.1 'Magasaka Hand','Segoe Print','Bradley Hand',cursive;letter-spacing:0;white-space:nowrap;
+  text-shadow:0 1px 10px rgba(0,0,0,.45),0 0 2px rgba(0,0,0,.25)}
+.arrow{flex:none;filter:drop-shadow(0 1px 4px rgba(0,0,0,.35))}
+.arrow--side{width:62px;height:46px;margin-bottom:10px}
+.arrow--down{display:none}
+.head.is-on-top{flex-direction:column;align-items:flex-start;transform:translate(-30%,-100%) rotate(-3deg)}
+.head.is-on-top .arrow--side{display:none}
+.head.is-on-top .arrow--down{display:block;width:40px;height:48px;margin:2px 0 0 26px;order:2}
+@media (prefers-reduced-motion: reduce){.head{transition:none}}
 @media (max-aspect-ratio: 1/1){
-  h1{font-size:14px;padding:9px 16px}
+  h1{font-size:23px}
 }
 </style>
 </head>
@@ -65,8 +73,10 @@ footer a{color:inherit}
 </clipPath>
 </defs>
 </svg></a></header>
-  <div class="head">
-    <h1>Wala pang tanim dito.</h1>
+  <div class="head" aria-hidden="false">
+    <svg class="arrow arrow--side" viewBox="0 0 64 48" fill="none" aria-hidden="true"><path d="M60 14C46 8 30 10 19 20C13 26 9 32 7 39" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="M3 31L7 40L15 35" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <svg class="arrow arrow--down" viewBox="0 0 48 56" fill="none" aria-hidden="true"><path d="M8 4C18 10 26 20 28 32C29 39 28 45 26 51" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="M19 45L26 52L32 44" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <h1>wala pang tanim dito.</h1>
   </div>
   <div class="stage">
     <canvas id="plot" tabindex="0" role="img" aria-label="Page not found: the number 404 planted in rice seedlings in a flooded paddy. Click, tap or press Enter to plant another."></canvas>
@@ -121,8 +131,13 @@ footer a{color:inherit}
       dw = iw * k; dh = ih * k; dx = (W - dw) / 2; dy = (H - dh) * (TALL ? .5 : .62);
       M = homography(Q.map(([x, y]) => [dx + x * dw, dy + y * dh])); Minv = invert(M);
       nearW = apply(M, 1, 1)[0] - apply(M, 0, 1)[0];
-      const tag = document.querySelector('.head'), [tx, ty] = apply(M, .5, .87);
-      if (tag){ tag.style.left = tx + 'px'; tag.style.top = ty + 'px'; tag.classList.add('is-placed'); }
+      // the note: beside the right-hand bund on wide screens (arrow pointing in at the 404), above the plot on tall ones
+      const tag = document.querySelector('.head');
+      if (tag){
+        if (TALL){ const [tx, ty] = apply(M, .58, -.04); tag.classList.add('is-on-top'); tag.style.left = tx + 'px'; tag.style.top = ty + 'px'; }
+        else { const [tx, ty] = apply(M, 1, .3); tag.classList.remove('is-on-top'); tag.style.left = (tx + 34) + 'px'; tag.style.top = ty + 'px'; }
+        tag.classList.add('is-placed');
+      }
     }
 
     const rnd = (a, b) => a + Math.random() * (b - a);
