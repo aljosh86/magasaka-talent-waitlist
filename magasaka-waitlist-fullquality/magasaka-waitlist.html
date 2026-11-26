@@ -1391,6 +1391,14 @@ html.mf-open{overscroll-behavior:none}
 .nav__logo:not(.nav__logo--dark),.nav__sound:not(.is-dark){filter:drop-shadow(0 1px 5px rgba(0,0,0,.35))}
 @media (max-width:640px){.nav::before{height:calc(env(safe-area-inset-top,0px) + 110px)}}
 </style>
+<style>
+/* phone: "Inside Magasaka" is exactly one screen tall, the screenshot sitting on the bottom edge */
+@media (max-width:640px){
+  .concept{min-height:100svh;display:flex;flex-direction:column;box-sizing:border-box;padding-top:max(96px,calc(env(safe-area-inset-top,0px) + 84px))}
+  .concept__inner{flex:1;display:flex;flex-direction:column}
+  .concept__shot{margin-top:auto!important}
+}
+</style>
 <script src="waitlist-config.js"></script>
 <script src="waitlist-client.js"></script>
 </head>
@@ -4118,6 +4126,26 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       };
       new MutationObserver(sync).observe(logo, {attributes:true, attributeFilter:['class']}); sync();
     }
+  })();
+</script>
+<script>
+  // phone: when you stop scrolling with "Inside Magasaka" mostly on screen, it settles to fill the screen
+  (() => {
+    const sec = document.getElementById('concept');
+    if (!sec || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    let t = 0, busy = false;
+    addEventListener('scroll', () => {
+      if (busy || !matchMedia('(max-width: 640px)').matches) return;
+      clearTimeout(t);
+      t = setTimeout(() => {
+        const top = sec.getBoundingClientRect().top, h = innerHeight;
+        if (Math.abs(top) > 2 && Math.abs(top) < h * .3){
+          busy = true;
+          scrollTo({top: scrollY + top, behavior: 'smooth'});
+          setTimeout(() => { busy = false; }, 700);
+        }
+      }, 160);
+    }, {passive:true});
   })();
 </script>
 </body>
