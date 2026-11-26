@@ -154,16 +154,16 @@ footer a{color:inherit}
       // set in the middle-to-near part of the paddy, where rows are far enough apart to read
       const off = document.createElement('canvas'); off.width = 640; off.height = 380;
       const o = off.getContext('2d');
-      o.textAlign = 'center'; o.textBaseline = 'middle'; o.font = '700 210px "Inter Display","Inter",Arial,sans-serif';
+      o.textAlign = 'center'; o.textBaseline = 'middle'; o.font = '800 220px "Inter Display","Inter",Arial,sans-serif';
       o.save(); o.scale(1, 1.55);
       [['4', 112], ['0', 320], ['4', 528]].forEach(([c, x]) => o.fillText(c, x, 124));
       o.restore();
-      const d = o.getImageData(0, 0, 640, 380).data, pts = [], sx = 20, sy = 17;
+      const d = o.getImageData(0, 0, 640, 380).data, pts = [], sx = 16, sy = 14;
       for (let y = 4; y < 380; y += sy) for (let x = 4; x < 640; x += sx)
-        if (d[(y * 640 + x) * 4 + 3] > 120) pts.push({u: .1 + x / 640 * .8 + rnd(-.004, .004), v: .2 + y / 380 * .66 + rnd(-.004, .004)});
+        if (d[(y * 640 + x) * 4 + 3] > 120) pts.push({u: .08 + x / 640 * .84 + rnd(-.003, .003), v: .14 + y / 380 * .86 + rnd(-.003, .003)});
       pts.sort((a, b) => a.v - b.v || a.u - b.u);
       const now = performance.now() + 400;
-      pts.forEach((p, i) => seeds.push(seed(p.u, p.v, reduce ? 0 : now + i * 14)));
+      pts.forEach((p, i) => seeds.push(seed(p.u, p.v, reduce ? 0 : now + i * 9)));
     }
 
     function drawSeed(sd, now){
@@ -171,7 +171,7 @@ footer a{color:inherit}
       if (grow <= 0) return;
       const e = 1 - Math.pow(1 - grow, 3);
       const p = proj(sd.u, sd.v), [fx, fw] = SHEET.frames[sd.f];
-      const hpx = W * .056 * p.s * sd.h * e, wpx = hpx * fw / SHEET.h;
+      const hpx = W * .05 * p.s * sd.h * e, wpx = hpx * fw / SHEET.h;
       const dx = p.x - mouse.x, dy = (p.y - hpx * .5) - mouse.y, dist = Math.hypot(dx, dy);
       const push = dist < 110 ? (1 - dist / 110) * Math.sign(dx || 1) * .35 : 0;
       const wind = reduce ? 0 : Math.sin(now * .0014 + sd.u * 6 + sd.v * 3 + sd.ph) * .07 + Math.sin(now * .0037 + sd.ph) * .02;
