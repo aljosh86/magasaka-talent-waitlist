@@ -34,6 +34,12 @@ h1{margin:0;font-weight:500;font-size:clamp(34px,4.4vw,60px);line-height:1.04;le
 .btn:focus-visible,.logo:focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:100px}
 footer{position:absolute;left:0;right:0;bottom:0;text-align:center;padding:0 20px calc(env(safe-area-inset-bottom,0px) + 22px);color:#a89c90;font-size:13px}
 footer a{color:inherit}
+/* the land all around: the same kind of fields, soft, faded and out of focus, so the one in the middle stays the subject */
+.page::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:url(/images/404/land.webp) center 62%/cover no-repeat;opacity:.5;filter:saturate(.85)}
+.page::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:linear-gradient(180deg,var(--bg) 0%,rgba(238,225,216,.55) 22%,rgba(238,225,216,0) 45%,rgba(238,225,216,0) 80%,rgba(238,225,216,.6) 100%),
+    radial-gradient(ellipse 46% 42% at 50% 58%,rgba(238,225,216,.35),rgba(238,225,216,0) 70%)}
+header,.head,.stage,footer{z-index:2}
 @media (max-width:640px){
   .head{padding-top:110px}
   .stage{width:196vw;margin:-6% 0 0}
