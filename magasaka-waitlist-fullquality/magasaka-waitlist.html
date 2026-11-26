@@ -3700,11 +3700,23 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + .008); g.gain.exponentialRampToValueAtTime(.0001, t + len);
       o.connect(g).connect(ac.destination); o.start(t); o.stop(t + len + .02);
     };
+    // a soft whispered "psst": a hiss of filtered noise, then a tiny "t"
+    const hiss = (at, len, vol, freq) => {
+      const t = ac.currentTime + at, n = ac.createBufferSource(), buf = ac.createBuffer(1, ac.sampleRate * (len + .05) | 0, ac.sampleRate), d = buf.getChannelData(0);
+      for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+      n.buffer = buf;
+      const bp = ac.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = freq; bp.Q.value = 1.4;
+      const g = ac.createGain();
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + Math.min(.04, len / 3));
+      g.gain.setValueAtTime(vol, t + len * .7); g.gain.exponentialRampToValueAtTime(.0001, t + len);
+      n.connect(bp).connect(g).connect(ac.destination); n.start(t); n.stop(t + len + .05);
+    };
     const sound = kind => {
       if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       try {
         ac = ac || new (window.AudioContext || window.webkitAudioContext)();
         if (ac.state === 'suspended') ac.resume();
+        if (kind === 'psst'){ hiss(0, .2, .05, 5200); hiss(.26, .03, .045, 3600); hiss(.52, .16, .04, 5600); hiss(.73, .03, .04, 3800); return; }
         if (kind === 'poke'){ tone(520, 0, .12, .05, 'sine', .55); tone(1040, 0, .05, .012, 'triangle', .6); }
         else { tone(880, 0, .35, .022, 'sine'); tone(1320, .09, .45, .016, 'sine'); }
       } catch(e){}
@@ -3789,14 +3801,15 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       text.textContent = lines[Math.floor(Math.random() * lines.length)];
       say.hidden = false; say.classList.remove('is-out'); say.classList.add('is-in');
       if (!reduce){ mj.classList.remove('is-poke'); void mj.getBoundingClientRect(); mj.classList.add('is-poke'); }
+      if (window.__mgJuanSound && (!navigator.userActivation || navigator.userActivation.hasBeenActive)) window.__mgJuanSound('psst');
       clearTimeout(hideT); hideT = setTimeout(hide, 9000);
       return true;
     };
-    const HELLO = ["Uy, kumusta, anak! May tanong ka ba tungkol sa Magasaka? 👒",
-                   "Psst! Ako si Mang Juan. Tanungin mo ako kahit ano tungkol sa Magasaka.",
-                   "Kumain ka na ba? Hehe. Tanong ka lang kung may gusto kang malaman! 🌾"];
-    const FAQ = ["Nasa FAQs ka na pala! Kung may hindi pa nasagot, ako na lang tanungin mo. 😄",
-                 "Daming tanong, 'no? Pindutin mo lang ako, sasagutin ko isa-isa."];
+    const HELLO = ["Psst! Uy, anak, kumusta? May tanong ka ba tungkol sa Magasaka? 👒",
+                   "Psst! Dito, dito! Ako si Mang Juan. Tanungin mo ako kahit ano tungkol sa Magasaka.",
+                   "Psst! Kumain ka na ba? Hehe. Tanong ka lang kung may gusto kang malaman! 🌾"];
+    const FAQ = ["Psst! Nasa FAQs ka na pala. Kung may hindi pa nasagot, ako na lang tanungin mo. 😄",
+                 "Psst! Daming tanong, 'no? Pindutin mo lang ako, sasagutin ko isa-isa."];
     const tryHello = () => { if (!show('hello', HELLO)) setTimeout(tryHello, 6000); };
     setTimeout(tryHello, 14000);
     const faq = document.getElementById('faq');
