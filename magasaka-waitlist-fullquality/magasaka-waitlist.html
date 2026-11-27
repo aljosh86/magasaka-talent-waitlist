@@ -1640,6 +1640,17 @@ html.szoom-on .pill,html.szoom-off .pill{-webkit-backdrop-filter:none;backdrop-f
 .ask__qfoot .ask__note{margin-top:6px}
 @media (prefers-reduced-motion: reduce){.ask__quiz:not([hidden]),.ask__qcard{animation:none}.ask__qbar i{transition:none}}
 </style>
+<style>
+/* Mang Juan home, more minimal: one ask card, the four topics as quiet pills, and level check + team in one grouped list */
+.ask__menu{display:flex;flex-direction:column;gap:10px}
+.ask__pills{display:flex;flex-wrap:wrap;gap:6px}
+.ask__menu .ask__topic{min-height:32px;padding:0 13px;border-radius:100px;font:400 12.5px/1 var(--font);flex-direction:row;align-items:center;gap:0}
+.ask__list{border-radius:15px;background:rgba(255,255,255,.95);box-shadow:0 0 0 1px rgba(20,20,20,.06),0 1px 4px -2px rgba(20,20,20,.1);overflow:hidden}
+.ask__list .ask__level,.ask__list .ask__team{width:100%;min-height:48px;border-radius:0;background:none;box-shadow:none;transform:none}
+.ask__list .ask__level:hover,.ask__list .ask__team:hover{background:rgba(20,20,20,.03);box-shadow:none;transform:none}
+.ask__list .ask__team{border-top:1px solid rgba(20,20,20,.07)}
+.ask__list .ask__level:focus-visible,.ask__list .ask__team:focus-visible{outline-offset:-2px}
+</style>
 <script src="waitlist-config.js"></script>
 <script src="waitlist-client.js"></script>
 </head>
@@ -2188,12 +2199,11 @@ Marc!</h2>
     <p class="ask__lead">Ako si Mang Juan, ang guide mo sa Magasaka.</p>
     <div class="ask__menu">
       <button class="ask__start" type="button" data-ask-start>Magtanong kay Mang Juan<i><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i></button>
-      <button class="ask__level" type="button" data-ask-quiz><span class="ask__level-bar"><i></i><i></i><i></i></span><span><strong>Alamin ang level mo</strong><small>3 tanong lang</small></span><svg class="ask__chev" width="13" height="13" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7.5 4.5 13 10l-5.5 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-      <button class="ask__topic" type="button" data-q="Magkano ang kaltas sa kita ko, at paano ako mababayaran?"><strong>Bayad</strong><span>0% fee sa talent</span></button>
-      <button class="ask__topic" type="button" data-q="Paano gumagana ang paid trials?"><strong>Paid trials</strong><span>May bayad, mga 1 linggo</span></button>
-      <button class="ask__topic" type="button" data-q="Ano ang Seeds at paano sila gumagana?"><strong>Seeds</strong><span>Paano sila gumagana</span></button>
-      <button class="ask__topic" type="button" data-q="Ano ang Founding Members at paano sumali sa waitlist?"><strong>Waitlist</strong><span>Founding Members, 10,000 slots</span></button>
-      <a class="ask__team" href="mailto:hello@magasaka.com?subject=Tanong%20para%20sa%20Magasaka%20team"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="3.6" stroke="currentColor" stroke-width="1.6"/><path d="M4.8 19.6c1.2-3.3 3.9-5 7.2-5s6 1.7 7.2 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span><strong>Kausapin ang team</strong><small>Para sa tanong na hindi kaya ng AI</small></span><svg class="ask__chev" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7.5 4.5 13 10l-5.5 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      <div class="ask__pills"><button class="ask__topic" type="button" data-q="Magkano ang kaltas sa kita ko, at paano ako mababayaran?">Bayad</button><button class="ask__topic" type="button" data-q="Paano gumagana ang paid trials?">Paid trials</button><button class="ask__topic" type="button" data-q="Ano ang Seeds at paano sila gumagana?">Seeds</button><button class="ask__topic" type="button" data-q="Ano ang Founding Members at paano sumali sa waitlist?">Waitlist</button></div>
+      <div class="ask__list">
+        <button class="ask__level" type="button" data-ask-quiz><span class="ask__level-bar"><i></i><i></i><i></i></span><span><strong>Alamin ang level mo</strong><small>3 tanong lang</small></span><svg class="ask__chev" width="13" height="13" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7.5 4.5 13 10l-5.5 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <a class="ask__team" href="mailto:hello@magasaka.com?subject=Tanong%20para%20sa%20Magasaka%20team"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="3.6" stroke="currentColor" stroke-width="1.6"/><path d="M4.8 19.6c1.2-3.3 3.9-5 7.2-5s6 1.7 7.2 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span><strong>Kausapin ang team</strong><small>Para sa tanong na hindi kaya ng AI</small></span><svg class="ask__chev" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7.5 4.5 13 10l-5.5 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </div>
     </div>
     <p class="ask__note">Si Mang Juan ay AI at pwedeng magkamali. <a href="privacy.html">Privacy</a></p>
   </div>
