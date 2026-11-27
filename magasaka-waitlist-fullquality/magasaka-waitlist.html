@@ -4431,7 +4431,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     }
     const later = (fn, ms) => setTimeout(fn, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : ms);
     function startQuiz(){
-      view('quiz'); qlog.innerHTML = ''; qset(1);
+      view('quiz'); qlog.innerHTML = ''; qset(1); box.querySelector('[data-ask-skip]').hidden = false;
       qmsg("Ano'ng klase ng trabaho mo?", 'bot');
       qopts(WORK.map(w => w[0]), i => askYears(WORK[i]));
     }
@@ -4441,7 +4441,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       qopts(YEARS, i => result(work, i));
     }
     function result(work, i){
-      qset(3);
+      qset(3); box.querySelector('[data-ask-skip]').hidden = true;   // the result card has its own buttons
       const c = qadd(el('div', 'ask__qcard'));
       const t = el('div', 'ask__qtags');
       LEVELS.forEach((l, n) => t.appendChild(el('span', n === i ? 'is-on' : '', l)));
