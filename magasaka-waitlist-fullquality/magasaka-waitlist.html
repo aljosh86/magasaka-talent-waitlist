@@ -1537,36 +1537,40 @@ html.szoom-on .pill,html.szoom-off .pill{-webkit-backdrop-filter:none;backdrop-f
 }
 </style>
 <style>
-/* Mang Juan's panel opens on a home screen: a greeting, a big "ask" card, four topics and a way to reach the team */
-.ask__home{flex:1;min-height:0;display:flex;flex-direction:column;padding:22px 18px 14px;overflow-y:auto;scrollbar-width:none}
+/* Mang Juan's panel opens on a home screen: a greeting, a big "ask" card, four topics and a way to reach the team.
+   Sized from Marc's design: small type and compact cards at the bottom, with the misty hills showing in between. */
+.ask__home{flex:1;min-height:0;display:flex;flex-direction:column;padding:18px 16px 12px;overflow-y:auto;scrollbar-width:none}
 .ask__home::-webkit-scrollbar{display:none}
 .ask__chat{flex:1;min-height:0;display:flex;flex-direction:column}
 .ask__home[hidden],.ask__chat[hidden]{display:none}
 .ask__home:not([hidden]),.ask__chat:not([hidden]){animation:ask-view .38s cubic-bezier(.22,1,.36,1)}
 @keyframes ask-view{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-.ask__top{display:flex;align-items:center;justify-content:space-between;padding:0 0 0 8px}
-.ask__top .ask__avatar{width:46px;height:46px}
-.ask__hi{margin:22px 8px 6px;font:500 clamp(30px,8vw,36px)/1.05 var(--font);letter-spacing:-.025em;color:var(--ink)}
-.ask__lead{margin:0 8px;font:400 16px/1.4 var(--font);color:#3b3c38}
-.ask__menu{margin-top:auto;padding-top:22px;display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.ask__top{display:flex;align-items:center;justify-content:space-between;padding:0 0 0 4px}
+.ask__top .ask__avatar{width:32px;height:32px}
+.ask__top .ask__close{width:32px;height:32px;margin-right:-2px}
+.ask__hi{margin:14px 4px 4px;font:500 27px/1.1 var(--font);letter-spacing:-.02em;color:var(--ink)}
+.ask__lead{margin:0 4px;font:400 14px/1.4 var(--font);color:#3b3c38}
+.ask__menu{margin-top:auto;padding-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .ask__start,.ask__topic,.ask__team{border:0;background:rgba(255,255,255,.95);color:var(--ink);text-align:left;cursor:pointer;
-  box-shadow:0 0 0 1px rgba(20,20,20,.07),0 2px 8px -4px rgba(20,20,20,.12);
+  box-shadow:0 0 0 1px rgba(20,20,20,.06),0 1px 4px -2px rgba(20,20,20,.1);
   transition:transform .25s cubic-bezier(.22,1,.36,1),box-shadow .25s,background .2s;-webkit-tap-highlight-color:transparent}
-.ask__start:hover,.ask__topic:hover,.ask__team:hover{background:#fff;transform:translateY(-1px);box-shadow:0 0 0 1px rgba(20,20,20,.09),0 8px 18px -8px rgba(20,20,20,.22)}
+.ask__start:hover,.ask__topic:hover,.ask__team:hover{background:#fff;transform:translateY(-1px);box-shadow:0 0 0 1px rgba(20,20,20,.08),0 6px 14px -8px rgba(20,20,20,.22)}
 .ask__start:active,.ask__topic:active,.ask__team:active{transform:scale(.985)}
 .ask__start:focus-visible,.ask__topic:focus-visible,.ask__team:focus-visible,.ask__back:focus-visible{outline:2px solid var(--logo-green);outline-offset:2px}
-.ask__start{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:64px;padding:10px 10px 10px 20px;border-radius:22px;font:500 16px/1.2 var(--font)}
-.ask__start i{flex:none;width:44px;height:44px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;transition:transform .25s cubic-bezier(.22,1,.36,1)}
+.ask__start{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:54px;padding:8px 8px 8px 16px;border-radius:16px;font:500 13.5px/1.2 var(--font)}
+.ask__start i{flex:none;width:36px;height:36px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;transition:transform .25s cubic-bezier(.22,1,.36,1)}
+.ask__start i svg{width:15px;height:15px}
 .ask__start:hover i{transform:translateX(2px)}
-.ask__topic{display:flex;flex-direction:column;justify-content:center;gap:5px;min-height:74px;padding:12px 16px;border-radius:20px;font-family:var(--font)}
-.ask__topic strong{font:500 15.5px/1.2 var(--font)}
-.ask__topic span{font:400 13px/1.3 var(--font);color:#64655f}
-.ask__team{grid-column:1/-1;display:flex;align-items:center;gap:14px;min-height:72px;padding:12px 14px 12px 18px;border-radius:20px;text-decoration:none}
-.ask__team > span{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
-.ask__team strong{font:500 15.5px/1.2 var(--font)}
-.ask__team small{font:400 13px/1.3 var(--font);color:#64655f}
-.ask__team .ask__chev{flex:none;color:#64655f}
-.ask__note{align-self:center;margin:12px 0 0;padding:4px 12px;border-radius:100px;background:rgba(255,255,255,.78);text-align:center;font:400 12.5px/1.4 var(--font);color:#4f504b}
+.ask__topic{display:flex;flex-direction:column;justify-content:center;gap:4px;min-height:54px;padding:9px 13px;border-radius:15px;font-family:var(--font)}
+.ask__topic strong{font:500 13px/1.2 var(--font)}
+.ask__topic span{font:400 11px/1.3 var(--font);color:#64655f}
+.ask__team{grid-column:1/-1;display:flex;align-items:center;gap:12px;min-height:50px;padding:8px 12px 8px 14px;border-radius:15px;text-decoration:none}
+.ask__team > svg:first-child{width:18px;height:18px;flex:none}
+.ask__team > span{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.ask__team strong{font:500 13px/1.2 var(--font)}
+.ask__team small{font:400 11px/1.3 var(--font);color:#64655f}
+.ask__team .ask__chev{flex:none;width:13px;height:13px;color:#64655f}
+.ask__note{margin:9px 0 0;text-align:center;font:400 10.5px/1.4 var(--font);color:#4f504b;text-shadow:0 0 6px rgba(255,255,255,.9),0 0 2px rgba(255,255,255,.9)}
 .ask__note a{color:inherit;text-decoration:underline;text-underline-offset:2px}
 .ask__back{flex:none;width:36px;height:36px;margin-left:-8px;border:0;border-radius:50%;background:none;color:var(--ink);display:grid;place-items:center;cursor:pointer;transition:background .2s}
 .ask__back:hover{background:rgba(20,20,20,.06)}
@@ -1576,14 +1580,6 @@ html.szoom-on .pill,html.szoom-off .pill{-webkit-backdrop-filter:none;backdrop-f
 .juan[aria-expanded="true"] .mj{opacity:0;transform:scale(.6) rotate(20deg)}
 .juan[aria-expanded="true"] .juan__down{opacity:1;transform:none}
 .juan[aria-expanded="true"]{background:radial-gradient(circle at 32% 26%,#4f7a36 0%,#2f4f22 55%,#1c3314 100%)}
-@media (max-width:640px){
-  .ask__home{padding:18px 14px 12px}
-  .ask__hi{margin-top:16px}
-  .ask__menu{gap:8px;padding-top:18px}
-  .ask__topic{min-height:68px;padding:11px 14px}
-  .ask__start{min-height:58px}
-  .ask__team{min-height:64px}
-}
 @media (prefers-reduced-motion: reduce){.ask__home:not([hidden]),.ask__chat:not([hidden]){animation:none}}
 </style>
 <script src="waitlist-config.js"></script>
