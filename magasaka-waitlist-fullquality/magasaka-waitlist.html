@@ -1582,6 +1582,64 @@ html.szoom-on .pill,html.szoom-off .pill{-webkit-backdrop-filter:none;backdrop-f
 .juan[aria-expanded="true"]{background:radial-gradient(circle at 32% 26%,#4f7a36 0%,#2f4f22 55%,#1c3314 100%)}
 @media (prefers-reduced-motion: reduce){.ask__home:not([hidden]),.ask__chat:not([hidden]){animation:none}}
 </style>
+<style>
+/* "Alamin ang level mo": three quick questions in Mang Juan's panel that end with the level your experience puts you at */
+.ask__level{grid-column:1/-1;display:flex;align-items:center;gap:12px;min-height:50px;padding:8px 12px 8px 14px;border:0;border-radius:15px;text-align:left;cursor:pointer;
+  background:rgba(255,255,255,.95);color:var(--ink);box-shadow:0 0 0 1px rgba(20,20,20,.06),0 1px 4px -2px rgba(20,20,20,.1);
+  transition:transform .25s cubic-bezier(.22,1,.36,1),box-shadow .25s,background .2s;-webkit-tap-highlight-color:transparent}
+.ask__level:hover{background:#fff;transform:translateY(-1px);box-shadow:0 0 0 1px rgba(20,20,20,.08),0 6px 14px -8px rgba(20,20,20,.22)}
+.ask__level:active{transform:scale(.985)}
+.ask__level:focus-visible{outline:2px solid var(--logo-green);outline-offset:2px}
+.ask__level > span:nth-child(2){flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.ask__level strong{font:500 13px/1.2 var(--font)}
+.ask__level small{font:400 11px/1.3 var(--font);color:#64655f}
+.ask__level .ask__chev{flex:none;color:#64655f}
+.ask__level-bar{flex:none;display:flex;align-items:flex-end;gap:2px;width:18px;height:16px}
+.ask__level-bar i{flex:1;border-radius:2px;background:#5a7f3f}
+.ask__level-bar i:nth-child(1){height:40%;opacity:.45}.ask__level-bar i:nth-child(2){height:70%;opacity:.7}.ask__level-bar i:nth-child(3){height:100%}
+
+.ask__quiz{flex:1;min-height:0;display:flex;flex-direction:column;background:#f5f4ef}
+.ask__quiz[hidden]{display:none}
+.ask__quiz:not([hidden]){animation:ask-view .38s cubic-bezier(.22,1,.36,1)}
+.ask__qhead{display:flex;align-items:center;gap:10px;padding:16px 14px 10px 16px}
+.ask__qhead .ask__avatar{width:36px;height:36px}
+.ask__qhead .ask__close{width:32px;height:32px}
+.ask__qwho{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.ask__qwho strong{font:500 14.5px/1.2 var(--font);color:var(--ink)}
+.ask__qwho span{font:400 11px/1.2 var(--font);color:#6b6c66}
+.ask__qprog{display:grid;grid-template-columns:1fr auto;gap:6px;padding:2px 16px 8px;font:500 10.5px/1.2 var(--font);color:var(--ink)}
+.ask__qprog span:nth-child(2){font-weight:400;color:#6b6c66}
+.ask__qbar{grid-column:1/-1;height:5px;border-radius:5px;background:#e2e1db;overflow:hidden}
+.ask__qbar i{display:block;height:100%;width:33.3%;border-radius:inherit;background:#5a7f3f;transition:width .6s cubic-bezier(.22,1,.36,1)}
+.ask__qlog{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:6px 16px 12px;display:flex;flex-direction:column;gap:9px;scrollbar-width:thin}
+.ask__qlog .ask__msg{font-size:12.5px;padding:9px 13px;border-radius:15px}
+.ask__qlog .ask__msg--bot{background:#fff;box-shadow:0 0 0 1px rgba(20,20,20,.05)}
+.ask__qcard{background:#fff;border-radius:16px;padding:14px;box-shadow:0 0 0 1px rgba(20,20,20,.06),0 2px 8px -4px rgba(20,20,20,.1);animation:ask-msg .32s cubic-bezier(.22,1,.36,1) both}
+.ask__qtags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+.ask__qtags span{padding:4px 7px;border-radius:5px;background:#eef0e8;color:#4a5e3a;font:400 10px/1 var(--font);transition:background .3s,color .3s}
+.ask__qtags span.is-on{background:#5a7f3f;color:#fff}
+.ask__qcard h3{margin:0 0 5px;font:500 15px/1.25 var(--font);letter-spacing:-.01em;color:var(--ink)}
+.ask__qcard p{margin:0 0 11px;font:400 11px/1.45 var(--font);color:#5d5e58}
+.ask__qopts{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.ask__qopts button{min-height:36px;padding:7px 8px;border:1px solid rgba(20,20,20,.08);border-radius:10px;background:#f3f2ed;color:var(--ink);font:400 12px/1.25 var(--font);cursor:pointer;transition:background .2s,border-color .2s,transform .2s}
+.ask__qopts button:hover{background:#ebeae4;border-color:rgba(20,20,20,.14)}
+.ask__qopts button:active{transform:scale(.97)}
+.ask__qopts button:focus-visible{outline:2px solid var(--logo-green);outline-offset:1px}
+.ask__qopts.is-done button{pointer-events:none;opacity:.45}
+.ask__qopts.is-done button.is-picked{opacity:1;background:var(--ink);border-color:var(--ink);color:#fff}
+.ask__qacts{display:flex;flex-direction:column;gap:6px}
+.ask__qacts button{min-height:38px;border:0;border-radius:100px;font:500 12.5px/1 var(--font);cursor:pointer;transition:background .2s,transform .2s}
+.ask__qacts button:first-child{background:var(--ink);color:#fff}
+.ask__qacts button:first-child:hover{background:#000}
+.ask__qacts button:not(:first-child){background:#f3f2ed;color:var(--ink)}
+.ask__qacts button:not(:first-child):hover{background:#ebeae4}
+.ask__qacts button:active{transform:scale(.98)}
+.ask__qfoot{display:flex;flex-direction:column;align-items:center;padding:6px 16px 12px}
+.ask__skip{padding:4px;border:0;background:none;color:var(--ink);font:400 12px/1.3 var(--font);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.ask__skip:hover{color:#000}
+.ask__qfoot .ask__note{margin-top:6px}
+@media (prefers-reduced-motion: reduce){.ask__quiz:not([hidden]),.ask__qcard{animation:none}.ask__qbar i{transition:none}}
+</style>
 <script src="waitlist-config.js"></script>
 <script src="waitlist-client.js"></script>
 </head>
@@ -2130,6 +2188,7 @@ Marc!</h2>
     <p class="ask__lead">Ako si Mang Juan, ang guide mo sa Magasaka.</p>
     <div class="ask__menu">
       <button class="ask__start" type="button" data-ask-start>Magtanong kay Mang Juan<i><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i></button>
+      <button class="ask__level" type="button" data-ask-quiz><span class="ask__level-bar"><i></i><i></i><i></i></span><span><strong>Alamin ang level mo</strong><small>3 tanong lang</small></span><svg class="ask__chev" width="13" height="13" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7.5 4.5 13 10l-5.5 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       <button class="ask__topic" type="button" data-q="Magkano ang kaltas sa kita ko, at paano ako mababayaran?"><strong>Bayad</strong><span>0% fee sa talent</span></button>
       <button class="ask__topic" type="button" data-q="Paano gumagana ang paid trials?"><strong>Paid trials</strong><span>May bayad, mga 1 linggo</span></button>
       <button class="ask__topic" type="button" data-q="Ano ang Seeds at paano sila gumagana?"><strong>Seeds</strong><span>Paano sila gumagana</span></button>
@@ -2137,6 +2196,13 @@ Marc!</h2>
       <a class="ask__team" href="mailto:hello@magasaka.com?subject=Tanong%20para%20sa%20Magasaka%20team"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="3.6" stroke="currentColor" stroke-width="1.6"/><path d="M4.8 19.6c1.2-3.3 3.9-5 7.2-5s6 1.7 7.2 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span><strong>Kausapin ang team</strong><small>Para sa tanong na hindi kaya ng AI</small></span><svg class="ask__chev" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7.5 4.5 13 10l-5.5 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
     </div>
     <p class="ask__note">Si Mang Juan ay AI at pwedeng magkamali. <a href="privacy.html">Privacy</a></p>
+  </div>
+  <div class="ask__quiz" id="askQuiz" hidden>
+    <header class="ask__qhead"><span class="ask__avatar"><svg class="mj" viewBox="0 0 56 56" aria-hidden="true"><g class="mj__hat"><path d="M10.5 29.5 28 15.5l17.5 14c-5.3 2-11.1 3-17.5 3s-12.2-1-17.5-3z" fill="#dca15d"/><path d="M28 15.5v17M28 15.5l-8 16.4M28 15.5l8 16.4M28 15.5 14.5 30.9M28 15.5l13.5 15.4" fill="none" stroke="#b07a3a" stroke-width="1.1" stroke-linecap="round"/><path d="M10.5 29.5c5.3 2 11.1 3 17.5 3s12.2-1 17.5-3" fill="none" stroke="#9c6a30" stroke-width="1.6" stroke-linecap="round"/><circle cx="28" cy="15.6" r="1.4" fill="#9c6a30"/></g><g class="mj__look"><g class="mj__eyes" fill="#f4f2ea"><circle cx="23.2" cy="37.5" r="2.3"/><circle cx="32.8" cy="37.5" r="2.3"/></g></g></svg></span><span class="ask__qwho"><strong>Mang Juan</strong><span>Magasaka AI guide</span></span><button class="ask__close" type="button" aria-label="Close" data-ask-close><svg width="16" height="16" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M16.5 5.5L5.5 16.5M16.5 16.5L5.5 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></header>
+    <div class="ask__qprog"><span>Alamin ang level mo</span><span id="askQStep">1 of 3</span><div class="ask__qbar"><i id="askQBar"></i></div></div>
+    <div class="ask__qlog" id="askQLog" aria-live="polite"></div>
+    <div class="ask__qfoot"><button class="ask__skip" type="button" data-ask-skip>Laktawan, magtatanong na lang ako</button>
+    <p class="ask__note">Si Mang Juan ay AI at pwedeng magkamali. <a href="privacy.html">Privacy</a></p></div>
   </div>
   <div class="ask__chat" id="askChat" hidden>
   <header class="ask__head">
@@ -4237,12 +4303,87 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       answer(q);
     }
     // two screens: home (greeting, topics, team) and the chat itself
-    const home = document.getElementById('askHome'), chat = document.getElementById('askChat');
+    const home = document.getElementById('askHome'), chat = document.getElementById('askChat'), quiz = document.getElementById('askQuiz');
     function view(name){
-      const toChat = name === 'chat';
-      home.hidden = toChat; chat.hidden = !toChat;
-      if (toChat && !log.children.length) add("Ano'ng gusto mong malaman, anak? Tanong ka lang, kahit ano tungkol sa Magasaka.", 'bot');
+      home.hidden = name !== 'home'; chat.hidden = name !== 'chat'; quiz.hidden = name !== 'quiz';
+      if (name === 'chat' && !log.children.length) add("Ano'ng gusto mong malaman, anak? Tanong ka lang, kahit ano tungkol sa Magasaka.", 'bot');
     }
+    // "Alamin ang level mo": kind of work, then years of experience, then the level that puts you at.
+    // Levels follow real years of experience (the FAQ); the year ranges per level are this guide's estimate.
+    const qlog = document.getElementById('askQLog'), qstep = document.getElementById('askQStep'), qbar = document.getElementById('askQBar');
+    const LEVELS = ['Entry', 'Rising', 'Skilled', 'Executive'];
+    const WORK = [
+      ['Virtual assistant', 'Ilang taon ka nang virtual assistant?', 'virtual assistant'],
+      ['Customer support', 'Ilang taon ka nang nasa customer support?', 'customer support'],
+      ['Video editing', 'Ilang taon ka nang nagva-video editing?', 'video editing'],
+      ['Graphic design', 'Ilang taon ka nang nagde-design?', 'design'],
+      ['Social media', 'Ilang taon ka nang nagha-handle ng social media?', 'social media'],
+      ['Writing', 'Ilang taon ka nang nagsusulat?', 'writing'],
+      ['Bookkeeping', 'Ilang taon ka nang nagbo-bookkeeping?', 'bookkeeping'],
+      ['Development', 'Ilang taon ka nang nagco-code?', 'development'],
+      ['Project management', 'Ilang taon ka nang nagma-manage ng projects?', 'project management'],
+      ['Iba pa', 'Ilang taon ka na sa trabaho mo?', 'trabaho mo']
+    ];
+    const YEARS = ['Wala pang 1 taon', '1 hanggang 3 taon', '3 hanggang 5 taon', 'Higit 5 taon'];
+    const qadd = (el) => { qlog.appendChild(el); requestAnimationFrame(() => qlog.scrollTo({top: qlog.scrollHeight, behavior: 'smooth'})); return el; };
+    const qmsg = (text, who) => { const m = document.createElement('div'); m.className = 'ask__msg ask__msg--' + who; m.textContent = text; return qadd(m); };
+    const qset = n => { qstep.textContent = n + ' of 3'; qbar.style.width = (n / 3 * 100) + '%'; };
+    const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+    function qcard({tags, on, title, text, options, cols}){
+      const c = el('div', 'ask__qcard');
+      if (tags){ const t = el('div', 'ask__qtags'); LEVELS.forEach((l, i) => { const s = el('span', i === on ? 'is-on' : '', l); t.appendChild(s); }); c.appendChild(t); }
+      c.appendChild(el('h3', '', title));
+      if (text) c.appendChild(el('p', '', text));
+      return qadd(c);
+    }
+    function qopts(card, list, pick){
+      const o = el('div', 'ask__qopts');
+      list.forEach((label, i) => {
+        const b = el('button', '', label); b.type = 'button';
+        b.addEventListener('click', () => { if (o.classList.contains('is-done')) return; o.classList.add('is-done'); b.classList.add('is-picked'); pick(i, label); });
+        o.appendChild(b);
+      });
+      card.appendChild(o);
+    }
+    const later = (fn, ms) => setTimeout(fn, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : ms);
+    function startQuiz(){
+      view('quiz'); qlog.innerHTML = ''; qset(1);
+      qmsg("Ano'ng klase ng trabaho mo?", 'bot');
+      const c = qcard({title: 'Pumili ng isa', text: 'Kahit alin dito, may lugar ka sa Magasaka.'});
+      qopts(c, WORK.map(w => w[0]), (i, label) => {
+        qmsg(label, 'me');
+        later(() => askYears(WORK[i]), 450);
+      });
+    }
+    function askYears(work){
+      qset(2);
+      const c = qcard({tags: true, on: -1, title: work[1], text: 'Totoong years of experience ang basehan ng level mo sa Magasaka.'});
+      qopts(c, YEARS, (i, label) => {
+        qmsg(label, 'me');
+        later(() => result(work, i), 450);
+      });
+    }
+    function result(work, i){
+      qset(3);
+      const level = LEVELS[i];
+      const lines = [
+        "Entry ka muna, anak, at totoong level 'yan na may sariling minimum rate. Lalaki ang rank mo sa bawat trabahong maihahatid mo.",
+        "Rising ka, anak! May ilang taon ka na sa " + work[2] + ", at bilang 'yan mula day one.",
+        "Skilled ka, anak! Hindi biro ang ilang taon sa " + work[2] + ". Bilang agad 'yan sa Magasaka.",
+        "Executive ka, anak! Mahigit limang taon sa " + work[2] + ", buong-buo 'yang bibilangin."
+      ];
+      const c = qcard({tags: true, on: i, title: level + ' ang level mo', text: lines[i] + ' Tantya pa lang ito; makukumpirma ang level mo pag nag-sign up ka.'});
+      const a = el('div', 'ask__qacts');
+      const join = el('button', '', 'Sumali sa waitlist'); join.type = 'button';
+      join.addEventListener('click', () => { close(); setTimeout(() => document.getElementById('pillJoin')?.click(), 120); });
+      const more = el('button', '', 'Magtanong kay Mang Juan'); more.type = 'button';
+      more.addEventListener('click', () => { view('chat'); setTimeout(() => input.focus({preventScroll:true}), 60); });
+      const again = el('button', '', 'Ulitin'); again.type = 'button';
+      again.addEventListener('click', startQuiz);
+      a.append(join, more, again); c.appendChild(a);
+    }
+    box.querySelector('[data-ask-quiz]').addEventListener('click', startQuiz);
+    box.querySelector('[data-ask-skip]').addEventListener('click', () => { view('chat'); setTimeout(() => input.focus({preventScroll:true}), 60); });
     function open(){
       const menu = document.getElementById('menu');
       if (menu && !menu.hidden) document.getElementById('menuBtn').click();
