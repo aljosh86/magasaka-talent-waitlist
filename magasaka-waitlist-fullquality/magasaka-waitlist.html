@@ -1736,28 +1736,11 @@ html.szoom-on .pill,html.szoom-off .pill{-webkit-backdrop-filter:none;backdrop-f
 </style>
 <style>
 /* the hero is always full-screen tall (lvh); while the address bar shows, its bottom sits behind the bar,
-   so lift the words by exactly the part that is hidden (0 once the bar slides away) to keep them above the pill.
-   The script below measures it, since phone browsers do not all report the address bar to CSS. */
-.beat{bottom:calc(env(safe-area-inset-bottom,0px) + 137px + var(--stage-hidden,0px))}
-@media (max-width:640px){.beat{bottom:calc(env(safe-area-inset-bottom,0px) + 125px + var(--stage-hidden,0px))}}
+   so the words sit above the bottom of the smallest screen (bar showing). They never move while you scroll:
+   measuring the bar live lagged a step behind and made them jump. With the bar hidden they simply sit a little higher. */
+.beat{bottom:calc(env(safe-area-inset-bottom,0px) + 137px + (100lvh - 100svh))}
+@media (max-width:640px){.beat{bottom:calc(env(safe-area-inset-bottom,0px) + 125px + (100lvh - 100svh))}}
 </style>
-<script>
-  // how much of the full-screen hero hides below what you can see (the address bar's height while it shows)
-  document.addEventListener('DOMContentLoaded', () => {
-    const stage = document.querySelector('.stage');
-    if (!stage) return;
-    let queued = false, last = -1;
-    const measure = () => {
-      queued = false;
-      // innerHeight follows the address bar but not the keyboard (that lays over the page), so typing does not move the words
-      const h = Math.max(0, Math.round(stage.offsetHeight - innerHeight));
-      if (h !== last){ last = h; stage.style.setProperty('--stage-hidden', h + 'px'); }
-    };
-    const ask = () => { if (!queued){ queued = true; requestAnimationFrame(measure); } };
-    addEventListener('resize', ask); addEventListener('scroll', ask, {passive:true});
-    measure();
-  });
-</script>
 <script src="waitlist-config.js"></script>
 <script src="waitlist-client.js"></script>
 </head>
