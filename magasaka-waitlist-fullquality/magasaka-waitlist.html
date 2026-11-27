@@ -1651,6 +1651,29 @@ html.szoom-on .pill,html.szoom-off .pill{-webkit-backdrop-filter:none;backdrop-f
 .ask__list .ask__team{border-top:1px solid rgba(20,20,20,.07)}
 .ask__list .ask__level:focus-visible,.ask__list .ask__team:focus-visible{outline-offset:-2px}
 </style>
+<style>
+/* Mang Juan home: topics as pills (Level opens the level check, Team emails the team), and a real chat bar at the very bottom */
+.ask__menu{gap:12px}
+.ask__pills{display:flex;flex-wrap:wrap;gap:6px}
+.ask__pill{display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:0 13px;border:0;border-radius:100px;background:rgba(255,255,255,.95);color:var(--ink);
+  font:400 12.5px/1 var(--font);text-decoration:none;cursor:pointer;box-shadow:0 0 0 1px rgba(20,20,20,.07);
+  transition:background .2s,transform .2s,box-shadow .2s;-webkit-tap-highlight-color:transparent}
+.ask__pill:hover{background:#fff;box-shadow:0 0 0 1px rgba(20,20,20,.12),0 4px 10px -6px rgba(20,20,20,.25);transform:translateY(-1px)}
+.ask__pill:active{transform:scale(.96)}
+.ask__pill:focus-visible{outline:2px solid var(--logo-green);outline-offset:2px}
+.ask__pill .ask__level-bar{width:12px;height:11px;gap:1.5px}
+.ask__pill--team{background:#2f4f22;color:#f4f2ea;box-shadow:none}
+.ask__pill--team:hover{background:#3b6029;box-shadow:0 4px 10px -6px rgba(20,40,10,.5)}
+.ask__bar{display:flex;align-items:center;gap:6px;min-height:50px;padding:6px 6px 6px 16px;border-radius:100px;background:#fff;
+  box-shadow:0 0 0 1px rgba(20,20,20,.08),0 4px 14px -8px rgba(20,20,20,.25);transition:box-shadow .2s}
+.ask__bar:focus-within{box-shadow:0 0 0 1.5px rgba(20,20,20,.4),0 4px 14px -8px rgba(20,20,20,.25)}
+.ask__bar input{flex:1;min-width:0;height:36px;padding:0;border:0;background:none;color:var(--ink);font:400 13.5px/1 var(--font);outline:none}
+.ask__bar input::placeholder{color:#7a7b75}
+.ask__bar button{flex:none;width:36px;height:36px;border:0;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;cursor:pointer;transition:background .2s,transform .2s}
+.ask__bar button:hover{background:#000}
+.ask__bar button:active{transform:scale(.92)}
+@media (max-width:640px){.ask__bar input{font-size:16px}}   /* 16px keeps iPhones from zooming in on tap */
+</style>
 <script src="waitlist-config.js"></script>
 <script src="waitlist-client.js"></script>
 </head>
@@ -2198,12 +2221,8 @@ Marc!</h2>
     <h2 class="ask__hi">Kumusta!</h2>
     <p class="ask__lead">Ako si Mang Juan, ang guide mo sa Magasaka.</p>
     <div class="ask__menu">
-      <button class="ask__start" type="button" data-ask-start>Magtanong kay Mang Juan<i><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i></button>
-      <div class="ask__pills"><button class="ask__topic" type="button" data-q="Magkano ang kaltas sa kita ko, at paano ako mababayaran?">Bayad</button><button class="ask__topic" type="button" data-q="Paano gumagana ang paid trials?">Paid trials</button><button class="ask__topic" type="button" data-q="Ano ang Seeds at paano sila gumagana?">Seeds</button><button class="ask__topic" type="button" data-q="Ano ang Founding Members at paano sumali sa waitlist?">Waitlist</button></div>
-      <div class="ask__list">
-        <button class="ask__level" type="button" data-ask-quiz><span class="ask__level-bar"><i></i><i></i><i></i></span><span><strong>Alamin ang level mo</strong><small>3 tanong lang</small></span><svg class="ask__chev" width="13" height="13" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7.5 4.5 13 10l-5.5 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-        <a class="ask__team" href="mailto:hello@magasaka.com?subject=Tanong%20para%20sa%20Magasaka%20team"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="3.6" stroke="currentColor" stroke-width="1.6"/><path d="M4.8 19.6c1.2-3.3 3.9-5 7.2-5s6 1.7 7.2 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span><strong>Kausapin ang team</strong><small>Para sa tanong na hindi kaya ng AI</small></span><svg class="ask__chev" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7.5 4.5 13 10l-5.5 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-      </div>
+      <div class="ask__pills"><button class="ask__pill ask__topic" type="button" data-q="Magkano ang kaltas sa kita ko, at paano ako mababayaran?">Bayad</button><button class="ask__pill ask__topic" type="button" data-q="Paano gumagana ang paid trials?">Paid trials</button><button class="ask__pill ask__topic" type="button" data-q="Ano ang Seeds at paano sila gumagana?">Seeds</button><button class="ask__pill ask__pill--level" type="button" data-ask-quiz><span class="ask__level-bar" aria-hidden="true"><i></i><i></i><i></i></span>Level</button><a class="ask__pill ask__pill--team" href="mailto:hello@magasaka.com?subject=Tanong%20para%20sa%20Magasaka%20team"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="3.6" stroke="currentColor" stroke-width="1.8"/><path d="M4.8 19.6c1.2-3.3 3.9-5 7.2-5s6 1.7 7.2 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Team</a></div>
+      <form class="ask__bar" id="askHomeForm" autocomplete="off"><input type="text" placeholder="Magtanong kay Mang Juan" aria-label="Magtanong kay Mang Juan" maxlength="300"><button type="submit" aria-label="Send"><svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></form>
     </div>
     <p class="ask__note">Si Mang Juan ay AI at pwedeng magkamali. <a href="privacy.html">Privacy</a></p>
   </div>
@@ -4399,9 +4418,17 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       if (menu && !menu.hidden) document.getElementById('menuBtn').click();
       view(history.length ? 'chat' : 'home');
       box.hidden = false; btn.setAttribute('aria-expanded', 'true');
-      if (!chat.hidden && matchMedia('(hover: hover)').matches) setTimeout(() => input.focus({preventScroll:true}), 60);
+      if (matchMedia('(hover: hover)').matches) setTimeout(() => (chat.hidden ? document.querySelector('#askHomeForm input') : input).focus({preventScroll:true}), 60);
     }
-    box.querySelector('[data-ask-start]').addEventListener('click', () => { view('chat'); setTimeout(() => input.focus({preventScroll:true}), 60); });
+    // the chat bar on the home screen: typing a question there opens the chat with it
+    const homeForm = document.getElementById('askHomeForm'), homeInput = homeForm.querySelector('input');
+    homeForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const q = homeInput.value.trim();
+      view('chat');
+      if (q){ homeInput.value = ''; ask(q); }
+      setTimeout(() => input.focus({preventScroll:true}), 60);
+    });
     box.querySelectorAll('.ask__topic').forEach(t => t.addEventListener('click', () => { view('chat'); ask(t.dataset.q); }));
     box.querySelector('[data-ask-back]').addEventListener('click', () => view('home'));
     function close(){ box.hidden = true; btn.setAttribute('aria-expanded', 'false'); }
