@@ -1753,6 +1753,10 @@ html.szoom-on .pill,html.szoom-off .pill{-webkit-backdrop-filter:none;backdrop-f
   }
 }
 </style>
+<style>
+/* phones: the change-card picture gives way on shorter screens, so picture + caption fit above the pill */
+@media (max-width:640px){ .chcard__mock{max-height:min(58svh, calc(100svh - 360px))} }
+</style>
 <script src="waitlist-config.js"></script>
 <script src="waitlist-client.js"></script>
 </head>
@@ -3257,7 +3261,14 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       // desktop panels are a fixed 750px; on a phone the cards are stacked absolutely, so size the row to the tallest
       const phone = innerWidth <= 640;
       if (phone){ row.style.height = ''; row.style.height = Math.max(...cards.map(c => c.offsetHeight)) + 'px'; } else row.style.height = '';
-      const panel = phone ? row.offsetHeight : 750, top = Math.max(20, (innerHeight - panel) / 2);
+      const panel = phone ? row.offsetHeight : 750;
+      let top = Math.max(20, (innerHeight - panel) / 2);
+      if (phone){
+        // centre it in the room between the logo bar and the pill, so the caption never slides under the pill
+        const used = Math.max(...cards.map(c => { const f = c.querySelector('.chcard__foot'); return f ? f.getBoundingClientRect().bottom - c.getBoundingClientRect().top : c.offsetHeight; }));
+        const TOP = 56, BOTTOM = 125;   // logo bar above; pill (and its gap) below
+        top = TOP + Math.max(0, (innerHeight - TOP - BOTTOM - used) / 2);
+      }
       stage.style.height = (panel + (cards.length - 1) * Math.round(innerHeight * .8)) + 'px';
       row.style.top = top + 'px';
     };
