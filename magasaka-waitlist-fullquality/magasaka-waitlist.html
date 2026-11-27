@@ -363,6 +363,8 @@ body:has(.pill:not([data-state="idle"])) .scrollcue{opacity:0 !important;transit
 .faq__a{display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s cubic-bezier(.65,0,.35,1)}
 .faq__item[data-open="true"] .faq__a{grid-template-rows:1fr}
 .faq__a>div{overflow:hidden;padding-top:6px;margin-top:-6px}   /* the text is trimmed to capital height, so tall letters (f, l, d) poke above it; give the clip room so their tops are not cut */
+.faq__a>div{visibility:hidden;transition:visibility 0s .4s}   /* a closed answer is fully hidden once it has folded, so no sliver of its text peeks under the question */
+.faq__item[data-open="true"] .faq__a>div{visibility:visible;transition-delay:0s}
 .faq__a p{margin:0 0 22px;font-weight:400;font-size:16px;line-height:1.5;color:#4a4b46;max-width:521px}
 
 /* ---------- waitlist band (Figma 106:2434 / 108:3118) ---------- */
