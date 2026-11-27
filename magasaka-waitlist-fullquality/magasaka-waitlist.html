@@ -9,7 +9,7 @@
     if (n > 2 && (n - 2) % 5 !== 0) document.documentElement.classList.add('ld-skip');
   })();
 </script>
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-visual">
 <title>Magasaka: Talent Waitlist</title>
 <meta name="description" content="Magasaka is a freelance marketplace being built to connect Filipino talent with clients around the world. Join the waitlist.">
 <!-- share preview (absolute URLs: Facebook and LinkedIn need them). If the page is served somewhere other than the root of magasaka.com, update these. -->
@@ -2980,6 +2980,17 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       }
     });
     email.addEventListener('input', () => { document.getElementById('pillError').hidden = true; });
+    // the keyboard now lays over the page instead of shrinking it (so the page no longer jumps);
+    // while you type in the pill, lift the pill above the keyboard so the field stays in view
+    const vv = window.visualViewport;
+    if (vv){
+      const lift = () => {
+        const kb = innerHeight - vv.height - vv.offsetTop;
+        pill.style.bottom = kb > 120 && document.activeElement === email ? (kb + 12) + 'px' : '';
+      };
+      vv.addEventListener('resize', lift); vv.addEventListener('scroll', lift);
+      email.addEventListener('focus', lift); email.addEventListener('blur', () => setTimeout(lift, 50));
+    }
   })();
 
   // --- scroll-tied word-by-word reveal
