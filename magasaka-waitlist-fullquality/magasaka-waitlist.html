@@ -1743,7 +1743,7 @@ html.szoom-on .pill,html.szoom-off .pill{-webkit-backdrop-filter:none;backdrop-f
 </style>
 <script>
   // how much of the full-screen hero hides below what you can see (the address bar's height while it shows)
-  (() => {
+  document.addEventListener('DOMContentLoaded', () => {
     const stage = document.querySelector('.stage');
     if (!stage) return;
     let queued = false, last = -1;
@@ -1756,7 +1756,7 @@ html.szoom-on .pill,html.szoom-off .pill{-webkit-backdrop-filter:none;backdrop-f
     const ask = () => { if (!queued){ queued = true; requestAnimationFrame(measure); } };
     addEventListener('resize', ask); addEventListener('scroll', ask, {passive:true});
     measure();
-  })();
+  });
 </script>
 <script src="waitlist-config.js"></script>
 <script src="waitlist-client.js"></script>
