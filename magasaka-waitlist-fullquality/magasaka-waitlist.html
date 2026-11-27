@@ -1757,6 +1757,16 @@ html.szoom-on .pill,html.szoom-off .pill{-webkit-backdrop-filter:none;backdrop-f
 /* phones: the change-card picture gives way on shorter screens, so picture + caption fit above the pill */
 @media (max-width:640px){ .chcard__mock{max-height:min(58svh, calc(100svh - 360px))} }
 </style>
+<style>
+/* level result: Sumali sa waitlist with Magtanong and Ulitin as round icons beside it */
+.ask__qactions{display:flex;align-items:center;gap:6px}
+.ask__qactions .ask__qjoin{flex:1;width:auto}
+.ask__qicon{flex:none;width:38px;height:38px;border:0;border-radius:50%;display:grid;place-items:center;background:#fff;color:var(--ink);cursor:pointer;
+  box-shadow:0 0 0 1px rgba(20,20,20,.1);transition:box-shadow .2s,transform .2s;-webkit-tap-highlight-color:transparent}
+.ask__qicon:hover{box-shadow:0 0 0 1px rgba(20,20,20,.22),0 4px 10px -6px rgba(20,20,20,.3)}
+.ask__qicon:active{transform:scale(.92)}
+.ask__qicon:focus-visible{outline:2px solid var(--logo-green);outline-offset:2px}
+</style>
 <script src="waitlist-config.js"></script>
 <script src="waitlist-client.js"></script>
 </head>
@@ -4498,13 +4508,18 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
         el('p', '', 'Base sa totoong years of experience mo. Tantya pa lang ito; makukumpirma pag nag-sign up ka.'));
       const join = el('button', 'ask__qjoin', 'Sumali sa waitlist'); join.type = 'button';
       join.addEventListener('click', () => { close(); setTimeout(() => document.getElementById('pillJoin')?.click(), 120); });
-      const links = el('div', 'ask__qlinks');
-      const more = el('button', '', 'Magtanong'); more.type = 'button';
-      more.addEventListener('click', () => { view('chat'); setTimeout(() => input.focus({preventScroll:true}), 60); });
-      const again = el('button', '', 'Ulitin'); again.type = 'button';
-      again.addEventListener('click', startQuiz);
-      links.append(more, again);
-      c.append(join, links);
+      // Magtanong and Ulitin are small round icons beside the join button
+      const icon = (label, svg, fn) => {
+        const b = el('button', 'ask__qicon'); b.type = 'button';
+        b.setAttribute('aria-label', label); b.title = label; b.innerHTML = svg;
+        b.addEventListener('click', fn); return b;
+      };
+      const more = icon('Magtanong', '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 12.2c0 4-3.6 7.3-8 7.3-1.1 0-2.2-.2-3.1-.6L4 20l1.3-3.6C4.5 15.2 4 13.8 4 12.2 4 8.2 7.6 5 12 5s8 3.2 8 7.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+        () => { view('chat'); setTimeout(() => input.focus({preventScroll:true}), 60); });
+      const again = icon('Ulitin', '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M19.5 4.5v4.2h-4.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>', startQuiz);
+      const actions = el('div', 'ask__qactions');
+      actions.append(join, more, again);
+      c.append(actions);
     }
     box.querySelector('[data-ask-quiz]').addEventListener('click', startQuiz);
     box.querySelector('[data-ask-skip]').addEventListener('click', () => { view('chat'); setTimeout(() => input.focus({preventScroll:true}), 60); });
