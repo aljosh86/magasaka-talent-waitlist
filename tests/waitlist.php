@@ -128,12 +128,13 @@ try {
     check($http('OPTIONS', null, ['Origin: https://untrusted.example'])['status'] === 403, 'CORS rejects unapproved previews');
     $cors = $http('OPTIONS', null, ['Origin: http://127.0.0.1:4175']);
     check($cors['status'] === 204 && str_contains($cors['headers'], 'Access-Control-Allow-Origin: http://127.0.0.1:4175'), 'CORS supports a configured static preview');
+    check(str_contains($cors['headers'], 'Access-Control-Expose-Headers: Retry-After'), 'Cross-origin previews can read the resend cooldown');
     $joined = $http('POST', '{"action":"join","email":"http@example.com"}', $headers);
     check($joined['status'] === 201 && $joined['data']['entry']['no'] === 1, 'HTTP saves a real signup at #1');
     check(str_contains($joined['headers'], 'Cache-Control: no-store'), 'Private API responses cannot be cached');
     $nameResponse = $http('POST', '{"action":"name","email":"http@example.com","name":"HTTP Test"}', $headers);
     check($nameResponse['status'] === 200 && $nameResponse['data']['entry']['name'] === 'HTTP Test', 'HTTP saves the name');
-    $completed = $http('POST', '{"action":"complete","email":"http@example.com","name":"HTTP Test","title":"Developer","picks":["PHP"]}', $headers);
+    $completed = $http('POST', '{"action":"complete","email":"http@example.com","name":"HTTP Test","title":"Web Developer","picks":["PHP"]}', $headers);
     check($completed['status'] === 200 && $completed['data']['entry']['complete'], 'HTTP completes the card profile');
     check(!str_contains(json_encode($completed['data']), 'token'), 'HTTP never exposes stored authentication hashes');
     clearFixture($pdo);

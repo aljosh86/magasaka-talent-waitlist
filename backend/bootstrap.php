@@ -2,23 +2,33 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/waitlist.php';
+require_once __DIR__ . '/verification.php';
 
 function waitlist_config(): array
 {
     $path = getenv('WAITLIST_CONFIG_FILE') ?: __DIR__ . '/config.local.php';
     $local = is_file($path) ? require $path : [];
+    // Isolated test/config overrides must never inherit real mail credentials.
+    $mailPath = __DIR__ . '/resend.local.php';
+    $mail = !getenv('WAITLIST_CONFIG_FILE') && is_file($mailPath) ? require $mailPath : [];
     $defaults = [
         'db_host' => '127.0.0.1', 'db_port' => 3306,
         'db_name' => 'magasaka_waitlist', 'db_user' => '', 'db_password' => '',
         'app_key' => '', 'allowed_origins' => [],
+        'resend_api_key' => '', 'resend_from' => '', 'resend_test_recipient' => '',
+        'resend_verification_template' => '',
     ];
-    $config = array_replace($defaults, is_array($local) ? $local : []);
+    $config = array_replace($defaults, is_array($local) ? $local : [], is_array($mail) ? $mail : []);
     foreach (array_keys($defaults) as $key) {
         $value = getenv('WAITLIST_' . strtoupper($key));
         if ($value !== false) {
             $config[$key] = $key === 'allowed_origins'
                 ? array_values(array_filter(array_map('trim', explode(',', $value)))) : $value;
         }
+    }
+    foreach (['resend_api_key', 'resend_from', 'resend_test_recipient', 'resend_verification_template'] as $key) {
+        $value = getenv(strtoupper($key));
+        if ($value !== false) { $config[$key] = $value; }
     }
     if (!$config['db_user'] || strlen($config['app_key']) < 32) {
         throw new RuntimeException('The waitlist database configuration is missing.');

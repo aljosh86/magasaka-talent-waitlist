@@ -1,0 +1,14 @@
+{
+  "name": "magasaka/talent-waitlist",
+  "description": "PHP backend for the Magasaka talent waitlist",
+  "type": "project",
+  "require": {
+    "php": "^8.1",
+    "ext-pdo": "*",
+    "ext-pdo_mysql": "*",
+    "ext-mbstring": "*",
+    "ext-curl": "*",
+    "resend/resend-php": "^1.1"
+  },
+  "config": {"sort-packages": true, "allow-plugins": false}
+}

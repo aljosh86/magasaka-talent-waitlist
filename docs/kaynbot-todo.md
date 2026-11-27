@@ -16,10 +16,10 @@ Last updated November 27, 2026. The frontend changes listed here are already on 
 
 ## Promises the site makes that need the backend
 
-7. **Email system.** The last signup screen says:
-   - "You're on the list. We'll email you when your invite is ready."
-   - "10,000 founding spots. We'll ask you to confirm your email before launch."
-   Needed: a transactional email provider, a welcome email, email confirmation (fill `email_verified_at`), the invite email, and an unsubscribe link on any update email. The Privacy Policy says updates can always be stopped.
+7. **Email system — verification implemented; delivery setup still required.** Resend now sends a six-digit code after the profile step. A correct code fills `email_verified_at` and unlocks the existing card. Codes expire after 10 minutes and have resend/attempt limits. See `docs/waitlist-backend.md` for Composer, private mail settings, and the published template variables.
+   - Before public use: verify a sending domain, configure its sender, remove the local test-inbox restriction, and confirm delivery through the actual signup flow. Resend's sandbox sender only accepts the account owner's inbox.
+   - Still needed: welcome email, invite email, and unsubscribe handling on update emails. The last screen still promises "We'll email you when your invite is ready"; those later emails are not implemented by verification.
+   - Cross-device recovery and reclaiming abandoned unverified spots remain separate work.
 8. **Deletion and access requests.** The Privacy Policy promises people can leave the waitlist, get a copy of their data, and have it deleted by emailing hello@magasaka.com. A small admin script for "export this email's data" and "delete this email" is enough for now. Remember `waitlist_skills` cascades; decide what happens to `referred_by` on rows that pointed at a deleted member (currently `ON DELETE SET NULL`).
 9. **Retention.** The policy says waitlist data is deleted or anonymised if the person hasn't created an account within 12 months of launch, or if Magasaka doesn't launch.
 
@@ -34,7 +34,7 @@ Last updated November 27, 2026. The frontend changes listed here are already on 
 
 ## Already done on the frontend (for reference)
 
-- Signup flow wired to `api/waitlist.php`, with a pretend-entry fallback only on `localhost` when no PHP answers (for design previews).
+- Signup flow wired to `api/waitlist.php`, including email verification. A pretend-entry fallback requires explicit `previewMode: true` on localhost when no PHP API answers; demo cards are labelled.
 - Privacy Policy and Terms rewritten for Magasaka, LLC (Delaware), contact hello@magasaka.com, Philippine Data Privacy Act. They still need a lawyer's review before launch.
 - Share preview image (`og-image.jpg`) and favicons.
 - Hero frames now load lazily: about 8MB on arrival on desktop, instead of about 95MB.

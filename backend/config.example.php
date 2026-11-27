@@ -13,4 +13,12 @@ return [
     // Exact frontend origins when a separately hosted preview calls this API.
     // Same-origin requests work automatically; never use '*'.
     'allowed_origins' => [],
+    // Resend sending-only key. Prefer RESEND_API_KEY in production.
+    'resend_api_key' => '',
+    // Use your verified sending domain in production.
+    'resend_from' => '',
+    // Restrict the local sandbox to your own inbox; leave empty in production.
+    'resend_test_recipient' => '',
+    // Optional published template ID/alias with CODE and EXPIRES_MINUTES variables.
+    'resend_verification_template' => '',
 ];

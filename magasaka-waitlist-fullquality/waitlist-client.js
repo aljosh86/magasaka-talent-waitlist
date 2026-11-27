@@ -22,10 +22,8 @@
     return token;
   }
 
-  // Local design preview: on localhost with no PHP behind the page (e.g. a Python or Live Server preview),
-  // walk through the flow with a pretend entry kept in this browser only. Never active on a real domain,
-  // and never when the API answers (XAMPP / php -S), so real signups are unaffected.
-  const isLocal = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
+  // Opt-in local design preview only. A failed real API must never silently verify a signup.
+  const isLocal = config.previewMode === true && /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
   function previewEntry(action, input, email) {
     const KEY = 'mg-waitlist-preview:' + email;
     let entry = null;
@@ -36,6 +34,12 @@
     }
     if (action === 'name' || action === 'complete') entry.name = input.name;
     if (action === 'complete') Object.assign(entry, {title: input.title, picks: input.picks, complete: true});
+    entry.preview = true;
+    if (action === 'send_code') entry.verification = {sent:true, resendAfter:0};
+    if (action === 'verify') {
+      if (input.code !== '000000') throw new Error('Design preview: enter 000000. No email is sent.');
+      entry.verified = true;
+    }
     try { localStorage.setItem(KEY, JSON.stringify(entry)); } catch (_) {}
     console.warn('[waitlist] No PHP API on this local preview; using a pretend entry (nothing is saved to the database).');
     return entry;
@@ -53,7 +57,7 @@
     const email = input.email.trim().toLowerCase();
     const token = tokenFor(email, action === 'join');
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 15000);
+    const timeout = setTimeout(() => controller.abort(), action === 'send_code' ? 45000 : 15000);
     try {
       const response = await fetch(apiUrl, {
         method: 'POST', credentials: 'omit', cache: 'no-store', signal: controller.signal,
@@ -70,6 +74,7 @@
       if (!response.ok || !result.ok) {
         const error = new Error(result.message || 'We could not save your details. Please try again.');
         error.code = result.code;
+        error.retryAfter = Number(response.headers.get('Retry-After')) || 0;
         throw error;
       }
       const entry = result.entry;
@@ -77,7 +82,7 @@
         || typeof entry.ref !== 'string' || !Array.isArray(entry.picks)) {
         throw new Error('We could not confirm your signup. Please try again shortly.');
       }
-      return entry;
+      return {...entry, verification: result.verification || null};
     } catch (error) {
       if (error.name === 'AbortError' || error instanceof TypeError) {
         throw new Error('We could not confirm your signup. Check your connection and try again.');
@@ -91,6 +96,8 @@
     join: (email, referredBy) => request('join', {email, referredBy}),
     saveName: (email, name) => request('name', {email, name}),
     complete: ({email, name, title, picks}) => request('complete', {email, name, title, picks}),
+    sendCode: (email, resend = false) => request('send_code', {email, resend}),
+    verify: (email, code) => request('verify', {email, code}),
     shareUrl: ref => {
       const url = new URL(config.publicPageUrl || location.pathname, location.href);
       url.search = ''; url.hash = ''; url.searchParams.set('ref', ref);

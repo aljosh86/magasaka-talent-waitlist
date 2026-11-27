@@ -46,3 +46,19 @@ CREATE TABLE IF NOT EXISTS waitlist_rate_limits (
     expires_at DATETIME NOT NULL,
     KEY waitlist_rate_expiry (expires_at)
 ) ENGINE=InnoDB;
+
+-- One active challenge per member. Only keyed hashes are stored, never plaintext codes.
+CREATE TABLE IF NOT EXISTS waitlist_email_verifications (
+    member_number INT UNSIGNED NOT NULL PRIMARY KEY,
+    request_id CHAR(32) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+    code_hash CHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+    expires_at DATETIME NOT NULL,
+    attempts TINYINT UNSIGNED NOT NULL DEFAULT 0,
+    next_send_at DATETIME NOT NULL,
+    send_window_at DATETIME NOT NULL,
+    send_count TINYINT UNSIGNED NOT NULL DEFAULT 1,
+    sent_at DATETIME NULL,
+    provider_email_id VARCHAR(100) NULL,
+    CONSTRAINT waitlist_verification_entry_fk FOREIGN KEY (member_number)
+        REFERENCES waitlist_entries (member_number) ON DELETE CASCADE
+) ENGINE=InnoDB;

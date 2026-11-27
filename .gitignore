@@ -2,5 +2,7 @@
 Thumbs.db
 Desktop.ini
 /backend/config.local.php
+/backend/resend.local.php
 /.local/
 /.playwright-mcp/
+/vendor/

@@ -175,7 +175,10 @@ function waitlist_update(PDO $pdo, array $input, string $token, bool $complete):
 function waitlist_rate_limit(PDO $pdo, string $address, string $key, string $action): void
 {
     $window = intdiv(time(), 60);
-    $scope = $action === 'join' ? 'join' : 'update';
+    $scope = match ($action) {
+        'join' => 'join', 'send_code' => 'verification_send', 'verify' => 'verification_check', default => 'update',
+    };
+    $limit = match ($scope) { 'join' => 20, 'verification_send' => 10, 'verification_check' => 30, default => 120 };
     $hash = hash_hmac('sha256', "$address|$scope|$window", $key);
     $query = $pdo->prepare('INSERT INTO waitlist_rate_limits (bucket_hash, hits, expires_at)
         VALUES (?, 1, DATE_ADD(UTC_TIMESTAMP(), INTERVAL 2 MINUTE)) ON DUPLICATE KEY UPDATE hits = hits + 1');
@@ -184,7 +187,7 @@ function waitlist_rate_limit(PDO $pdo, string $address, string $key, string $act
     $query->execute([$hash]);
     $hits = (int) $query->fetchColumn();
     $pdo->exec('DELETE FROM waitlist_rate_limits WHERE expires_at < UTC_TIMESTAMP() LIMIT 100');
-    if ($hits > ($scope === 'join' ? 20 : 120)) {
+    if ($hits > $limit) {
         throw new WaitlistError(429, 'rate_limited', 'Too many attempts. Please wait one minute and try again.');
     }
 }
