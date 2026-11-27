@@ -4813,6 +4813,30 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     input.closest('.band')?.scrollIntoView({block:'center'});
     setTimeout(() => input.focus({preventScroll:true}), 400);
   });
+  // phones: the keyboard shrinks the screen in some browsers, and the long scroll sections are sized to the screen,
+  // so the whole page gets shorter and you land somewhere else. Keep the field you are typing in on screen,
+  // both when the keyboard opens and when it closes again.
+  (() => {
+    if (!matchMedia('(pointer: coarse)').matches) return;
+    let field = null, until = 0, timers = [];
+    const isField = el => el && el.matches && el.matches('input:not([type=checkbox]):not([type=radio]),textarea')
+      && !el.closest('.pill,#ask,.flow,[role="dialog"]');
+    const anchor = () => {
+      if (!field || !document.contains(field)) return;
+      if (document.activeElement !== field && performance.now() > until) { field = null; return; }
+      const r = field.getBoundingClientRect(), vh = window.visualViewport ? visualViewport.height : innerHeight;
+      if (r.top > 60 && r.bottom < vh - 20) return;
+      window.__mgQuietScroll = window.__mgNavUntil = performance.now() + 700;   // the page moved itself; the logo bar should not react
+      scrollTo({top: Math.max(0, scrollY + r.top - vh * .4), behavior: 'instant'});
+    };
+    addEventListener('focusin', e => { if (isField(e.target)) field = e.target; });
+    addEventListener('focusout', e => { if (e.target === field) until = performance.now() + 1500; });
+    addEventListener('resize', () => {
+      if (!field) return;
+      timers.forEach(clearTimeout);
+      timers = [60, 250, 600].map(ms => setTimeout(anchor, ms));   // again after the scroll sections have re-measured
+    });
+  })();
   // "Inside Magasaka" tabs: left and right arrow keys move between them, as tabs should
   (() => {
     const tabs = [...document.querySelectorAll('.tabs [role="tab"]')];
