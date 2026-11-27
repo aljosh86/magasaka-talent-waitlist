@@ -94,8 +94,8 @@ html.is-loading .grain{z-index:91}
 
 /* ---------- Hero ---------- */
 .hero{position:relative;height:720vh;background:var(--paddy)}
-.stage{transform-origin:50% 50%;position:sticky;top:0;height:calc(100vh - env(safe-area-inset-bottom,0px));overflow:hidden;background:var(--paddy)}
-@supports (height:100svh){.stage{height:calc(100svh - env(safe-area-inset-bottom,0px))}}   /* starts at the very top: a status-bar gap here showed as an empty band */
+.stage{transform-origin:50% 50%;position:sticky;top:0;height:100vh;overflow:hidden;background:var(--paddy)}
+@supports (height:100lvh){.stage{height:100lvh}}   /* always the full screen, also once the address bar slides away; a shorter stage left a dark strip under the video while scrolling */
 .stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 .scrim{position:absolute;inset:0;pointer-events:none;background:rgba(0,0,0,.2)}
 
