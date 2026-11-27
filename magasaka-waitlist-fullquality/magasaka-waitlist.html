@@ -1703,6 +1703,35 @@ html.szoom-on .pill,html.szoom-off .pill{-webkit-backdrop-filter:none;backdrop-f
 .ask__chat .ask__note{margin:10px 16px 12px}
 @media (max-width:640px){.ask__chat .ask__form input{font-size:16px}.ask__chat .ask__chips button{height:31px;padding:0 10px;font-size:12px}}
 </style>
+<style>
+/* Alamin ang level mo, minimal: a thin progress line, Mang Juan's question, answers as pills, and one small result card */
+.ask__quiz{background:linear-gradient(180deg,#f7f6f2,#f3f2ed)}
+.ask__quiz .ask__qhead{padding:16px 14px 6px}
+.ask__quiz .ask__qhead .ask__avatar{width:32px;height:32px}
+.ask__qprog{display:flex;align-items:center;gap:10px;padding:2px 16px 10px;font:400 10.5px/1 var(--font);color:#7a7b75}
+.ask__qbar{flex:1;height:3px}
+.ask__qlog{gap:8px;padding:6px 16px 12px}
+.ask__qopts{display:flex;flex-wrap:wrap;gap:6px;padding:2px 0 4px;animation:ask-msg .32s cubic-bezier(.22,1,.36,1) both}
+.ask__qopts button{min-height:32px;padding:0 12px;border:0;border-radius:100px;background:#fff;color:var(--ink);font:400 12.5px/1 var(--font);
+  box-shadow:0 0 0 1px rgba(20,20,20,.08);cursor:pointer;transition:background .2s,box-shadow .2s,transform .2s}
+.ask__qopts button:hover{box-shadow:0 0 0 1px rgba(20,20,20,.16),0 4px 10px -6px rgba(20,20,20,.25);transform:translateY(-1px)}
+.ask__qopts button:active{transform:scale(.96)}
+.ask__qcard{padding:14px 14px 10px;border-radius:16px;text-align:center}
+.ask__qcard small{display:block;font:400 11px/1.2 var(--font);color:#6b6c66}
+.ask__qcard h3{margin:3px 0 10px;font:500 22px/1.1 var(--font);letter-spacing:-.02em}
+.ask__qtags{justify-content:center;gap:4px;margin:0 0 10px}
+.ask__qtags span{padding:3px 7px;border-radius:100px;background:transparent;color:#9a9b95;font-size:10px;box-shadow:0 0 0 1px rgba(20,20,20,.08)}
+.ask__qtags span.is-on{background:#5a7f3f;color:#fff;box-shadow:none}
+.ask__qcard p{margin:0 0 12px;font-size:11px;line-height:1.45;color:#6b6c66}
+.ask__qjoin{width:100%;min-height:38px;border:0;border-radius:100px;background:var(--ink);color:#fff;font:500 12.5px/1 var(--font);cursor:pointer;transition:background .2s,transform .2s}
+.ask__qjoin:hover{background:#000}
+.ask__qjoin:active{transform:scale(.98)}
+.ask__qlinks{display:flex;justify-content:center;gap:18px;margin-top:8px}
+.ask__qlinks button{padding:4px 2px;border:0;background:none;color:#4f504b;font:400 11.5px/1.2 var(--font);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.ask__qlinks button:hover{color:var(--ink)}
+.ask__qfoot{padding:4px 16px 12px}
+@media (max-width:640px){.ask__qopts button{min-height:31px;padding:0 11px;font-size:12px}}
+</style>
 <script src="waitlist-config.js"></script>
 <script src="waitlist-client.js"></script>
 </head>
@@ -2257,7 +2286,7 @@ Marc!</h2>
   </div>
   <div class="ask__quiz" id="askQuiz" hidden>
     <header class="ask__qhead"><span class="ask__avatar"><svg class="mj" viewBox="0 0 56 56" aria-hidden="true"><g class="mj__hat"><path d="M10.5 29.5 28 15.5l17.5 14c-5.3 2-11.1 3-17.5 3s-12.2-1-17.5-3z" fill="#dca15d"/><path d="M28 15.5v17M28 15.5l-8 16.4M28 15.5l8 16.4M28 15.5 14.5 30.9M28 15.5l13.5 15.4" fill="none" stroke="#b07a3a" stroke-width="1.1" stroke-linecap="round"/><path d="M10.5 29.5c5.3 2 11.1 3 17.5 3s12.2-1 17.5-3" fill="none" stroke="#9c6a30" stroke-width="1.6" stroke-linecap="round"/><circle cx="28" cy="15.6" r="1.4" fill="#9c6a30"/></g><g class="mj__look"><g class="mj__eyes" fill="#f4f2ea"><circle cx="23.2" cy="37.5" r="2.3"/><circle cx="32.8" cy="37.5" r="2.3"/></g></g></svg></span><span class="ask__qwho"><strong>Mang Juan</strong><span>Magasaka AI guide</span></span><button class="ask__close" type="button" aria-label="Close" data-ask-close><svg width="16" height="16" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M16.5 5.5L5.5 16.5M16.5 16.5L5.5 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></header>
-    <div class="ask__qprog"><span>Alamin ang level mo</span><span id="askQStep">1 of 3</span><div class="ask__qbar"><i id="askQBar"></i></div></div>
+    <div class="ask__qprog"><div class="ask__qbar"><i id="askQBar"></i></div><span id="askQStep">1/3</span></div>
     <div class="ask__qlog" id="askQLog" aria-live="polite"></div>
     <div class="ask__qfoot"><button class="ask__skip" type="button" data-ask-skip>Laktawan, magtatanong na lang ako</button>
     <p class="ask__note">Si Mang Juan ay AI at pwedeng magkamali. <a href="privacy.html">Privacy</a></p></div>
@@ -4386,60 +4415,47 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     const YEARS = ['Wala pang 1 taon', '1 hanggang 3 taon', '3 hanggang 5 taon', 'Higit 5 taon'];
     const qadd = (el) => { qlog.appendChild(el); requestAnimationFrame(() => qlog.scrollTo({top: qlog.scrollHeight, behavior: 'smooth'})); return el; };
     const qmsg = (text, who) => { const m = document.createElement('div'); m.className = 'ask__msg ask__msg--' + who; m.textContent = text; return qadd(m); };
-    const qset = n => { qstep.textContent = n + ' of 3'; qbar.style.width = (n / 3 * 100) + '%'; };
+    const qset = n => { qstep.textContent = n + '/3'; qbar.style.width = (n / 3 * 100) + '%'; };
     const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
-    function qcard({tags, on, title, text, options, cols}){
-      const c = el('div', 'ask__qcard');
-      if (tags){ const t = el('div', 'ask__qtags'); LEVELS.forEach((l, i) => { const s = el('span', i === on ? 'is-on' : '', l); t.appendChild(s); }); c.appendChild(t); }
-      c.appendChild(el('h3', '', title));
-      if (text) c.appendChild(el('p', '', text));
-      return qadd(c);
-    }
-    function qopts(card, list, pick){
-      const o = el('div', 'ask__qopts');
+    // answers are pills right under Mang Juan's question; once you pick, they fold away and your answer shows as a reply
+    function qopts(list, pick){
+      const o = qadd(el('div', 'ask__qopts'));
       list.forEach((label, i) => {
         const b = el('button', '', label); b.type = 'button';
-        b.addEventListener('click', () => { if (o.classList.contains('is-done')) return; o.classList.add('is-done'); b.classList.add('is-picked'); pick(i, label); });
+        b.addEventListener('click', () => {
+          if (o.dataset.done) return; o.dataset.done = '1';
+          o.remove(); qmsg(label, 'me'); later(() => pick(i), 420);
+        });
         o.appendChild(b);
       });
-      card.appendChild(o);
     }
     const later = (fn, ms) => setTimeout(fn, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : ms);
     function startQuiz(){
       view('quiz'); qlog.innerHTML = ''; qset(1);
       qmsg("Ano'ng klase ng trabaho mo?", 'bot');
-      const c = qcard({title: 'Pumili ng isa', text: 'Kahit alin dito, may lugar ka sa Magasaka.'});
-      qopts(c, WORK.map(w => w[0]), (i, label) => {
-        qmsg(label, 'me');
-        later(() => askYears(WORK[i]), 450);
-      });
+      qopts(WORK.map(w => w[0]), i => askYears(WORK[i]));
     }
     function askYears(work){
       qset(2);
-      const c = qcard({tags: true, on: -1, title: work[1], text: 'Totoong years of experience ang basehan ng level mo sa Magasaka.'});
-      qopts(c, YEARS, (i, label) => {
-        qmsg(label, 'me');
-        later(() => result(work, i), 450);
-      });
+      qmsg(work[1], 'bot');
+      qopts(YEARS, i => result(work, i));
     }
     function result(work, i){
       qset(3);
-      const level = LEVELS[i];
-      const lines = [
-        "Entry ka muna, anak, at totoong level 'yan na may sariling minimum rate. Lalaki ang rank mo sa bawat trabahong maihahatid mo.",
-        "Rising ka, anak! May ilang taon ka na sa " + work[2] + ", at bilang 'yan mula day one.",
-        "Skilled ka, anak! Hindi biro ang ilang taon sa " + work[2] + ". Bilang agad 'yan sa Magasaka.",
-        "Executive ka, anak! Mahigit limang taon sa " + work[2] + ", buong-buo 'yang bibilangin."
-      ];
-      const c = qcard({tags: true, on: i, title: level + ' ang level mo', text: lines[i] + ' Tantya pa lang ito; makukumpirma ang level mo pag nag-sign up ka.'});
-      const a = el('div', 'ask__qacts');
-      const join = el('button', '', 'Sumali sa waitlist'); join.type = 'button';
+      const c = qadd(el('div', 'ask__qcard'));
+      const t = el('div', 'ask__qtags');
+      LEVELS.forEach((l, n) => t.appendChild(el('span', n === i ? 'is-on' : '', l)));
+      c.append(el('small', '', 'Ang level mo'), el('h3', '', LEVELS[i]), t,
+        el('p', '', 'Base sa totoong years of experience mo. Tantya pa lang ito; makukumpirma pag nag-sign up ka.'));
+      const join = el('button', 'ask__qjoin', 'Sumali sa waitlist'); join.type = 'button';
       join.addEventListener('click', () => { close(); setTimeout(() => document.getElementById('pillJoin')?.click(), 120); });
-      const more = el('button', '', 'Magtanong kay Mang Juan'); more.type = 'button';
+      const links = el('div', 'ask__qlinks');
+      const more = el('button', '', 'Magtanong'); more.type = 'button';
       more.addEventListener('click', () => { view('chat'); setTimeout(() => input.focus({preventScroll:true}), 60); });
       const again = el('button', '', 'Ulitin'); again.type = 'button';
       again.addEventListener('click', startQuiz);
-      a.append(join, more, again); c.appendChild(a);
+      links.append(more, again);
+      c.append(join, links);
     }
     box.querySelector('[data-ask-quiz]').addEventListener('click', startQuiz);
     box.querySelector('[data-ask-skip]').addEventListener('click', () => { view('chat'); setTimeout(() => input.focus({preventScroll:true}), 60); });
