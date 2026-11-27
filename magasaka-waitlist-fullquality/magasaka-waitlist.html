@@ -3936,19 +3936,25 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       g.fillStyle = '#f2f2f1'; g.fillRect(0, 0, c.width, c.height);
       try { if (paper.complete) for (let y = 0; y < c.height; y += c.width * paper.naturalHeight / paper.naturalWidth) g.drawImage(paper, 0, y, c.width, c.width * paper.naturalHeight / paper.naturalWidth); } catch(e){}
       g.fillStyle = 'rgba(214,96,96,.62)'; g.fillRect(28 * scale, 0, 2 * scale, c.height);
-      const text = sheet.querySelector('.mf__text'); const ps = [...text.querySelectorAll('p')];
-      let y = 56 * scale; const x = 46 * scale, maxW = (W - 46 - 22) * scale;
-      ps.forEach((p, i) => {
-        const size = (i === 0 ? 23 : 20) * scale, lh = 20 * 1.55 * scale;
-        g.font = size + 'px "Magasaka Hand", cursive'; g.fillStyle = '#3b3b37'; g.textBaseline = 'top';
-        let line = '';
-        p.textContent.split(/\s+/).forEach(w => {
-          const t = line ? line + ' ' + w : w;
-          if (g.measureText(t).width > maxW && line){ g.fillText(line, x, y + (lh - size) / 2); y += lh; line = w; } else line = t;
-        });
-        if (line){ g.fillText(line, x, y + (lh - size) / 2); y += lh; }
-        y += (i === 0 ? 23 : 20) * .6 * scale;   // the paragraph gap, as in the CSS (.6em)
-      });
+      // every word is drawn exactly where the page lays it out (same line breaks), so when the real text
+      // takes over from this picture at the end of the unfold, nothing shifts or shows twice
+      const text = sheet.querySelector('.mf__text'), box0 = sheet.getBoundingClientRect();
+      const k = W / Math.max(1, box0.width) * scale, top0 = box0.top - scroller.scrollTop * (box0.width / Math.max(1, sheet.offsetWidth));   // as if scrolled to the top
+      g.fillStyle = '#3b3b37'; g.textBaseline = 'alphabetic';
+      const range = document.createRange();
+      const walker = document.createTreeWalker(text, NodeFilter.SHOW_TEXT);
+      for (let n = walker.nextNode(); n; n = walker.nextNode()){
+        const cs = getComputedStyle(n.parentElement);
+        g.font = cs.fontStyle + ' ' + cs.fontWeight + ' ' + (parseFloat(cs.fontSize) * k) + 'px ' + cs.fontFamily;
+        const re = /\S+/g; let m;
+        while ((m = re.exec(n.data))){
+          range.setStart(n, m.index); range.setEnd(n, m.index + m[0].length);
+          const rects = range.getClientRects();
+          if (!rects.length) continue;
+          const word = m[0], mt = g.measureText(word), asc = mt.fontBoundingBoxAscent || parseFloat(cs.fontSize) * k * .8;
+          g.fillText(word, (rects[0].left - box0.left) * k, (rects[0].top - top0) * k + asc);
+        }
+      }
       return c;
     }
 
