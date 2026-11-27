@@ -1743,6 +1743,16 @@ html.szoom-on .pill,html.szoom-off .pill{-webkit-backdrop-filter:none;backdrop-f
 .beats-fixed{position:fixed;left:0;right:0;bottom:0;height:100vh;height:100lvh;z-index:40;pointer-events:none}   /* held by its bottom edge, like the pill: Chrome moves top-held layers down with the address bar */
 .beats-fixed .beat{bottom:calc(env(safe-area-inset-bottom,0px) + 125px)}
 </style>
+<style>
+/* phones: the manifesto film is the full screen tall even once the address bar slides away (it was the screen with the bar
+   showing, which left a pale strip under it); its words are lifted by the bar's height so they stay clear of the pill when it shows */
+@media (max-width:640px){
+  @supports (height:100lvh){
+    .filmblock{height:100lvh}
+    .filmblock__text{bottom:calc(env(safe-area-inset-bottom,0px) + 130px + (100lvh - 100svh))}
+  }
+}
+</style>
 <script src="waitlist-config.js"></script>
 <script src="waitlist-client.js"></script>
 </head>
