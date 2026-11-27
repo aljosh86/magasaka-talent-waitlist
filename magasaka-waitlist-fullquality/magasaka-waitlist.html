@@ -4442,7 +4442,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     form.addEventListener('submit', e => { e.preventDefault(); ask(input.value); });
     chips.addEventListener('click', e => { const b = e.target.closest('button'); if (b) ask(b.textContent); });
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && !box.hidden){ close(); btn.focus(); } });
-    document.addEventListener('click', e => { if (!box.hidden && !e.target.closest('#ask, #askBtn')) close(); });
+    document.addEventListener('click', e => { if (!box.hidden && e.target.isConnected && !e.target.closest('#ask, #askBtn')) close(); });   // a button that redrew the panel is no longer on the page, not outside it
     document.getElementById('menuBtn')?.addEventListener('click', () => { if (!box.hidden) close(); });
   })();
 </script>
