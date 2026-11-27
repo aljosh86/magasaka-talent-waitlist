@@ -1,1 +1,9 @@
 ErrorDocument 404 /404.html
+
+# Pages and scripts: browsers must check for a newer version on every visit (a quick "not modified" when nothing changed),
+# so phones never keep showing an old copy of the page after an update.
+<IfModule mod_headers.c>
+  <FilesMatch "\.(html|js)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>
