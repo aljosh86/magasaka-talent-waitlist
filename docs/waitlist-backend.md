@@ -114,3 +114,17 @@ This command requires an explicit matching database name, the deletion flag, and
 - [MariaDB transactional row locking](https://mariadb.com/docs/server/reference/sql-statements/data-manipulation/selecting-data/for-update)
 - [PHP prepared statements](https://www.php.net/manual/en/pdo.prepared-statements.php)
 - [PHP timing-safe comparisons](https://www.php.net/hash_equals)
+
+## Mang Juan (AI guide)
+
+The Mang Juan panel opens on a home screen with four topic cards, a "Magtanong kay Mang Juan" chat and a "Kausapin ang team" link (`mailto:hello@magasaka.com`). Questions are sent to `api/juan.php`, which calls Claude through the official `anthropic-ai/sdk` package with a fixed system prompt (`backend/juan.php`). The prompt contains only facts that the page already states. Update it there whenever the page copy changes.
+
+| Environment variable | PHP configuration key | Purpose |
+| --- | --- | --- |
+| `ANTHROPIC_API_KEY` | `anthropic_api_key` | Claude API key; server only |
+| `JUAN_MODEL` | `juan_model` | Optional; defaults to `claude-opus-5-5` |
+
+- The request uses low effort, a 2,000-token output cap, prompt caching on the system prompt, and the server-side refusal fallback (`fallbacks: "default"`).
+- Each visitor (hashed IP in `waitlist_rate_limits`) may ask 10 questions per minute and 60 per hour. Up to 16 recent messages of up to 600 characters each are sent.
+- Visitors' messages and the API key are never logged.
+- If there is no key, no PHP, no database, a timeout, or a provider error, the page answers from its built-in replies, so the chat never goes silent. A static preview (for example `python -m http.server`) always uses those built-in replies.

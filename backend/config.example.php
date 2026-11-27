@@ -21,4 +21,9 @@ return [
     'resend_test_recipient' => '',
     // Optional published template ID/alias with CODE and EXPIRES_MINUTES variables.
     'resend_verification_template' => '',
+    // Mang Juan (the AI guide). Prefer the ANTHROPIC_API_KEY environment variable in production.
+    // Without a key, the chat answers from the page's own built-in replies.
+    'anthropic_api_key' => '',
+    // Optional. Defaults to claude-opus-5-5; JUAN_MODEL overrides it.
+    'juan_model' => '',
 ];

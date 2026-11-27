@@ -1536,6 +1536,56 @@ html.szoom-on .pill,html.szoom-off .pill{-webkit-backdrop-filter:none;backdrop-f
   .szoom__shade{display:none}
 }
 </style>
+<style>
+/* Mang Juan's panel opens on a home screen: a greeting, a big "ask" card, four topics and a way to reach the team */
+.ask__home{flex:1;min-height:0;display:flex;flex-direction:column;padding:22px 18px 14px;overflow-y:auto;scrollbar-width:none}
+.ask__home::-webkit-scrollbar{display:none}
+.ask__chat{flex:1;min-height:0;display:flex;flex-direction:column}
+.ask__home[hidden],.ask__chat[hidden]{display:none}
+.ask__home:not([hidden]),.ask__chat:not([hidden]){animation:ask-view .38s cubic-bezier(.22,1,.36,1)}
+@keyframes ask-view{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.ask__top{display:flex;align-items:center;justify-content:space-between;padding:0 0 0 8px}
+.ask__top .ask__avatar{width:46px;height:46px}
+.ask__hi{margin:22px 8px 6px;font:500 clamp(30px,8vw,36px)/1.05 var(--font);letter-spacing:-.025em;color:var(--ink)}
+.ask__lead{margin:0 8px;font:400 16px/1.4 var(--font);color:#3b3c38}
+.ask__menu{margin-top:auto;padding-top:22px;display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.ask__start,.ask__topic,.ask__team{border:0;background:rgba(255,255,255,.95);color:var(--ink);text-align:left;cursor:pointer;
+  box-shadow:0 0 0 1px rgba(20,20,20,.07),0 2px 8px -4px rgba(20,20,20,.12);
+  transition:transform .25s cubic-bezier(.22,1,.36,1),box-shadow .25s,background .2s;-webkit-tap-highlight-color:transparent}
+.ask__start:hover,.ask__topic:hover,.ask__team:hover{background:#fff;transform:translateY(-1px);box-shadow:0 0 0 1px rgba(20,20,20,.09),0 8px 18px -8px rgba(20,20,20,.22)}
+.ask__start:active,.ask__topic:active,.ask__team:active{transform:scale(.985)}
+.ask__start:focus-visible,.ask__topic:focus-visible,.ask__team:focus-visible,.ask__back:focus-visible{outline:2px solid var(--logo-green);outline-offset:2px}
+.ask__start{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:64px;padding:10px 10px 10px 20px;border-radius:22px;font:500 16px/1.2 var(--font)}
+.ask__start i{flex:none;width:44px;height:44px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;transition:transform .25s cubic-bezier(.22,1,.36,1)}
+.ask__start:hover i{transform:translateX(2px)}
+.ask__topic{display:flex;flex-direction:column;justify-content:center;gap:5px;min-height:74px;padding:12px 16px;border-radius:20px;font-family:var(--font)}
+.ask__topic strong{font:500 15.5px/1.2 var(--font)}
+.ask__topic span{font:400 13px/1.3 var(--font);color:#64655f}
+.ask__team{grid-column:1/-1;display:flex;align-items:center;gap:14px;min-height:72px;padding:12px 14px 12px 18px;border-radius:20px;text-decoration:none}
+.ask__team > span{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.ask__team strong{font:500 15.5px/1.2 var(--font)}
+.ask__team small{font:400 13px/1.3 var(--font);color:#64655f}
+.ask__team .ask__chev{flex:none;color:#64655f}
+.ask__note{align-self:center;margin:12px 0 0;padding:4px 12px;border-radius:100px;background:rgba(255,255,255,.78);text-align:center;font:400 12.5px/1.4 var(--font);color:#4f504b}
+.ask__note a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+.ask__back{flex:none;width:36px;height:36px;margin-left:-8px;border:0;border-radius:50%;background:none;color:var(--ink);display:grid;place-items:center;cursor:pointer;transition:background .2s}
+.ask__back:hover{background:rgba(20,20,20,.06)}
+/* the round button shows a down arrow while the panel is open */
+.juan__down{position:absolute;inset:0;margin:auto;color:#fff;opacity:0;transform:rotate(-90deg) scale(.6);transition:opacity .25s ease,transform .4s cubic-bezier(.22,1,.36,1);pointer-events:none}
+.juan .mj{transition:opacity .25s ease,transform .4s cubic-bezier(.22,1,.36,1)}
+.juan[aria-expanded="true"] .mj{opacity:0;transform:scale(.6) rotate(20deg)}
+.juan[aria-expanded="true"] .juan__down{opacity:1;transform:none}
+.juan[aria-expanded="true"]{background:radial-gradient(circle at 32% 26%,#4f7a36 0%,#2f4f22 55%,#1c3314 100%)}
+@media (max-width:640px){
+  .ask__home{padding:18px 14px 12px}
+  .ask__hi{margin-top:16px}
+  .ask__menu{gap:8px;padding-top:18px}
+  .ask__topic{min-height:68px;padding:11px 14px}
+  .ask__start{min-height:58px}
+  .ask__team{min-height:64px}
+}
+@media (prefers-reduced-motion: reduce){.ask__home:not([hidden]),.ask__chat:not([hidden]){animation:none}}
+</style>
 <script src="waitlist-config.js"></script>
 <script src="waitlist-client.js"></script>
 </head>
@@ -2075,10 +2125,26 @@ Marc!</h2>
   </div>
 </nav>
 
-<button class="juan" id="askBtn" type="button" aria-label="Ask Mang Juan" aria-expanded="false" aria-controls="ask"><svg class="mj" viewBox="0 0 56 56" aria-hidden="true"><g class="mj__hat"><path d="M10.5 29.5 28 15.5l17.5 14c-5.3 2-11.1 3-17.5 3s-12.2-1-17.5-3z" fill="#dca15d"/><path d="M28 15.5v17M28 15.5l-8 16.4M28 15.5l8 16.4M28 15.5 14.5 30.9M28 15.5l13.5 15.4" fill="none" stroke="#b07a3a" stroke-width="1.1" stroke-linecap="round"/><path d="M10.5 29.5c5.3 2 11.1 3 17.5 3s12.2-1 17.5-3" fill="none" stroke="#9c6a30" stroke-width="1.6" stroke-linecap="round"/><circle cx="28" cy="15.6" r="1.4" fill="#9c6a30"/></g><g class="mj__look"><g class="mj__eyes" fill="#f4f2ea"><circle cx="23.2" cy="37.5" r="2.3"/><circle cx="32.8" cy="37.5" r="2.3"/></g></g></svg></button>
+<button class="juan" id="askBtn" type="button" aria-label="Ask Mang Juan" aria-expanded="false" aria-controls="ask"><svg class="juan__down" width="22" height="22" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 7.5l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="mj" viewBox="0 0 56 56" aria-hidden="true"><g class="mj__hat"><path d="M10.5 29.5 28 15.5l17.5 14c-5.3 2-11.1 3-17.5 3s-12.2-1-17.5-3z" fill="#dca15d"/><path d="M28 15.5v17M28 15.5l-8 16.4M28 15.5l8 16.4M28 15.5 14.5 30.9M28 15.5l13.5 15.4" fill="none" stroke="#b07a3a" stroke-width="1.1" stroke-linecap="round"/><path d="M10.5 29.5c5.3 2 11.1 3 17.5 3s12.2-1 17.5-3" fill="none" stroke="#9c6a30" stroke-width="1.6" stroke-linecap="round"/><circle cx="28" cy="15.6" r="1.4" fill="#9c6a30"/></g><g class="mj__look"><g class="mj__eyes" fill="#f4f2ea"><circle cx="23.2" cy="37.5" r="2.3"/><circle cx="32.8" cy="37.5" r="2.3"/></g></g></svg></button>
 <div class="juan-say" id="juanSay" hidden><button class="juan-say__text" type="button"></button><button class="juan-say__x" type="button" aria-label="Dismiss">×</button></div>
 <section class="ask" id="ask" hidden role="dialog" aria-label="Ask Mang Juan">
+  <div class="ask__home" id="askHome">
+    <div class="ask__top"><span class="ask__avatar"><svg class="mj" viewBox="0 0 56 56" aria-hidden="true"><g class="mj__hat"><path d="M10.5 29.5 28 15.5l17.5 14c-5.3 2-11.1 3-17.5 3s-12.2-1-17.5-3z" fill="#dca15d"/><path d="M28 15.5v17M28 15.5l-8 16.4M28 15.5l8 16.4M28 15.5 14.5 30.9M28 15.5l13.5 15.4" fill="none" stroke="#b07a3a" stroke-width="1.1" stroke-linecap="round"/><path d="M10.5 29.5c5.3 2 11.1 3 17.5 3s12.2-1 17.5-3" fill="none" stroke="#9c6a30" stroke-width="1.6" stroke-linecap="round"/><circle cx="28" cy="15.6" r="1.4" fill="#9c6a30"/></g><g class="mj__look"><g class="mj__eyes" fill="#f4f2ea"><circle cx="23.2" cy="37.5" r="2.3"/><circle cx="32.8" cy="37.5" r="2.3"/></g></g></svg></span><button class="ask__close" type="button" aria-label="Close" data-ask-close><svg width="16" height="16" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M16.5 5.5L5.5 16.5M16.5 16.5L5.5 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></div>
+    <h2 class="ask__hi">Kumusta!</h2>
+    <p class="ask__lead">Ako si Mang Juan, ang guide mo sa Magasaka.</p>
+    <div class="ask__menu">
+      <button class="ask__start" type="button" data-ask-start>Magtanong kay Mang Juan<i><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i></button>
+      <button class="ask__topic" type="button" data-q="Magkano ang kaltas sa kita ko, at paano ako mababayaran?"><strong>Bayad</strong><span>0% fee sa talent</span></button>
+      <button class="ask__topic" type="button" data-q="Paano gumagana ang paid trials?"><strong>Paid trials</strong><span>May bayad, mga 1 linggo</span></button>
+      <button class="ask__topic" type="button" data-q="Ano ang Seeds at paano sila gumagana?"><strong>Seeds</strong><span>Paano sila gumagana</span></button>
+      <button class="ask__topic" type="button" data-q="Ano ang Founding Members at paano sumali sa waitlist?"><strong>Waitlist</strong><span>Founding Members, 10,000 slots</span></button>
+      <a class="ask__team" href="mailto:hello@magasaka.com?subject=Tanong%20para%20sa%20Magasaka%20team"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="3.6" stroke="currentColor" stroke-width="1.6"/><path d="M4.8 19.6c1.2-3.3 3.9-5 7.2-5s6 1.7 7.2 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span><strong>Kausapin ang team</strong><small>Para sa tanong na hindi kaya ng AI</small></span><svg class="ask__chev" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7.5 4.5 13 10l-5.5 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    </div>
+    <p class="ask__note">Si Mang Juan ay AI at pwedeng magkamali. <a href="privacy.html">Privacy</a></p>
+  </div>
+  <div class="ask__chat" id="askChat" hidden>
   <header class="ask__head">
+    <button class="ask__back" type="button" aria-label="Back" data-ask-back><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12.5 4.5 7 10l5.5 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     <span class="ask__avatar"><svg class="mj" viewBox="0 0 56 56" aria-hidden="true"><g class="mj__hat"><path d="M10.5 29.5 28 15.5l17.5 14c-5.3 2-11.1 3-17.5 3s-12.2-1-17.5-3z" fill="#dca15d"/><path d="M28 15.5v17M28 15.5l-8 16.4M28 15.5l8 16.4M28 15.5 14.5 30.9M28 15.5l13.5 15.4" fill="none" stroke="#b07a3a" stroke-width="1.1" stroke-linecap="round"/><path d="M10.5 29.5c5.3 2 11.1 3 17.5 3s12.2-1 17.5-3" fill="none" stroke="#9c6a30" stroke-width="1.6" stroke-linecap="round"/><circle cx="28" cy="15.6" r="1.4" fill="#9c6a30"/></g><g class="mj__look"><g class="mj__eyes" fill="#f4f2ea"><circle cx="23.2" cy="37.5" r="2.3"/><circle cx="32.8" cy="37.5" r="2.3"/></g></g></svg></span>
     <strong class="ask__who">Mang Juan</strong>
     <button class="ask__close" type="button" aria-label="Close" data-ask-close><svg width="16" height="16" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M16.5 5.5L5.5 16.5M16.5 16.5L5.5 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
@@ -2095,6 +2161,7 @@ Marc!</h2>
     <input id="askInput" type="text" placeholder="Ask anything about Magasaka" aria-label="Your question" maxlength="300">
     <button type="submit" aria-label="Send"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
   </form>
+  </div>
 </section>
 
 
@@ -3924,10 +3991,10 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
 </script>
 <script>
   // --- Ask Mang Juan. Answers come from what the page already says (FAQ, the three changes, roles).
-  // NOTE for the dev: set ASK_ENDPOINT to a server route that calls an AI model (keep the API key on the
-  // server) and returns {reply:"..."}; until then the local answers below are used.
+  // Real questions go to api/juan.php, which asks Claude on the server (the key never reaches the page). If that is
+  // not available (no PHP, no key, offline, busy), the local answers below reply instead, so he never goes quiet.
   (() => {
-    const ASK_ENDPOINT = '';
+    const ASK_ENDPOINT = (window.MAGASAKA_WAITLIST && window.MAGASAKA_WAITLIST.juanUrl) || 'api/juan.php';
     const btn = document.getElementById('askBtn'), box = document.getElementById('ask');
     if (!btn || !box) return;
     const log = document.getElementById('askLog'), form = document.getElementById('askForm'), input = document.getElementById('askInput');
@@ -4006,9 +4073,9 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
         a:["Bawat job ay may enforced minimum rate, anak. Hindi mo na kailangang ibaba ang presyo mo para lang manalo. Bawal ang barat dito!",
            "May minimum rate ang bawat job, at may sariling minimum rate din ang bawat level, kahit Entry. Kaya patas ang laban."],
         next:['How does rank work?','No free test work?'] },
-      { id:'test', re:/(\btest\b|free work|libreng trabaho|trial task|sample work|unpaid)/,
-        a:["Bawal na 'yan dito! Wala nang libreng trabaho na nagpapanggap na 'test'. Respetado ang oras mo, anak.",
-           "Your time deserves respect, kaya walang free work na naka-disguise bilang test. Kung trabaho, bayad."],
+      { id:'test', re:/(\btest\b|free work|libreng trabaho|trial|sample work|unpaid)/,
+        a:["Bawal na ang libreng 'test' dito, anak! Kung gusto ng client ng trial, may bayad ito, at karaniwang mga isang linggo lang. Respetado ang oras mo.",
+           "Paid trials 'yan: kung may trial, bayad ka, at kadalasan mga isang linggo. Wala nang free work na naka-disguise bilang test."],
         next:['What is the minimum rate?','How does rank work?'] },
       { id:'rank', re:/(rank|ranking|level|review|rating|get seen|makita|visibility|exposure|experience count)/,
         a:["Ang rank mo ay lumalaki lang mula sa trabahong naihatid mo, anak. Hindi sa pabilisan ng proposal o pagbaba ng rate. Ang experience mo naman, bilang agad mula day one.",
@@ -4135,7 +4202,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       m.className = 'ask__msg ask__msg--' + who; m.textContent = text;
       log.appendChild(m); log.scrollTop = log.scrollHeight; return m;
     }
-    let busy = false;
+    let busy = false, aiOff = false;
     async function answer(q){
       busy = true;
       const dots = document.createElement('div');
@@ -4143,11 +4210,17 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       log.appendChild(dots); log.scrollTop = log.scrollHeight;
       let reply = '';
       const started = performance.now();
-      if (ASK_ENDPOINT){
+      if (ASK_ENDPOINT && !aiOff){
+        const stop = new AbortController(), t = setTimeout(() => stop.abort(), 35000);
         try {
-          const r = await fetch(ASK_ENDPOINT, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({messages: history})});
-          if (r.ok) reply = String((await r.json()).reply || '').trim();
+          const r = await fetch(ASK_ENDPOINT, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({messages: history.slice(-16)}), signal: stop.signal});
+          const data = await r.json().catch(() => ({}));
+          if (r.ok) reply = String(data.reply || '').trim();
+          else if (r.status === 429 && data.message) reply = String(data.message);
+          // no server or no key here: stop asking it for the rest of the visit
+          else if ([404, 405, 501].includes(r.status) || data.code === 'juan_unavailable') aiOff = true;
         } catch(e){}
+        clearTimeout(t);
       }
       let next = null;
       if (!reply){ const r = local(q); reply = r.text; next = r.next; }
@@ -4167,12 +4240,23 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       input.value = '';
       answer(q);
     }
+    // two screens: home (greeting, topics, team) and the chat itself
+    const home = document.getElementById('askHome'), chat = document.getElementById('askChat');
+    function view(name){
+      const toChat = name === 'chat';
+      home.hidden = toChat; chat.hidden = !toChat;
+      if (toChat && !log.children.length) add("Ano'ng gusto mong malaman, anak? Tanong ka lang, kahit ano tungkol sa Magasaka.", 'bot');
+    }
     function open(){
       const menu = document.getElementById('menu');
       if (menu && !menu.hidden) document.getElementById('menuBtn').click();
+      view(history.length ? 'chat' : 'home');
       box.hidden = false; btn.setAttribute('aria-expanded', 'true');
-      if (matchMedia('(hover: hover)').matches) setTimeout(() => input.focus({preventScroll:true}), 60);
+      if (!chat.hidden && matchMedia('(hover: hover)').matches) setTimeout(() => input.focus({preventScroll:true}), 60);
     }
+    box.querySelector('[data-ask-start]').addEventListener('click', () => { view('chat'); setTimeout(() => input.focus({preventScroll:true}), 60); });
+    box.querySelectorAll('.ask__topic').forEach(t => t.addEventListener('click', () => { view('chat'); ask(t.dataset.q); }));
+    box.querySelector('[data-ask-back]').addEventListener('click', () => view('home'));
     function close(){ box.hidden = true; btn.setAttribute('aria-expanded', 'false'); }
     // soft sounds, synthesised on the spot; only ever after someone has tapped him
     let ac = null;
@@ -4217,7 +4301,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     btn.addEventListener('pointerdown', () => { play('is-poke'); sound('poke'); });
     (function blink(){ setTimeout(() => { if (!document.hidden && !mj.classList.contains('is-poke')) play('is-blink'); blink(); }, 3200 + Math.random() * 3800); })();
     btn.addEventListener('click', e => { e.stopPropagation(); box.hidden ? open() : close(); });
-    box.querySelector('[data-ask-close]').addEventListener('click', () => { close(); btn.focus(); });
+    box.querySelectorAll('[data-ask-close]').forEach(x => x.addEventListener('click', () => { close(); btn.focus(); }));
     form.addEventListener('submit', e => { e.preventDefault(); ask(input.value); });
     chips.addEventListener('click', e => { const b = e.target.closest('button'); if (b) ask(b.textContent); });
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && !box.hidden){ close(); btn.focus(); } });
