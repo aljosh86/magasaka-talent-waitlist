@@ -2595,36 +2595,25 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     const q = item.querySelector('.faq__q');
     q.addEventListener('click', () => {
       const open = item.dataset.open !== 'true';
-      if (matchMedia('(max-width: 640px)').matches){
-        // phones: never slide the page while you can see it move. An open answer you can see folds smoothly and the
-        // list settles naturally; one that is already off the top of the screen folds at once, with the page shifted
-        // by exactly that much, so nothing on screen moves.
-        if (open) faqItems.forEach(other => {
-          if (other === item || other.dataset.open !== 'true') return;
-          const above = other.compareDocumentPosition(item) & Node.DOCUMENT_POSITION_FOLLOWING;
-          const offTop = other.getBoundingClientRect().bottom < 60;
-          if (above && offTop){
-            const y0 = q.getBoundingClientRect().top;
-            other.classList.add('is-instant'); setFaq(other, false);
-            const d = q.getBoundingClientRect().top - y0;
-            if (d){ window.__mgQuietScroll = performance.now() + 250; window.scrollTo({top: scrollY + d, behavior: 'instant'}); }
-            requestAnimationFrame(() => requestAnimationFrame(() => other.classList.remove('is-instant')));
-          } else setFaq(other, false);
-        });
-        setFaq(item, open);
-        return;
-      }
-      // desktop: both answers fold smoothly while the page follows along, so the question you clicked stays put
-      const y0 = q.getBoundingClientRect().top, until = performance.now() + 460;
-      const hold = () => {
-        const d = q.getBoundingClientRect().top - y0;
-        window.__mgQuietScroll = performance.now() + 120;
-        if (Math.abs(d) > .5) window.scrollTo({top: scrollY + d, behavior: 'instant'});
-        if (performance.now() < until) requestAnimationFrame(hold);
-      };
-      if (open) faqItems.forEach(other => { if (other !== item) setFaq(other, false); });
+      // never slide the page while you can see it move. An open answer you can see folds smoothly and the list settles
+      // naturally; one that is already off the top of the screen folds at once, with the page shifted by exactly that
+      // much, so nothing on screen moves. The browser's own scroll anchoring is off meanwhile so it does not slide it either.
+      const root = document.documentElement;
+      root.style.overflowAnchor = 'none'; clearTimeout(root.__faqAnchor);
+      root.__faqAnchor = setTimeout(() => root.style.overflowAnchor = '', 700);
+      if (open) faqItems.forEach(other => {
+        if (other === item || other.dataset.open !== 'true') return;
+        const above = other.compareDocumentPosition(item) & Node.DOCUMENT_POSITION_FOLLOWING;
+        const offTop = other.getBoundingClientRect().bottom < 60;
+        if (above && offTop){
+          const y0 = q.getBoundingClientRect().top;
+          other.classList.add('is-instant'); setFaq(other, false);
+          const d = q.getBoundingClientRect().top - y0;
+          if (d){ window.__mgQuietScroll = performance.now() + 250; window.scrollTo({top: scrollY + d, behavior: 'instant'}); }
+          requestAnimationFrame(() => requestAnimationFrame(() => other.classList.remove('is-instant')));
+        } else setFaq(other, false);
+      });
       setFaq(item, open);
-      requestAnimationFrame(hold);
     });
   });
 
