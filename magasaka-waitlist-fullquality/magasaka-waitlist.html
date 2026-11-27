@@ -1675,6 +1675,34 @@ html.szoom-on .pill,html.szoom-off .pill{-webkit-backdrop-filter:none;backdrop-f
 @media (max-width:640px){.ask__bar input{font-size:16px}.ask__pills{gap:5px;flex-wrap:nowrap}.ask__pill,.ask__menu .ask__topic{min-height:31px;padding:0 9.5px;font-size:12px;gap:5px;white-space:nowrap}.ask__pill--team svg{width:12px;height:12px}}
 @media (max-width:379px){.ask__pills{gap:4px;flex-wrap:wrap}.ask__pill,.ask__menu .ask__topic{padding:0 8px;font-size:11.5px;gap:4px}}   /* 16px keeps iPhones from zooming in on tap */
 </style>
+<style>
+/* Mang Juan's chat looks like his home screen: same small type, pill suggestions, the same chat bar and the AI note under it */
+.ask__chat{background:linear-gradient(180deg,transparent 62%,rgba(250,249,245,.88) 92%,rgba(250,249,245,.96))}
+.ask__chat .ask__head{gap:10px;padding:16px 14px 8px 14px}
+.ask__chat .ask__avatar{width:32px;height:32px}
+.ask__chat .ask__who{font:500 14.5px/1.2 var(--font);letter-spacing:-.01em}
+.ask__chat .ask__close,.ask__chat .ask__back{width:32px;height:32px}
+.ask__chat .ask__back{margin-left:-6px}
+.ask__chat .ask__log{padding:6px 16px 10px;gap:8px}
+.ask__chat .ask__msg{max-width:84%;padding:9px 13px;border-radius:15px;font-size:12.5px;line-height:1.45}
+.ask__chat .ask__msg--bot{border-bottom-left-radius:5px}
+.ask__chat .ask__msg--me{border-bottom-right-radius:5px}
+.ask__chat .ask__typing{padding:12px 13px}
+.ask__chat .ask__typing i{width:5px;height:5px}
+.ask__chat .ask__chips{gap:6px;padding:2px 16px 10px}
+.ask__chat .ask__chips button{height:32px;padding:0 13px;border-radius:100px;background:rgba(255,255,255,.95);box-shadow:0 0 0 1px rgba(20,20,20,.07);font:400 12.5px/1 var(--font)}
+.ask__chat .ask__chips button:hover{background:#fff;box-shadow:0 0 0 1px rgba(20,20,20,.12)}
+.ask__chat .ask__form{align-items:center;gap:6px;min-height:50px;margin:0 16px;padding:6px 6px 6px 16px;border-radius:100px;background:#fff;
+  box-shadow:0 0 0 1px rgba(20,20,20,.08),0 4px 14px -8px rgba(20,20,20,.25);transition:box-shadow .2s}
+.ask__chat .ask__form:focus-within{box-shadow:0 0 0 1px rgba(20,20,20,.22),0 4px 14px -8px rgba(20,20,20,.25)}
+.ask__chat .ask__form input{height:36px;padding:0;border:0;border-radius:0;background:none;font:400 13.5px/1 var(--font)}
+.ask__chat .ask__form input:focus{border:0}
+.ask__chat .ask__form input::placeholder{color:#7a7b75}
+.ask__chat .ask__form button{width:36px;height:36px}
+.ask__chat .ask__form button svg{width:15px;height:15px}
+.ask__chat .ask__note{margin:10px 16px 12px}
+@media (max-width:640px){.ask__chat .ask__form input{font-size:16px}.ask__chat .ask__chips button{height:31px;padding:0 10px;font-size:12px}}
+</style>
 <script src="waitlist-config.js"></script>
 <script src="waitlist-client.js"></script>
 </head>
@@ -2250,9 +2278,10 @@ Marc!</h2>
     <button type="button">Is Magasaka legit?</button>
   </div>
   <form class="ask__form" id="askForm" autocomplete="off">
-    <input id="askInput" type="text" placeholder="Ask anything about Magasaka" aria-label="Your question" maxlength="300">
+    <input id="askInput" type="text" placeholder="Magtanong kay Mang Juan" aria-label="Magtanong kay Mang Juan" maxlength="300">
     <button type="submit" aria-label="Send"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
   </form>
+    <p class="ask__note">Si Mang Juan ay AI at pwedeng magkamali. <a href="privacy.html">Privacy</a></p>
   </div>
 </section>
 
