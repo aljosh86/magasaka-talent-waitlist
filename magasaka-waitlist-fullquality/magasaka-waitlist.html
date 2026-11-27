@@ -1740,7 +1740,7 @@ html.szoom-on .pill,html.szoom-off .pill{-webkit-backdrop-filter:none;backdrop-f
    measuring the bar live lagged a step behind and made them jump. With the bar hidden they simply sit a little higher. */
 /* phones: the words live in a layer pinned to the screen like the pill, so when the address bar pushes the video down
    they stay put; the layer is clipped to the hero, so they still leave with it */
-.beats-fixed{position:fixed;inset:0;z-index:40;pointer-events:none}
+.beats-fixed{position:fixed;left:0;right:0;bottom:0;height:100vh;height:100lvh;z-index:40;pointer-events:none}   /* held by its bottom edge, like the pill: Chrome moves top-held layers down with the address bar */
 .beats-fixed .beat{bottom:calc(env(safe-area-inset-bottom,0px) + 125px)}
 </style>
 <script src="waitlist-config.js"></script>
@@ -5006,8 +5006,8 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     const clip = () => {
       queued = false;
       if (!on) return;
-      const r = stage.getBoundingClientRect();
-      layer.style.clipPath = `inset(${Math.max(0, r.top)}px 0 ${Math.max(0, innerHeight - r.bottom)}px 0)`;
+      const r = stage.getBoundingClientRect(), l = layer.getBoundingClientRect();
+      layer.style.clipPath = `inset(${Math.max(0, r.top - l.top)}px 0 ${Math.max(0, l.bottom - r.bottom)}px 0)`;
       layer.style.visibility = r.bottom <= 0 || r.top >= innerHeight ? 'hidden' : '';
     };
     const ask = () => { if (!queued){ queued = true; requestAnimationFrame(clip); } };
