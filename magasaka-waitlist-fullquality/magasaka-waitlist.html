@@ -4996,9 +4996,9 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
 })();
 </script>
 <script>
-  // phones: move the hero words into a layer pinned to the screen (see .beats-fixed)
+  // phones: move the hero words and the scroll hint into a layer pinned to the screen (see .beats-fixed)
   (() => {
-    const stage = document.querySelector('.stage'), beats = [...document.querySelectorAll('.stage .beat')];
+    const stage = document.querySelector('.stage'), beats = [...document.querySelectorAll('.stage .beat, .stage .scrollcue')];   // the scroll hint too
     if (!stage || !beats.length || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const phone = matchMedia('(max-width:640px)');
     const layer = document.createElement('div'); layer.className = 'beats-fixed';
