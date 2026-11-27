@@ -4478,6 +4478,21 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     box.querySelectorAll('.ask__topic').forEach(t => t.addEventListener('click', () => { view('chat'); ask(t.dataset.q); }));
     box.querySelector('[data-ask-back]').addEventListener('click', () => view('home'));
     function close(){ box.hidden = true; btn.setAttribute('aria-expanded', 'false'); }
+    // phones: when the keyboard comes up it covers the bottom of the screen (many browsers don't shrink the page for it),
+    // so the panel fits itself into the part you can still see, with the chat bar right above the keyboard
+    const vv = window.visualViewport;
+    if (vv){
+      const fit = () => {
+        const kb = innerHeight - vv.height - vv.offsetTop;
+        if (box.hidden || kb < 120){ box.style.top = box.style.bottom = box.style.height = ''; return; }
+        box.style.top = (vv.offsetTop + 8) + 'px';
+        box.style.bottom = 'auto';
+        box.style.height = Math.max(220, vv.height - 16) + 'px';
+        const l = box.querySelector('.ask__log:not([hidden])'); if (l) l.scrollTop = l.scrollHeight;
+      };
+      vv.addEventListener('resize', fit); vv.addEventListener('scroll', fit);
+      new MutationObserver(fit).observe(box, {attributes: true, attributeFilter: ['hidden']});
+    }
     // soft sounds, synthesised on the spot; only ever after someone has tapped him
     let ac = null;
     const tone = (freq, at, len, vol, type, drop) => {
