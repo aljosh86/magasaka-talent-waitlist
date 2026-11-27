@@ -4624,7 +4624,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     const log = document.getElementById('askLog');
     if (avatar && log) new MutationObserver(() => avatar.classList.toggle('is-thinking', !!log.querySelector('.ask__typing'))).observe(log, {childList:true});
 
-    // hello bubbles while the chat is closed: one after a little while, one more when someone reaches the FAQs.
+    // hello bubbles while the chat is closed: one when the visitor first pauses, one more if they pause at the FAQs.
     // Each shows once per visit, and never once the chat has been opened.
     if (!say) return;
     const text = say.querySelector('.juan-say__text');
@@ -4671,13 +4671,21 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
                    "Psst! Kumain ka na ba? Hehe. Tanong ka lang kung may gusto kang malaman! 🌾"];
     const FAQ = ["Psst! Nasa FAQs ka na pala. Kung may hindi pa nasagot, ako na lang tanungin mo. 😄",
                  "Psst! Daming tanong, 'no? Pindutin mo lang ako, sasagutin ko isa-isa."];
-    const tryHello = () => { if (!show('hello', HELLO)) setTimeout(tryHello, 6000); };
-    setTimeout(tryHello, 14000);
+    // he only speaks up once the visitor has gone still for a few seconds (no scrolling, tapping, typing or mouse movement),
+    // never while they are busy reading or scrolling: the hello first, then the FAQ line if they pause at the FAQs
+    const IDLE = 5000;
+    let lastActive = performance.now(), faqInView = false;
+    ['scroll', 'wheel', 'touchstart', 'touchmove', 'pointerdown', 'pointermove', 'keydown'].forEach(t =>
+      addEventListener(t, () => { lastActive = performance.now(); }, {passive:true, capture:true}));
     const faq = document.getElementById('faq');
-    if (faq && 'IntersectionObserver' in window){
-      const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting) && seen.hello){ if (show('faq', FAQ)) io.disconnect(); } }, {threshold:.35});
-      io.observe(faq);
-    }
+    if (faq && 'IntersectionObserver' in window)
+      new IntersectionObserver(es => { faqInView = es[es.length - 1].isIntersecting; }, {threshold:.35}).observe(faq);
+    const idleCheck = setInterval(() => {
+      if (opened || (seen.hello && seen.faq)){ clearInterval(idleCheck); return; }
+      if (performance.now() - lastActive < IDLE || !say.hidden) return;
+      const shown = faqInView && seen.hello ? show('faq', FAQ) : !seen.hello && show('hello', HELLO);
+      if (!shown) lastActive = performance.now();   // not a good spot right now (it would cover something): wait for the next pause
+    }, 500);
     text.addEventListener('click', e => { e.stopPropagation(); hide(); btn.click(); });
     say.querySelector('.juan-say__x').addEventListener('click', hide);
     btn.addEventListener('click', () => { opened = true; seen.opened = 1; save(); hide(); });
