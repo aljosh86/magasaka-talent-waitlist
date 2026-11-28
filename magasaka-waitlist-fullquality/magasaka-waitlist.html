@@ -1386,9 +1386,9 @@ html.mf-open{overscroll-behavior:none}
 .flow::after{content:"";position:fixed;z-index:-1;left:0;right:0;bottom:0;height:38vh;pointer-events:none;
   background:linear-gradient(to bottom,rgba(255,255,255,0),rgba(255,255,255,.85))}
 @media (max-width:640px){
-  /* phones: the whole archipelago, upright and filling the screen from top to bottom, faint behind the form */
-  .flow::before{left:50%;top:52%;width:min(150vw,72vh);transform:translate(-50%,-50%) rotate(8deg);
-    opacity:.28;filter:grayscale(1) blur(.6px)}
+  /* phones: the same tilt as desktop (laid flat, turned on a slant), zoomed in to fill the tall screen */
+  .flow::before{left:65%;top:32%;width:330vw;
+    opacity:.3;filter:grayscale(1) blur(1px)}
   .flow::after{height:12vh}
 }
 </style>
