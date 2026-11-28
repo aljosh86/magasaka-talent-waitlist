@@ -1387,7 +1387,7 @@ html.mf-open{overscroll-behavior:none}
   background:linear-gradient(to bottom,rgba(255,255,255,0),rgba(255,255,255,.85))}
 @media (max-width:640px){
   /* phones: the whole archipelago, smaller and sharper, in the space under the form, so it reads as the Philippines */
-  .flow::before{left:50%;top:72%;width:86vw;transform:translate(-50%,-50%) perspective(900px) rotateX(45deg) rotateZ(25deg);
+  .flow::before{left:50%;top:max(72%, calc(445px + 24vw));width:min(86vw, 42vh);transform:translate(-50%,-50%) perspective(900px) rotateX(45deg) rotateZ(25deg);
     opacity:.32;filter:grayscale(1) blur(.6px)}
   .flow::after{height:16vh}
 }
