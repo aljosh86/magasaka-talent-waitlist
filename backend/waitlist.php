@@ -95,7 +95,7 @@ function waitlist_join(PDO $pdo, array $input, string $token): array
         if ($row = $existing->fetch()) {
             if (!hash_equals($row['edit_token_hash'], $tokenHash)) {
                 throw new WaitlistError(409, 'email_exists',
-                    'This email is already on the waitlist. Use the browser you signed up with to continue. Email recovery is not available yet.');
+                    'This email is already on the waitlist. We can email you a code to continue here.');
             }
             $entry = waitlist_entry($pdo, (int) $row['member_number']);
             $pdo->commit();
@@ -176,7 +176,8 @@ function waitlist_rate_limit(PDO $pdo, string $address, string $key, string $act
 {
     $window = intdiv(time(), 60);
     $scope = match ($action) {
-        'join' => 'join', 'send_code' => 'verification_send', 'verify' => 'verification_check', default => 'update',
+        'join' => 'join', 'send_code', 'recover_send' => 'verification_send', 'verify', 'recover' => 'verification_check',
+        default => 'update',
     };
     $limit = match ($scope) { 'join' => 20, 'verification_send' => 10, 'verification_check' => 30, default => 120 };
     $hash = hash_hmac('sha256', "$address|$scope|$window", $key);

@@ -99,6 +99,27 @@ try {
     verify_check((int) $challenge()['send_count'] === 1, 'Hourly send allowance resets after the window');
     $payload = waitlist_verification_payload($config + ['resend_verification_template' => 'verify-template'], $email, '012345');
     verify_check(!isset($payload['text']) && !isset($payload['html']) && $payload['template']['variables']['CODE'] === '012345', 'Hosted template preserves leading zeros and uses exact variables');
+    // Recovery: the same email in a new browser. The code goes to the inbox; the right code moves the signup there.
+    $pdo->exec('UPDATE waitlist_entries SET email_verified_at = NULL WHERE member_number = 1');
+    $pdo->exec('DELETE FROM waitlist_email_verifications');
+    $newToken = bin2hex(random_bytes(32));
+    verify_reject(fn () => waitlist_join($pdo, $input, $newToken), 'email_exists', 'A new browser cannot join with an email already on the list');
+    verify_reject(fn () => waitlist_recover_request($pdo, ['email' => 'nobody@example.com'], $newToken, $config, $sender), 'not_found', 'Recovery needs an email on the list');
+    $before = count($messages);
+    $sent = waitlist_recover_request($pdo, $input, $newToken, $config, $sender);
+    verify_check(count($messages) === $before + 1 && !isset($sent['entry']) && $sent['verification']['sent'], 'Recovery emails a code and reveals nothing about the signup');
+    $code = waitlist_verification_code($challenge()['request_id'], $config['app_key']);
+    $wrong = $code === '000000' ? '111111' : '000000';
+    verify_reject(fn () => waitlist_recover($pdo, $input + ['code' => $wrong], $newToken, $config), 'incorrect_code', 'Recovery rejects a wrong code');
+    verify_check((int) $challenge()['attempts'] === 1, 'A wrong recovery code counts as an attempt');
+    verify_reject(fn () => waitlist_update($pdo, $profile, $newToken, true), 'invalid_session', 'The new browser has no access before the right code');
+    $recovered = waitlist_recover($pdo, $input + ['code' => $code], $newToken, $config)['entry'];
+    verify_check($recovered['no'] === $entry['no'] && $recovered['verified'], 'The right code keeps the member number and confirms the email');
+    verify_check(waitlist_join($pdo, $input, $newToken)['entry']['no'] === $entry['no'], 'The new browser can now continue');
+    verify_reject(fn () => waitlist_update($pdo, $profile, $token, true), 'invalid_session', 'The old browser key stops working');
+    verify_check($challenge() === false, 'Recovery consumes the challenge');
+    verify_check(waitlist_recover($pdo, $input + ['code' => $code], $newToken, $config)['entry']['no'] === $entry['no'], 'A lost recovery response can safely be retried');
+    verify_reject(fn () => waitlist_recover($pdo, $input + ['code' => $code], bin2hex(random_bytes(32)), $config), 'code_expired', 'A used code cannot move the signup again');
     $pdo->exec('DELETE FROM waitlist_entries WHERE member_number = 1');
     verify_check($challenge() === false, 'Deleting a member removes their verification challenge');
 

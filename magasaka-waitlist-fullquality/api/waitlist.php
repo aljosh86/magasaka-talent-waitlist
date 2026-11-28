@@ -36,7 +36,7 @@ try {
     }
     try { $input = json_decode($raw, true, 16, JSON_THROW_ON_ERROR); }
     catch (JsonException $error) { throw new WaitlistError(400, 'invalid_json', 'Please submit the signup form again.'); }
-    if (!is_array($input) || !isset($input['action']) || !in_array($input['action'], ['join', 'name', 'complete', 'send_code', 'verify'], true)) {
+    if (!is_array($input) || !isset($input['action']) || !in_array($input['action'], ['join', 'name', 'complete', 'send_code', 'verify', 'recover_send', 'recover'], true)) {
         throw new WaitlistError(400, 'invalid_action', 'Please submit the signup form again.');
     }
     $token = $_SERVER['HTTP_X_WAITLIST_TOKEN'] ?? '';
@@ -47,6 +47,8 @@ try {
         'join' => waitlist_join($pdo, $input, $token),
         'send_code' => waitlist_request_code($pdo, $input, $token, $config),
         'verify' => waitlist_verify_code($pdo, $input, $token, $config),
+        'recover_send' => waitlist_recover_request($pdo, $input, $token, $config),
+        'recover' => waitlist_recover($pdo, $input, $token, $config),
         default => waitlist_update($pdo, $input, $token, $input['action'] === 'complete'),
     };
     http_response_code($result['created'] ? 201 : 200);

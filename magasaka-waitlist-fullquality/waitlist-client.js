@@ -55,9 +55,10 @@
 
   async function send(action, input) {
     const email = input.email.trim().toLowerCase();
-    const token = tokenFor(email, action === 'join');
+    // recovery hands an existing signup to this browser's key, so it may create one like join
+    const token = tokenFor(email, action === 'join' || action === 'recover_send' || action === 'recover');
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), action === 'send_code' ? 45000 : 15000);
+    const timeout = setTimeout(() => controller.abort(), action === 'send_code' || action === 'recover_send' ? 45000 : 15000);
     try {
       const response = await fetch(apiUrl, {
         method: 'POST', credentials: 'omit', cache: 'no-store', signal: controller.signal,
@@ -77,6 +78,7 @@
         error.retryAfter = Number(response.headers.get('Retry-After')) || 0;
         throw error;
       }
+      if (action === 'recover_send') return result.verification || {sent: true, resendAfter: 60};
       const entry = result.entry;
       if (!entry || !Number.isInteger(entry.no) || entry.no < 1 || entry.no > 10000
         || typeof entry.ref !== 'string' || !Array.isArray(entry.picks)) {
@@ -98,6 +100,9 @@
     complete: ({email, name, title, picks}) => request('complete', {email, name, title, picks}),
     sendCode: (email, resend = false) => request('send_code', {email, resend}),
     verify: (email, code) => request('verify', {email, code}),
+    // an email already on the waitlist, in a browser without its key: a code to that inbox moves the signup here
+    recoverSend: (email, resend = false) => send('recover_send', {email, resend}),
+    recover: (email, code) => send('recover', {email, code}),
     shareUrl: ref => {
       const url = new URL(config.publicPageUrl || location.pathname, location.href);
       url.search = ''; url.hash = ''; url.searchParams.set('ref', ref);
