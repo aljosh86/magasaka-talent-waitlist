@@ -3818,7 +3818,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     <div class="mf__sheet" id="mfSheet">
       <div class="mf__scroll" tabindex="-1">
         <span class="mf__creases" aria-hidden="true"></span>
-        <img class="mf__photo" src="images/manifesto-letter-drawing.jpg?v=3" width="1414" height="2621" alt="" decoding="async" loading="lazy">
+        <img class="mf__photo" src="images/manifesto-letter-drawing.jpg?v=4" width="1414" height="2446" alt="" decoding="async" loading="lazy">
         <!-- phones: the same letter as real text in a hand font, so the lines are short enough to read -->
         <div class="mf__text" aria-hidden="true">
           <p>My parents are farmers.</p>
@@ -3827,7 +3827,6 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
           <p>We want the work Filipinos do for the world to help them build a better life at home.</p>
           <p>Filipino talent can compete with the best in the world. Opportunities should reflect people’s ability and the trust they earn through their work. Those beginning their careers need a real chance to prove themselves, too.</p>
           <p>Good work deserves fair compensation. Its rewards should stay with the people who earn them, giving them more freedom to care for themselves and build the life they want.</p>
-          <p>People should have room to plan beyond the next payment. As Magasaka grows, we will work to help talent build savings, understand their tax responsibilities, and care for their health.</p>
           <p>Businesses place real trust in the people they hire. They need capable partners who understand their goals and follow through on work that matters to them.</p>
           <p>That trust depends on both sides keeping their commitments. We stand for clear expectations, accountability, and respect for each other’s time. Everyone deserves protection in their work and a fair hearing when things go wrong. Privacy and dignity are part of that responsibility.</p>
           <p>We believe Filipino talent and businesses can help each other grow. As a business succeeds, the people whose work helped it get there should have room to grow with it.</p>
@@ -3850,7 +3849,6 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
     <p>We want the work Filipinos do for the world to help them build a better life at home.</p>
     <p>Filipino talent can compete with the best in the world. Opportunities should reflect people’s ability and the trust they earn through their work. Those beginning their careers need a real chance to prove themselves, too.</p>
     <p>Good work deserves fair compensation. Its rewards should stay with the people who earn them, giving them more freedom to care for themselves and build the life they want.</p>
-    <p>People should have room to plan beyond the next payment. As Magasaka grows, we will work to help talent build savings, understand their tax responsibilities, and care for their health.</p>
     <p>Businesses place real trust in the people they hire. They need capable partners who understand their goals and follow through on work that matters to them.</p>
     <p>That trust depends on both sides keeping their commitments. We stand for clear expectations, accountability, and respect for each other’s time. Everyone deserves protection in their work and a fair hearing when things go wrong. Privacy and dignity are part of that responsibility.</p>
     <p>We believe Filipino talent and businesses can help each other grow. As a business succeeds, the people whose work helped it get there should have room to grow with it.</p>
@@ -4325,11 +4323,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       { id:'farmers', re:/(farmer|magsasaka|farm|agricult|sakahan|palay|rice|bukid|give back|charity)/,
         a:["Oo, anak! Sa hinaharap, magbabahagi ang Magasaka ng bahagi ng kinikita nito para suportahan ang mga magsasaka at ang agricultural sector ng Pilipinas. Pangako 'yan habang lumalaki kami.",
            "Ang mga pamilyang tulad ng sa founder namin ay bahagi ng dahilan kung bakit may Magasaka. Kaya balak naming magbahagi ng bahagi ng kita para sa mga magsasaka. Para sa'kin 'yan personal, naka-salakot nga ako eh! 😄"],
-        next:['Who started Magasaka?','What else will Magasaka do?'] },
-      { id:'future', re:/(future|plans?|roadmap|savings|ipon|tax|buwis|health|insurance|benefits|hmo|retire)/,
-        a:["Habang lumalaki ang Magasaka, gusto naming tulungan ang talent na makaipon, maintindihan ang tax responsibilities nila, at alagaan ang kalusugan nila. Dapat may puwang kang magplano lampas sa susunod na sahod.",
-           "Hindi lang trabaho ang inaalala namin, anak. Savings, tax, at health. 'Yan ang mga susunod na itatanim natin habang lumalaki ang Magasaka."],
-        next:['Do you help farmers?','When do you launch?'] },
+        next:['Who started Magasaka?','Read the manifesto'] },
       { id:'name', re:/(name|pangalan|ibig sabihin|meaning|why (is it )?called|bakit magasaka)/,
         a:["Pakinggan mo nang mabuti: Ma-ga-sa-ka. Parang “magsasaka”, 'di ba? Galing sa pamilya ng magsasaka ang founder, at ang pangarap ay sa'yo ang buong ani ng trabaho mo. 🌾",
            "Malapit sa “magsasaka” ang tunog, at hindi 'yan aksidente. Ang ideya: nagtatanim ka ng trabaho, at sa'yo ang buong ani."],
@@ -4382,7 +4376,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
       "Ay, lampas na 'yan sa alam ko. Ang alam ko lang ay ang nasa page na 'to, at ayokong mag-imbento. Subukan mo: “How is it different?” o “What are Seeds?”",
       "Pasensya na, anak, baka sa ibang tanong kita matulungan. Tungkol sa Magasaka, halos lahat alam ko: bayad, proteksyon, rank, Seeds, Founding Members. Tanong lang!"
     ];
-    const ALIAS = {'Read the manifesto':'manifesto','No free test work?':'test free work','What else will Magasaka do?':'future plans','Tell me a joke':'joke','What if something goes wrong?':'goes wrong'};
+    const ALIAS = {'Read the manifesto':'manifesto','No free test work?':'test free work','Tell me a joke':'joke','What if something goes wrong?':'goes wrong'};
     const local = q => {
       const t = (ALIAS[q] || q).toLowerCase();
       // the topics this message touches, in the order they appear in it; answer up to two
