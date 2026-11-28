@@ -4718,7 +4718,7 @@ const restTop = h => Math.max(20, (innerHeight - h) / 2 - (innerWidth <= 640 ? 3
   (() => {
     const btn = document.getElementById('soundBtn');
     if (!btn) return;
-    const KEY = 'mg-ambience', VOL = .13;
+    const KEY = 'mg-ambience', VOL = .08;
     let audio = null, want = false, fadeT = 0;
     want = true;
     try { want = localStorage.getItem(KEY) !== 'off'; } catch(e){}
